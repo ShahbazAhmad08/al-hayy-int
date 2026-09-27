@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { X, Star, ShoppingBag, Check, ShieldCheck, Sparkles, ArrowRight } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
@@ -18,6 +18,23 @@ export default function QuickViewModal({ product, onClose }) {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 
+  // Lock background scrolling and attach ESC listener
+  useEffect(() => {
+    if (!product) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [product, onClose]);
+
   if (!product) return null;
 
   const price = Number(product.price) || 999;
@@ -34,34 +51,35 @@ export default function QuickViewModal({ product, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-6 overflow-y-auto bg-black/70 backdrop-blur-md animate-in fade-in duration-200">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 -z-10"
         onClick={onClose}
+        aria-hidden="true"
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl border border-[#EADBCC] overflow-hidden z-10 animate-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto bg-white rounded-3xl shadow-2xl border border-stone-200 z-10 my-auto animate-in zoom-in-95 duration-200">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/80 hover:bg-slate-100 text-slate-700 transition-colors shadow-sm"
+          className="absolute top-4 right-4 z-30 p-2.5 rounded-full bg-white/90 hover:bg-stone-100 text-stone-700 hover:text-stone-950 transition-colors shadow-md border border-stone-200"
           aria-label="Close Quick View"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Image Column */}
-          <div className="relative aspect-[3/4] md:aspect-auto bg-stone-100">
+          <div className="relative aspect-[3/4] md:aspect-auto bg-stone-100 min-h-[260px] sm:min-h-[380px]">
             <img
               src={product.image}
               alt={product.title}
               className="w-full h-full object-cover object-center"
             />
             {hasDiscount && (
-              <span className="absolute top-4 left-4 px-3 py-1 bg-[#881337] text-white text-xs font-bold rounded-full uppercase tracking-wider shadow-md">
-                Special Offer
+              <span className="absolute top-4 left-4 px-3 py-1 bg-stone-950 text-white text-[10px] font-bold rounded-full uppercase tracking-wider shadow-md">
+                Special Atelier Pick
               </span>
             )}
           </div>

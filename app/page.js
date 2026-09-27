@@ -23,6 +23,7 @@ import {
 import HeroBanner from '@/components/HeroBanner';
 import ProductCard from '@/components/ProductCard';
 import QuickViewModal from '@/components/QuickViewModal';
+import ScrollReveal from '@/components/ScrollReveal';
 import { getProducts, CATEGORIES, submitContact } from '@/lib/api';
 
 export default function HomePage() {
@@ -85,13 +86,13 @@ export default function HomePage() {
   const displayedProducts = filteredProducts.slice(0, 6);
 
   return (
-    <div className="space-y-16 sm:space-y-24 pb-20">
+    <div className="space-y-16 sm:space-y-24 pb-20 overflow-x-hidden">
       {/* 1. Full-Width Cinematic European Luxury Hero Banner */}
       <HeroBanner />
 
       {/* 2. Curated Categories / Silhouettes */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-2">
+        <ScrollReveal animation="fade-down" className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-2">
           <div>
             <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-stone-400">
               Curated Collections
@@ -104,33 +105,39 @@ export default function HomePage() {
             <span>View All Collections</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
-        </div>
+        </ScrollReveal>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {CATEGORIES.slice(0, 4).map((cat) => {
+          {CATEGORIES.slice(0, 4).map((cat, idx) => {
             const liveCount = products.filter(p => p.category?.toLowerCase() === cat.name.toLowerCase()).length;
             return (
-              <Link
+              <ScrollReveal
                 key={cat.id}
-                href={`/shop?category=${encodeURIComponent(cat.name)}`}
-                className="group relative rounded-3xl overflow-hidden aspect-[3/4] bg-stone-100 border border-stone-200/80 shadow-xs hover:shadow-2xl transition-all duration-500 sheen-effect hover:-translate-y-2"
+                animation="fade-up"
+                delay={idx * 120}
+                duration={700}
               >
-                <img
-                  src={cat.image}
-                  alt={cat.name}
-                  className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-300 group-hover:from-black/90" />
+                <Link
+                  href={`/shop?category=${encodeURIComponent(cat.name)}`}
+                  className="group relative rounded-3xl overflow-hidden aspect-[3/4] bg-stone-100 border border-stone-200/80 shadow-xs hover:shadow-2xl transition-all duration-500 sheen-effect hover:-translate-y-2 block h-full"
+                >
+                  <img
+                    src={cat.image}
+                    alt={cat.name}
+                    className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-300 group-hover:from-black/90" />
 
-                <div className="absolute inset-x-0 bottom-0 p-5 text-white transform transition-transform duration-300 group-hover:-translate-y-1">
-                  <span className="text-[10px] uppercase tracking-widest text-amber-300 font-bold">
-                    {liveCount > 0 ? `${liveCount} Creations` : 'Atelier Line'}
-                  </span>
-                  <h3 className="font-serif-luxury text-base sm:text-lg font-bold tracking-wide mt-0.5">
-                    {cat.name}
-                  </h3>
-                </div>
-              </Link>
+                  <div className="absolute inset-x-0 bottom-0 p-5 text-white transform transition-transform duration-300 group-hover:-translate-y-1">
+                    <span className="text-[10px] uppercase tracking-widest text-amber-300 font-bold">
+                      {liveCount > 0 ? `${liveCount} Creations` : 'Atelier Line'}
+                    </span>
+                    <h3 className="font-serif-luxury text-base sm:text-lg font-bold tracking-wide mt-0.5">
+                      {cat.name}
+                    </h3>
+                  </div>
+                </Link>
+              </ScrollReveal>
             );
           })}
         </div>
@@ -138,7 +145,7 @@ export default function HomePage() {
 
       {/* 3. Featured Products Section (EXACTLY 6 CARDS - 3 IN A ROW ON DESKTOP) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+        <ScrollReveal animation="fade-up" className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
             <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-stone-400">
               Signature Line
@@ -164,7 +171,7 @@ export default function HomePage() {
               </button>
             ))}
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* 6 Cards Grid (3 in a row on Desktop, 2 on Mobile) */}
         {loading ? (
@@ -175,17 +182,24 @@ export default function HomePage() {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-            {displayedProducts.map((product) => (
-              <ProductCard
+            {displayedProducts.map((product, idx) => (
+              <ScrollReveal
                 key={product.id}
-                product={product}
-                onQuickView={(p) => setQuickViewProduct(p)}
-              />
+                animation="fade-up"
+                delay={idx * 100}
+                duration={650}
+                className="h-full"
+              >
+                <ProductCard
+                  product={product}
+                  onQuickView={(p) => setQuickViewProduct(p)}
+                />
+              </ScrollReveal>
             ))}
           </div>
         )}
 
-        <div className="text-center pt-10">
+        <ScrollReveal animation="zoom-in" delay={200} className="text-center pt-10">
           <Link
             href="/shop"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-stone-950 text-white text-xs font-bold uppercase tracking-widest hover:bg-stone-800 transition-all shadow-md active:scale-95"
@@ -193,29 +207,31 @@ export default function HomePage() {
             <span>Explore Entire Catalog</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* 4. About & The 72-Hour Artisanal Craft Story Spotlight */}
       <section className="bg-stone-950 text-white py-16 sm:py-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-            {/* Visual Box */}
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-stone-900 border border-stone-800">
-              <img
-                src="https://images.unsplash.com/photo-1601924994987-69e26d50dc26?q=80&w=1200&auto=format&fit=crop"
-                alt="Handloom weaving in Kashmir"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4 p-3 bg-stone-950/80 backdrop-blur-md rounded-2xl border border-white/10 text-xs flex items-center justify-between">
-                <span className="text-stone-300 font-semibold text-[11px]">Srinagar Loom Atelier Custodians</span>
-                <span className="text-amber-300 text-[10px] font-bold uppercase">15th Century Lineage</span>
+            {/* Visual Box (Slides in smoothly from left) */}
+            <ScrollReveal animation="fade-right" duration={800}>
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-stone-900 border border-stone-800">
+                <img
+                  src="https://images.unsplash.com/photo-1601924994987-69e26d50dc26?q=80&w=1200&auto=format&fit=crop"
+                  alt="Handloom weaving in Kashmir"
+                  className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 p-3 bg-stone-950/80 backdrop-blur-md rounded-2xl border border-white/10 text-xs flex items-center justify-between">
+                  <span className="text-stone-300 font-semibold text-[11px]">Srinagar Loom Atelier Custodians</span>
+                  <span className="text-amber-300 text-[10px] font-bold uppercase">15th Century Lineage</span>
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
 
-            {/* Narrative */}
-            <div className="space-y-6">
+            {/* Narrative (Slides in smoothly from right) */}
+            <ScrollReveal animation="fade-left" duration={800} delay={150} className="space-y-6">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-amber-300 border border-white/15 text-[10px] font-bold uppercase tracking-widest">
                 <Sparkles className="w-3 h-3 text-amber-400" />
                 <span>Our Heritage Story</span>
@@ -249,53 +265,55 @@ export default function HomePage() {
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
-            </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
 
       {/* 5. Luxury VIP / Bespoke Bridal CTA Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-stone-900 text-white p-8 sm:p-14 relative overflow-hidden shadow-xl border border-stone-800">
-          <div className="relative z-10 max-w-2xl space-y-4">
-            <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-amber-300">
-              Bespoke Concierge
-            </span>
-            <h2 className="font-serif-luxury text-2xl sm:text-4xl lg:text-5xl font-bold leading-tight text-white">
-              Bespoke Bridal Ensembles & Custom Tailoring
-            </h2>
-            <p className="text-xs sm:text-sm text-stone-300 leading-relaxed font-light">
-              Looking for custom bridal sizes, tailored color palettes, or bulk luxury festive gifting? Connect directly with our Srinagar master artisan team for personalized consultations.
-            </p>
+        <ScrollReveal animation="zoom-in" duration={800}>
+          <div className="rounded-3xl bg-stone-900 text-white p-8 sm:p-14 relative overflow-hidden shadow-xl border border-stone-800">
+            <div className="relative z-10 max-w-2xl space-y-4">
+              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-amber-300">
+                Bespoke Concierge
+              </span>
+              <h2 className="font-serif-luxury text-2xl sm:text-4xl lg:text-5xl font-bold leading-tight text-white">
+                Bespoke Bridal Ensembles & Custom Tailoring
+              </h2>
+              <p className="text-xs sm:text-sm text-stone-300 leading-relaxed font-light">
+                Looking for custom bridal sizes, tailored color palettes, or bulk luxury festive gifting? Connect directly with our Srinagar master artisan team for personalized consultations.
+              </p>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-3">
-              <a
-                href="https://wa.me/919876543210?text=Hello%20Al%20Hayy%20Kashmir,%20I%20would%20like%20a%20bespoke%20bridal%20consultation."
-                target="_blank"
-                rel="noreferrer"
-                className="px-7 py-3.5 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95"
-              >
-                <MessageSquare className="w-4 h-4" />
-                <span>WhatsApp Atelier Concierge</span>
-              </a>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-3">
+                <a
+                  href="https://wa.me/919876543210?text=Hello%20Al%20Hayy%20Kashmir,%20I%20would%20like%20a%20bespoke%20bridal%20consultation."
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-7 py-3.5 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  <span>WhatsApp Atelier Concierge</span>
+                </a>
 
-              <Link
-                href="/contact"
-                className="px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-semibold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95"
-              >
-                <span>Submit Inquiry Online</span>
-              </Link>
+                <Link
+                  href="/contact"
+                  className="px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-semibold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95"
+                >
+                  <span>Submit Inquiry Online</span>
+                </Link>
+              </div>
             </div>
+            <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-amber-900/20 to-transparent pointer-events-none" />
           </div>
-          <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-amber-900/20 to-transparent pointer-events-none" />
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* 6. Direct Contact Form on Home Page */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Info */}
-          <div className="lg:col-span-5 space-y-6">
+          <ScrollReveal animation="fade-right" className="lg:col-span-5 space-y-6">
             <div>
               <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400">
                 Direct Contact
@@ -333,10 +351,10 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Right Contact Form */}
-          <div className="lg:col-span-7">
+          <ScrollReveal animation="fade-left" delay={150} className="lg:col-span-7">
             <div className="p-6 sm:p-8 bg-white rounded-3xl border border-stone-200/80 shadow-xs space-y-5">
               <h3 className="font-serif-luxury text-xl font-bold text-stone-950">
                 Send an Atelier Inquiry
@@ -422,20 +440,20 @@ export default function HomePage() {
                 </form>
               )}
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* 7. Client Testimonials */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-xl mx-auto space-y-2 mb-10">
+        <ScrollReveal animation="fade-down" className="text-center max-w-xl mx-auto space-y-2 mb-10">
           <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-stone-400">
             Client Accolades
           </span>
           <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-stone-900">
             What Our Patrons Say
           </h2>
-        </div>
+        </ScrollReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
@@ -458,38 +476,43 @@ export default function HomePage() {
               rating: 5
             }
           ].map((item, idx) => (
-            <div
+            <ScrollReveal
               key={idx}
-              className="p-6 bg-white rounded-3xl border border-stone-200/80 shadow-xs flex flex-col justify-between space-y-4"
+              animation="fade-up"
+              delay={idx * 150}
+              duration={700}
+              className="h-full"
             >
-              <div className="space-y-3">
-                <div className="flex items-center gap-1 text-amber-500">
-                  {[...Array(item.rating)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-                  ))}
+              <div className="p-6 bg-white rounded-3xl border border-stone-200/80 shadow-xs flex flex-col justify-between space-y-4 h-full hover:shadow-lg transition-all duration-300">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-1 text-amber-500">
+                    {[...Array(item.rating)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+                    ))}
+                  </div>
+                  <p className="text-xs text-stone-600 leading-relaxed italic">
+                    "{item.review}"
+                  </p>
                 </div>
-                <p className="text-xs text-stone-600 leading-relaxed italic">
-                  "{item.review}"
-                </p>
-              </div>
 
-              <div className="pt-3 border-t border-stone-100 flex items-center justify-between text-xs">
-                <div>
-                  <h4 className="font-bold text-stone-900">{item.name}</h4>
-                  <span className="text-stone-400 text-[11px]">{item.city}</span>
+                <div className="pt-3 border-t border-stone-100 flex items-center justify-between text-xs">
+                  <div>
+                    <h4 className="font-bold text-stone-900">{item.name}</h4>
+                    <span className="text-stone-400 text-[11px]">{item.city}</span>
+                  </div>
+                  <span className="text-[10px] px-2 py-0.5 rounded bg-stone-100 text-stone-700 font-medium">
+                    Verified Patron
+                  </span>
                 </div>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-stone-100 text-stone-700 font-medium">
-                  Verified Patron
-                </span>
               </div>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </section>
 
-      {/* 8. SEO Rich-Content Section (Best for Google Ranking & Search Queries) */}
+      {/* 8. SEO Rich-Content Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="p-8 sm:p-10 bg-white rounded-3xl border border-stone-200/80 shadow-xs space-y-6">
+        <ScrollReveal animation="fade-up" className="p-8 sm:p-10 bg-white rounded-3xl border border-stone-200/80 shadow-xs space-y-6">
           <div>
             <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400">
               Artisan Knowledge & Heritage
@@ -521,7 +544,7 @@ export default function HomePage() {
               </p>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* Quick View Modal */}

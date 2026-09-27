@@ -92,7 +92,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <CartProvider>
             <Navbar />
-            <main className="flex-1 w-full animate-fade-slide-up">{children}</main>
+            <main className="flex-1 w-full">{children}</main>
             <CartDrawer />
             <Footer />
           </CartProvider>

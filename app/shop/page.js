@@ -15,6 +15,7 @@ import {
 import ProductCard from '@/components/ProductCard';
 import QuickViewModal from '@/components/QuickViewModal';
 import SEOStructuredData from '@/components/SEOStructuredData';
+import ScrollReveal from '@/components/ScrollReveal';
 import { getProducts, CATEGORIES } from '@/lib/api';
 
 function ShopContent() {
@@ -117,21 +118,23 @@ function ShopContent() {
       </nav>
 
       {/* Shop Header Banner */}
-      <div className="rounded-3xl bg-stone-950 p-6 sm:p-10 lg:p-12 text-white relative overflow-hidden shadow-lg border border-stone-800">
-        <div className="relative z-10 max-w-2xl space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-amber-200 border border-white/15 text-[11px] font-bold uppercase tracking-widest">
-            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            <span>Artisanal Atelier Catalog</span>
+      <ScrollReveal animation="fade-down" duration={750}>
+        <div className="rounded-3xl bg-stone-950 p-6 sm:p-10 lg:p-12 text-white relative overflow-hidden shadow-lg border border-stone-800">
+          <div className="relative z-10 max-w-2xl space-y-3">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-amber-200 border border-white/15 text-[11px] font-bold uppercase tracking-widest">
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <span>Artisanal Atelier Catalog</span>
+            </div>
+            <h1 className="font-serif-luxury text-2xl sm:text-4xl lg:text-5xl font-bold leading-tight">
+              {selectedCategory === 'All' ? 'All Atelier Collections' : selectedCategory}
+            </h1>
+            <p className="text-xs sm:text-sm text-stone-300 leading-relaxed font-light">
+              Discover master-embroidered cotton kurtis, airy kaftans, tailored co-ords, and authentic Changthangi pashmina handwoven by heritage master weavers.
+            </p>
           </div>
-          <h1 className="font-serif-luxury text-2xl sm:text-4xl lg:text-5xl font-bold leading-tight">
-            {selectedCategory === 'All' ? 'All Atelier Collections' : selectedCategory}
-          </h1>
-          <p className="text-xs sm:text-sm text-stone-300 leading-relaxed font-light">
-            Discover master-embroidered cotton kurtis, airy kaftans, tailored co-ords, and authentic Changthangi pashmina handwoven by heritage master weavers.
-          </p>
+          <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-amber-900/10 to-transparent pointer-events-none" />
         </div>
-        <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-amber-900/10 to-transparent pointer-events-none" />
-      </div>
+      </ScrollReveal>
 
       {/* Filter and Content Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
@@ -275,12 +278,19 @@ function ShopContent() {
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
-              {sortedProducts.map((p) => (
-                <ProductCard
+              {sortedProducts.map((p, idx) => (
+                <ScrollReveal
                   key={p.id}
-                  product={p}
-                  onQuickView={(item) => setQuickViewProduct(item)}
-                />
+                  animation="fade-up"
+                  delay={(idx % 6) * 90}
+                  duration={650}
+                  className="h-full"
+                >
+                  <ProductCard
+                    product={p}
+                    onQuickView={(item) => setQuickViewProduct(item)}
+                  />
+                </ScrollReveal>
               ))}
             </div>
           )}
