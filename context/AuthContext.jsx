@@ -1,7 +1,12 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { loginUser as apiLoginUser, registerUser as apiRegisterUser } from '@/lib/api';
+import { 
+  loginUser as apiLoginUser, 
+  registerUser as apiRegisterUser,
+  sendEmailOtp as apiSendEmailOtp,
+  verifyOtpAndRegister as apiVerifyOtpAndRegister
+} from '@/lib/api';
 
 const AuthContext = createContext(null);
 
@@ -61,7 +66,37 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // 2. Customer Registration
+  // 2a. Send Email OTP
+  const sendEmailOtp = async (email, name = '') => {
+    try {
+      const res = await apiSendEmailOtp(email, name);
+      return res;
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  };
+
+  // 2b. Verify OTP & Register
+  const verifyOtpAndRegister = async (username, email, password, otp) => {
+    try {
+      const res = await apiVerifyOtpAndRegister(username, email, password, otp);
+      if (res && res.success) {
+        const customerData = res.user || {
+          username: username || email.split('@')[0],
+          email: email,
+          role: 'customer'
+        };
+        setUser(customerData);
+        localStorage.setItem('alhayy_customer_user', JSON.stringify(customerData));
+        return { success: true, user: customerData };
+      }
+      return res || { success: false, message: 'Invalid OTP' };
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  };
+
+  // 2c. Legacy Customer Registration
   const customerRegister = async (username, email, password) => {
     try {
       const res = await apiRegisterUser(username, email, password);
@@ -139,6 +174,8 @@ export function AuthProvider({ children }) {
         loading,
         customerLogin,
         customerRegister,
+        sendEmailOtp,
+        verifyOtpAndRegister,
         customerLogout,
         adminLogin,
         adminLogout,

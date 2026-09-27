@@ -21,7 +21,7 @@ import confetti from 'canvas-confetti';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { createOrder } from '@/lib/api';
-import { getPaymentConfig } from '@/lib/paymentConfig';
+import { getPaymentConfig, fetchRemotePaymentConfig } from '@/lib/paymentConfig';
 import PaymentModal from '@/components/PaymentModal';
 
 export default function CheckoutPage() {
@@ -67,15 +67,28 @@ export default function CheckoutPage() {
     }
   }, [user, authLoading, router]);
 
-  // Load payment gateway settings
+  // Load payment gateway settings dynamically from backend & localStorage
   useEffect(() => {
-    const cfg = getPaymentConfig();
-    setPaymentConfig(cfg);
-    // Select first enabled gateway
-    if (cfg.razorpay?.enabled) setSelectedGateway('razorpay');
-    else if (cfg.stripe?.enabled) setSelectedGateway('stripe');
-    else if (cfg.upi?.enabled) setSelectedGateway('upi');
-    else if (cfg.cod?.enabled) setSelectedGateway('cod');
+    async function loadGateways() {
+      try {
+        const cfg = await fetchRemotePaymentConfig();
+        setPaymentConfig(cfg);
+        // Automatically select the first enabled gateway
+        if (cfg.razorpay?.enabled) setSelectedGateway('razorpay');
+        else if (cfg.stripe?.enabled) setSelectedGateway('stripe');
+        else if (cfg.upi?.enabled) setSelectedGateway('upi');
+        else if (cfg.cod?.enabled) setSelectedGateway('cod');
+        else setSelectedGateway('');
+      } catch (e) {
+        const localCfg = getPaymentConfig();
+        setPaymentConfig(localCfg);
+        if (localCfg.razorpay?.enabled) setSelectedGateway('razorpay');
+        else if (localCfg.stripe?.enabled) setSelectedGateway('stripe');
+        else if (localCfg.upi?.enabled) setSelectedGateway('upi');
+        else if (localCfg.cod?.enabled) setSelectedGateway('cod');
+      }
+    }
+    loadGateways();
   }, []);
 
   const handleInputChange = (e) => {
@@ -499,12 +512,22 @@ export default function CheckoutPage() {
                     <Banknote className="w-4 h-4 text-stone-600" />
                   </label>
                 )}
+
+                {/* If all gateways are toggled off */}
+                {!paymentConfig?.razorpay?.enabled && !paymentConfig?.stripe?.enabled && !paymentConfig?.upi?.enabled && !paymentConfig?.cod?.enabled && (
+                  <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900 text-center space-y-1">
+                    <strong className="block font-bold">Direct Atelier Concierge Payment</strong>
+                    <p className="text-[11px] text-amber-800">
+                      Standard automated checkout is currently closed by the atelier admin. Please submit your order and complete manual transfer via WhatsApp concierge.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || (!paymentConfig?.razorpay?.enabled && !paymentConfig?.stripe?.enabled && !paymentConfig?.upi?.enabled && !paymentConfig?.cod?.enabled && !selectedGateway)}
               className="w-full py-4 px-6 rounded-full bg-stone-950 text-white font-bold text-xs uppercase tracking-widest hover:bg-stone-800 transition-all shadow-md disabled:opacity-50"
             >
               {submitting ? 'Processing Order...' : `Pay ₹${grandTotal.toLocaleString('en-IN')}`}
