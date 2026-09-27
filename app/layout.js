@@ -54,6 +54,16 @@ export const metadata = {
     description: 'Handcrafted cotton kurtis, kaftans, and fine silk jackets from the heart of Kashmir.',
     images: ['https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200&auto=format&fit=crop'],
   },
+  icons: {
+    icon: [
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icon.png', sizes: '512x512', type: 'image/png' }
+    ],
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }
+    ],
+    shortcut: ['/favicon.png']
+  },
   robots: {
     index: true,
     follow: true,

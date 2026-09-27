@@ -11,11 +11,9 @@ import {
   Sparkles, 
   RotateCcw, 
   ChevronRight, 
-  Heart, 
   Share2, 
   Check, 
   Ruler, 
-  Info,
   Clock
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
@@ -70,18 +68,18 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-16 text-center space-y-4">
-        <div className="w-16 h-16 border-4 border-amber-600 border-t-transparent rounded-full animate-spin mx-auto" />
-        <p className="text-sm text-slate-600">Retrieving handcrafted Kashmiri masterpiece...</p>
+      <div className="max-w-7xl mx-auto px-4 py-24 text-center space-y-4">
+        <div className="w-12 h-12 border-3 border-stone-900 border-t-transparent rounded-full animate-spin mx-auto" />
+        <p className="text-xs text-stone-500 font-serif-luxury">Retrieving handcrafted Kashmiri masterpiece...</p>
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-16 text-center space-y-4">
-        <h2 className="font-serif-luxury text-2xl font-bold text-slate-900">Creation Not Found</h2>
-        <Link href="/shop" className="text-amber-800 font-semibold underline text-sm">
+      <div className="max-w-7xl mx-auto px-4 py-24 text-center space-y-4">
+        <h2 className="font-serif-luxury text-2xl font-bold text-stone-900">Creation Not Found</h2>
+        <Link href="/shop" className="text-stone-900 font-semibold underline text-xs">
           Return to All Collections
         </Link>
       </div>
@@ -110,68 +108,68 @@ export default function ProductDetailPage() {
   const breadcrumbs = [
     { name: 'Home', url: '/' },
     { name: 'Shop', url: '/shop' },
-    { name: product.category, url: `/shop?category=${encodeURIComponent(product.category)}` },
+    { name: product.category || 'Atelier', url: `/shop?category=${encodeURIComponent(product.category || 'All')}` },
     { name: product.title, url: `/product/${product.id}` }
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-12 sm:space-y-16 pb-24 lg:pb-12">
       <SEOStructuredData type="Product" data={product} />
       <SEOStructuredData type="BreadcrumbList" data={breadcrumbs} />
 
       {/* Breadcrumb Path */}
-      <nav className="flex items-center space-x-2 text-xs text-slate-500 overflow-x-auto pb-2 scrollbar-none">
-        <Link href="/" className="hover:text-[#064E3B]">Home</Link>
-        <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" />
-        <Link href="/shop" className="hover:text-[#064E3B]">Shop</Link>
-        <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" />
-        <Link href={`/shop?category=${encodeURIComponent(product.category)}`} className="hover:text-[#064E3B]">
-          {product.category}
+      <nav className="flex items-center space-x-2 text-xs text-stone-500 overflow-x-auto pb-1 scrollbar-none">
+        <Link href="/" className="hover:text-stone-950 transition-colors">Home</Link>
+        <ChevronRight className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+        <Link href="/shop" className="hover:text-stone-950 transition-colors">Shop</Link>
+        <ChevronRight className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+        <Link href={`/shop?category=${encodeURIComponent(product.category || 'All')}`} className="hover:text-stone-950 transition-colors">
+          {product.category || 'Atelier'}
         </Link>
-        <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" />
-        <span className="text-slate-900 font-semibold truncate max-w-[200px]">{product.title}</span>
+        <ChevronRight className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+        <span className="text-stone-950 font-bold truncate max-w-[200px]">{product.title}</span>
       </nav>
 
-      {/* Main Product Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
-        {/* Gallery Column */}
-        <div className="space-y-4 sticky top-28">
-          {/* Main Large Image */}
-          <div className="relative aspect-[3/4] w-full rounded-3xl overflow-hidden bg-stone-100 border border-[#EADBCC] shadow-lg">
+      {/* Main Product Showcase Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
+        {/* Left: Gallery Column */}
+        <div className="space-y-4 lg:sticky lg:top-28">
+          {/* Main Large Image (Strict 3:4 Aspect Ratio) */}
+          <div className="relative aspect-[3/4] w-full rounded-3xl overflow-hidden bg-stone-100 border border-stone-200/80 shadow-md">
             <img
               src={selectedImage || product.image}
               alt={product.title}
-              className="w-full h-full object-cover object-center"
+              className="w-full h-full object-cover object-center transition-all duration-300"
             />
             {hasDiscount && (
-              <span className="absolute top-4 left-4 px-3.5 py-1.5 bg-[#881337] text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-md">
+              <span className="absolute top-4 left-4 px-3 py-1 bg-stone-950 text-white text-[11px] font-bold uppercase tracking-wider rounded-full shadow-md">
                 Sale • {discountPercent}% OFF
               </span>
             )}
             <button
               onClick={handleShare}
-              className="absolute top-4 right-4 p-2.5 rounded-full bg-white/90 backdrop-blur-md text-slate-700 hover:text-[#064E3B] shadow-md transition-all"
-              title="Share Link"
+              className="absolute top-4 right-4 p-2.5 rounded-full bg-white/90 backdrop-blur-md text-stone-700 hover:text-stone-950 shadow-sm transition-all"
+              title="Share Creation"
             >
               <Share2 className="w-4 h-4" />
             </button>
             {copiedLink && (
-              <span className="absolute top-16 right-4 px-3 py-1 bg-emerald-900 text-amber-200 text-xs rounded-lg shadow-lg">
+              <span className="absolute top-16 right-4 px-3 py-1 bg-stone-950 text-white text-xs rounded-lg shadow-lg">
                 Link copied!
               </span>
             )}
           </div>
 
-          {/* Thumbnails */}
+          {/* Thumbnails Strip */}
           {product.images && product.images.length > 1 && (
-            <div className="flex items-center gap-3 overflow-x-auto pb-2">
+            <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
               {product.images.map((img, idx) => (
                 <button
                   key={idx}
                   onClick={() => setSelectedImage(img)}
-                  className={`relative w-20 h-24 rounded-2xl overflow-hidden border-2 flex-shrink-0 transition-all ${
+                  className={`relative w-20 h-24 rounded-2xl overflow-hidden border-2 shrink-0 transition-all ${
                     selectedImage === img
-                      ? 'border-[#064E3B] shadow-md scale-105'
+                      ? 'border-stone-950 shadow-md scale-102'
                       : 'border-transparent opacity-70 hover:opacity-100'
                   }`}
                 >
@@ -182,56 +180,56 @@ export default function ProductDetailPage() {
           )}
         </div>
 
-        {/* Product Details & Actions Column */}
+        {/* Right: Details & Actions Column */}
         <div className="space-y-6">
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs text-amber-800">
-              <span className="uppercase tracking-widest font-semibold font-sans">
-                {product.category}
+            <div className="flex items-center justify-between text-xs text-stone-500">
+              <span className="uppercase tracking-widest font-bold">
+                {product.category || 'Atelier Collection'}
               </span>
-              <div className="flex items-center gap-1 text-amber-600">
-                <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+              <div className="flex items-center gap-1 text-amber-700 font-semibold">
+                <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
                 <span className="font-bold text-sm">{product.rating || '4.9'}</span>
-                <span className="text-slate-400">({product.reviews_count || 28} reviews)</span>
+                <span className="text-stone-400">({product.reviews_count || 28} reviews)</span>
               </div>
             </div>
 
-            <h1 className="font-serif-luxury text-3xl sm:text-4xl font-bold text-slate-900 leading-tight">
+            <h1 className="font-serif-luxury text-2xl sm:text-4xl font-bold text-stone-950 leading-tight">
               {product.title}
             </h1>
 
             {/* Price Row */}
-            <div className="flex items-baseline gap-4 pt-2">
-              <span className="text-3xl font-bold text-[#064E3B] font-sans">
+            <div className="flex items-baseline gap-3 pt-2">
+              <span className="text-3xl font-bold text-stone-950 font-sans">
                 ₹{discountPrice.toLocaleString('en-IN')}
               </span>
               {hasDiscount && (
-                <span className="text-base text-slate-400 line-through">
+                <span className="text-base text-stone-400 line-through">
                   ₹{price.toLocaleString('en-IN')}
                 </span>
               )}
-              <span className="text-xs px-2.5 py-1 bg-emerald-50 text-emerald-800 font-semibold rounded-full border border-emerald-200">
+              <span className="text-[11px] px-2.5 py-0.5 bg-emerald-50 text-emerald-800 font-bold rounded-md">
                 Inclusive of all taxes
               </span>
             </div>
           </div>
 
           {/* Description */}
-          <p className="text-sm text-slate-600 leading-relaxed font-light">
+          <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-light">
             {product.description}
           </p>
 
           {/* Artisan 72h Badge */}
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-[#FAF6EE] to-[#F3EFEA] border border-[#EADBCC] flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center flex-shrink-0 font-bold text-xs shadow-sm">
+          <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200/80 flex items-center gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-stone-950 text-white flex items-center justify-center shrink-0 font-bold text-xs shadow-xs">
               72h
             </div>
             <div>
-              <h4 className="text-xs font-bold text-amber-900 uppercase tracking-wide">
+              <h4 className="text-xs font-bold text-stone-950 uppercase tracking-wide">
                 Kashmiri Artisan Handcraft
               </h4>
-              <p className="text-[11px] text-slate-600 mt-0.5">
-                {product.craft_details || 'Hand-embroidered with authentic Aari needlework in Srinagar.'}
+              <p className="text-[11px] text-stone-500 mt-0.5">
+                {product.craft_details || 'Hand-embroidered with authentic needlework in Srinagar, Kashmir.'}
               </p>
             </div>
           </div>
@@ -240,11 +238,11 @@ export default function ProductDetailPage() {
           {product.variants && product.variants.length > 0 && (
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between text-xs">
-                <span className="font-bold text-slate-800">Choose Size:</span>
+                <span className="font-bold text-stone-800">Choose Size:</span>
                 <button
                   type="button"
                   onClick={() => setShowSizeModal(true)}
-                  className="text-amber-800 hover:text-amber-900 font-semibold flex items-center gap-1 text-xs"
+                  className="text-stone-600 hover:text-stone-950 font-semibold flex items-center gap-1 text-xs"
                 >
                   <Ruler className="w-3.5 h-3.5" /> Size Guide
                 </button>
@@ -261,10 +259,10 @@ export default function ProductDetailPage() {
                         setSelectedColor(v.colors[0]);
                       }
                     }}
-                    className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+                    className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
                       selectedSize === v.size
-                        ? 'bg-[#064E3B] text-white shadow-md ring-2 ring-[#064E3B]/40'
-                        : 'bg-stone-100 text-slate-700 hover:bg-stone-200'
+                        ? 'bg-stone-950 text-white shadow-md'
+                        : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
                     }`}
                   >
                     {v.size}
@@ -274,23 +272,23 @@ export default function ProductDetailPage() {
             </div>
           )}
 
-          {/* Quantity & CTA Buttons */}
-          <div className="space-y-3 pt-4 border-t border-slate-100">
+          {/* Quantity & CTA Buttons (Desktop) */}
+          <div className="hidden lg:block space-y-3 pt-4 border-t border-stone-100">
             <div className="flex items-center gap-3">
               {/* Quantity */}
-              <div className="flex items-center border border-slate-200 rounded-xl bg-stone-50 overflow-hidden">
+              <div className="flex items-center border border-stone-200 rounded-xl bg-stone-50 overflow-hidden">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-3.5 py-3 text-slate-600 hover:bg-stone-200 font-bold"
+                  className="px-3.5 py-3 text-stone-600 hover:bg-stone-200 font-bold"
                 >
                   -
                 </button>
-                <span className="px-3 text-xs font-bold text-slate-800 min-w-[24px] text-center">
+                <span className="px-3 text-xs font-bold text-stone-950 min-w-[24px] text-center">
                   {quantity}
                 </span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="px-3.5 py-3 text-slate-600 hover:bg-stone-200 font-bold"
+                  className="px-3.5 py-3 text-stone-600 hover:bg-stone-200 font-bold"
                 >
                   +
                 </button>
@@ -299,10 +297,10 @@ export default function ProductDetailPage() {
               {/* Add to Bag Button */}
               <button
                 onClick={handleAddToCart}
-                className={`flex-1 py-3.5 px-6 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl transition-all transform active:scale-95 ${
+                className={`flex-1 py-4 px-6 rounded-full text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg transition-all transform active:scale-95 ${
                   added
-                    ? 'bg-emerald-700 text-white'
-                    : 'bg-gradient-to-r from-[#022C22] via-[#064E3B] to-[#022C22] text-amber-200 hover:from-[#064E3B] hover:to-[#047857]'
+                    ? 'bg-emerald-800 text-white'
+                    : 'bg-stone-950 text-white hover:bg-stone-800'
                 }`}
               >
                 {added ? (
@@ -312,7 +310,7 @@ export default function ProductDetailPage() {
                   </>
                 ) : (
                   <>
-                    <ShoppingBag className="w-4 h-4 text-amber-300" />
+                    <ShoppingBag className="w-4 h-4 text-white" />
                     <span>Add to Bag • ₹{(discountPrice * quantity).toLocaleString('en-IN')}</span>
                   </>
                 )}
@@ -321,14 +319,14 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Tabs / Accordions */}
-          <div className="pt-6 border-t border-slate-200 space-y-4">
-            <div className="flex border-b border-slate-200 text-xs font-bold">
+          <div className="pt-6 border-t border-stone-200 space-y-4">
+            <div className="flex border-b border-stone-200 text-xs font-bold">
               <button
                 onClick={() => setActiveTab('details')}
                 className={`pb-3 px-4 border-b-2 transition-colors ${
                   activeTab === 'details'
-                    ? 'border-amber-600 text-amber-900'
-                    : 'border-transparent text-slate-500 hover:text-slate-800'
+                    ? 'border-stone-950 text-stone-950'
+                    : 'border-transparent text-stone-400 hover:text-stone-700'
                 }`}
               >
                 Fabric & Craft
@@ -337,8 +335,8 @@ export default function ProductDetailPage() {
                 onClick={() => setActiveTab('care')}
                 className={`pb-3 px-4 border-b-2 transition-colors ${
                   activeTab === 'care'
-                    ? 'border-amber-600 text-amber-900'
-                    : 'border-transparent text-slate-500 hover:text-slate-800'
+                    ? 'border-stone-950 text-stone-950'
+                    : 'border-transparent text-stone-400 hover:text-stone-700'
                 }`}
               >
                 Care Instructions
@@ -347,34 +345,34 @@ export default function ProductDetailPage() {
                 onClick={() => setActiveTab('shipping')}
                 className={`pb-3 px-4 border-b-2 transition-colors ${
                   activeTab === 'shipping'
-                    ? 'border-amber-600 text-amber-900'
-                    : 'border-transparent text-slate-500 hover:text-slate-800'
+                    ? 'border-stone-950 text-stone-950'
+                    : 'border-transparent text-stone-400 hover:text-stone-700'
                 }`}
               >
                 Shipping & Returns
               </button>
             </div>
 
-            <div className="text-xs text-slate-600 leading-relaxed">
+            <div className="text-xs text-stone-600 leading-relaxed">
               {activeTab === 'details' && (
                 <div className="space-y-2">
-                  <p><strong>Fabric:</strong> {product.fabric || '100% Pure Combed Cotton'}</p>
-                  <p><strong>Artisan Work:</strong> Hand-guided Kashmiri needle embroidery</p>
-                  <p><strong>Origin:</strong> Srinagar Valley, Jammu & Kashmir</p>
+                  <p><strong>Fabric:</strong> {product.fabric || '100% Pure Combed Cotton / Handloom'}</p>
+                  <p><strong>Artisan Work:</strong> Authentic Aari needle embroidery & Sozni motifs</p>
+                  <p><strong>Origin:</strong> Srinagar, Jammu & Kashmir</p>
                 </div>
               )}
               {activeTab === 'care' && (
                 <div className="space-y-2">
                   <p>• {product.care || 'Gentle hand wash in cold water or mild dry clean.'}</p>
                   <p>• Do not bleach or wring dry.</p>
-                  <p>• Iron on low heat on the reverse side of embroidery.</p>
+                  <p>• Warm iron on the reverse side of embroidery.</p>
                 </div>
               )}
               {activeTab === 'shipping' && (
                 <div className="space-y-2">
-                  <p>• <strong>Free Express Shipping:</strong> Orders above ₹1,499 qualify for complimentary delivery.</p>
-                  <p>• <strong>Dispatch Time:</strong> Ships within 24-48 hours from Srinagar atelier.</p>
-                  <p>• <strong>Returns:</strong> 7-day hassle-free replacement or exchange guarantee.</p>
+                  <p>• <strong>Free Express Shipping:</strong> Compliments on all prepaid orders.</p>
+                  <p>• <strong>Dispatch:</strong> 24-48 hours from Srinagar atelier.</p>
+                  <p>• <strong>Returns:</strong> 7-day hassle-free replacement guarantee.</p>
                 </div>
               )}
             </div>
@@ -384,18 +382,18 @@ export default function ProductDetailPage() {
 
       {/* Size Guide Modal */}
       {showSizeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="relative w-full max-w-md bg-white rounded-3xl p-6 space-y-4 shadow-2xl border border-[#EADBCC]">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="font-serif-luxury text-lg font-bold text-slate-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 space-y-4 shadow-2xl border border-stone-200">
+            <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+              <h3 className="font-serif-luxury text-lg font-bold text-stone-950">
                 Al Hayy Size Guide (Inches)
               </h3>
-              <button onClick={() => setShowSizeModal(false)} className="text-slate-400 hover:text-slate-700">
+              <button onClick={() => setShowSizeModal(false)} className="text-stone-400 hover:text-stone-950">
                 ✕
               </button>
             </div>
             <table className="w-full text-xs text-left">
-              <thead className="bg-stone-100 text-slate-700 uppercase font-semibold">
+              <thead className="bg-stone-50 text-stone-700 uppercase font-semibold">
                 <tr>
                   <th className="p-2.5">Size</th>
                   <th className="p-2.5">Bust</th>
@@ -403,7 +401,7 @@ export default function ProductDetailPage() {
                   <th className="p-2.5">Hip</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-stone-100">
                 <tr><td className="p-2.5 font-bold">S</td><td className="p-2.5">36"</td><td className="p-2.5">32"</td><td className="p-2.5">38"</td></tr>
                 <tr><td className="p-2.5 font-bold">M</td><td className="p-2.5">38"</td><td className="p-2.5">34"</td><td className="p-2.5">40"</td></tr>
                 <tr><td className="p-2.5 font-bold">L</td><td className="p-2.5">40"</td><td className="p-2.5">36"</td><td className="p-2.5">42"</td></tr>
@@ -411,32 +409,66 @@ export default function ProductDetailPage() {
                 <tr><td className="p-2.5 font-bold">XXL</td><td className="p-2.5">44"</td><td className="p-2.5">40"</td><td className="p-2.5">46"</td></tr>
               </tbody>
             </table>
-            <p className="text-[11px] text-slate-500 italic">
-              All sizes follow standard Indian garment specifications.
+            <p className="text-[11px] text-stone-500 italic">
+              Custom bridal & size alterations available via WhatsApp Concierge.
             </p>
           </div>
         </div>
       )}
 
-      {/* Related Products Carousel / Grid */}
+      {/* Related Creations */}
       {relatedProducts.length > 0 && (
-        <section className="space-y-6 pt-12 border-t border-slate-200">
-          <div className="text-center space-y-1">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#B45309]">
-              Complete Your Valley Look
-            </span>
-            <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#022C22]">
-              You May Also Adore
-            </h2>
+        <section className="space-y-6 pt-12 border-t border-stone-200">
+          <div className="flex items-end justify-between">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400">
+                Curated Ensemble
+              </span>
+              <h2 className="font-serif-luxury text-2xl font-bold text-stone-900 mt-1">
+                You May Also Adore
+              </h2>
+            </div>
+            <Link href="/shop" className="text-xs font-semibold text-stone-900 hover:text-stone-600">
+              View Catalog →
+            </Link>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
             {relatedProducts.map((item) => (
               <ProductCard key={item.id} product={item} />
             ))}
           </div>
         </section>
       )}
+
+      {/* STICKY BOTTOM MOBILE BUY BAR */}
+      <div className="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md p-3 sm:p-4 border-t border-stone-200 shadow-2xl lg:hidden z-30 flex items-center justify-between gap-3">
+        <div>
+          <span className="text-[10px] text-stone-400 block uppercase">Price</span>
+          <span className="text-base font-bold text-stone-950">₹{discountPrice.toLocaleString('en-IN')}</span>
+        </div>
+
+        <button
+          onClick={handleAddToCart}
+          className={`flex-1 py-3 px-5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 ${
+            added
+              ? 'bg-emerald-800 text-white'
+              : 'bg-stone-950 text-white'
+          }`}
+        >
+          {added ? (
+            <>
+              <Check className="w-4 h-4 text-white" />
+              <span>Added!</span>
+            </>
+          ) : (
+            <>
+              <ShoppingBag className="w-4 h-4" />
+              <span>Add to Bag ({selectedSize})</span>
+            </>
+          )}
+        </button>
+      </div>
     </div>
   );
 }

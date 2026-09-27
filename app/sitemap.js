@@ -1,4 +1,4 @@
-import { SEED_PRODUCTS, CATEGORIES } from '@/lib/api';
+import { getProducts, CATEGORIES } from '@/lib/api';
 
 export default async function sitemap() {
   const baseUrl = 'https://www.alhayyinternational.com';
@@ -9,7 +9,7 @@ export default async function sitemap() {
     '/our-story',
     '/contact',
     '/orders',
-    '/admin'
+    '/login'
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date().toISOString(),
@@ -17,7 +17,15 @@ export default async function sitemap() {
     priority: route === '' ? 1.0 : 0.8,
   }));
 
-  const productRoutes = SEED_PRODUCTS.map((product) => ({
+  // Fetch all live database + catalog products for comprehensive indexing
+  let products = [];
+  try {
+    products = await getProducts();
+  } catch (e) {
+    products = [];
+  }
+
+  const productRoutes = products.map((product) => ({
     url: `${baseUrl}/product/${product.id}`,
     lastModified: new Date().toISOString(),
     changeFrequency: 'weekly',
