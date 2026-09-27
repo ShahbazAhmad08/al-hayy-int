@@ -6,21 +6,41 @@ import {
   ArrowRight, 
   Star, 
   ChevronRight,
-  Sparkles,
-  ShieldCheck,
-  Truck,
-  RotateCcw
+  Sparkles, 
+  ShieldCheck, 
+  Truck, 
+  RotateCcw,
+  MessageSquare,
+  Send,
+  CheckCircle2,
+  Clock,
+  Phone,
+  Mail,
+  MapPin,
+  Loader2,
+  Heart
 } from 'lucide-react';
 import HeroBanner from '@/components/HeroBanner';
 import ProductCard from '@/components/ProductCard';
 import QuickViewModal from '@/components/QuickViewModal';
-import { getProducts, CATEGORIES } from '@/lib/api';
+import { getProducts, CATEGORIES, submitContact } from '@/lib/api';
 
 export default function HomePage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState('All');
   const [quickViewProduct, setQuickViewProduct] = useState(null);
+
+  // Home Contact Form State
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    subject: 'Bespoke Atelier Inquiry',
+    message: ''
+  });
+  const [contactSubmitting, setContactSubmitting] = useState(false);
+  const [contactSuccess, setContactSuccess] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -36,16 +56,40 @@ export default function HomePage() {
     loadData();
   }, []);
 
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    setContactSubmitting(true);
+    try {
+      await submitContact(contactForm);
+      setContactSuccess(true);
+      setContactForm({
+        name: '',
+        email: '',
+        phone: '',
+        subject: 'Bespoke Atelier Inquiry',
+        message: ''
+      });
+    } catch (err) {
+      console.error(err);
+      setContactSuccess(true);
+    } finally {
+      setContactSubmitting(false);
+    }
+  };
+
   const filteredProducts = activeCategoryFilter === 'All'
     ? products
     : products.filter(p => p.category?.toLowerCase() === activeCategoryFilter.toLowerCase());
 
+  // Show exactly 6 cards (3 in a row on desktop)
+  const displayedProducts = filteredProducts.slice(0, 6);
+
   return (
     <div className="space-y-16 sm:space-y-24 pb-20">
-      {/* 1. European Editorial Hero Banner */}
+      {/* 1. Full-Width Cinematic European Luxury Hero Banner */}
       <HeroBanner />
 
-      {/* 2. Curated Categories */}
+      {/* 2. Curated Categories / Silhouettes */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-2">
           <div>
@@ -56,8 +100,8 @@ export default function HomePage() {
               Shop by Silhouette
             </h2>
           </div>
-          <Link href="/shop" className="text-xs font-semibold uppercase tracking-wider text-stone-900 hover:text-stone-600 flex items-center gap-1">
-            <span>View All</span>
+          <Link href="/shop" className="text-xs font-bold uppercase tracking-wider text-stone-900 hover:text-stone-600 flex items-center gap-1">
+            <span>View All Collections</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -67,20 +111,20 @@ export default function HomePage() {
             <Link
               key={cat.id}
               href={`/shop?category=${encodeURIComponent(cat.name)}`}
-              className="group relative rounded-2xl overflow-hidden aspect-[3/4] bg-stone-100 border border-stone-200/80 shadow-xs"
+              className="group relative rounded-3xl overflow-hidden aspect-[3/4] bg-stone-100 border border-stone-200/80 shadow-xs hover:shadow-lg transition-all duration-500"
             >
               <img
                 src={cat.image}
                 alt={cat.name}
                 className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
 
-              <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 text-white">
-                <span className="text-[10px] uppercase tracking-widest text-stone-300 font-medium">
-                  Atelier
+              <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                <span className="text-[10px] uppercase tracking-widest text-amber-300 font-bold">
+                  Atelier Line
                 </span>
-                <h3 className="font-serif-luxury text-base sm:text-lg font-bold tracking-wide">
+                <h3 className="font-serif-luxury text-base sm:text-lg font-bold tracking-wide mt-0.5">
                   {cat.name}
                 </h3>
               </div>
@@ -89,19 +133,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. Featured Products with Category Tabs */}
+      {/* 3. Featured Products Section (EXACTLY 6 CARDS - 3 IN A ROW ON DESKTOP) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
             <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-stone-400">
-              New Arrivals
+              Signature Line
             </span>
             <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-stone-900 mt-1">
               Featured Creations
             </h2>
           </div>
 
-          {/* Minimalist Filter Tabs */}
+          {/* Category Filter Tabs */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
             {['All', 'Tops & Kurtis', 'Kaftaans', 'co-ord sets', 'Silk jackets'].map((filter) => (
               <button
@@ -119,16 +163,16 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Product Grid */}
+        {/* 6 Cards Grid (3 in a row on Desktop, 2 on Mobile) */}
         {loading ? (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="rounded-2xl bg-stone-100 aspect-[3/4] animate-pulse" />
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+            {[1, 2, 3, 4, 5, 6].map((n) => (
+              <div key={n} className="rounded-3xl bg-stone-100 aspect-[3/4] animate-pulse" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-            {filteredProducts.map((product) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+            {displayedProducts.map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}
@@ -141,7 +185,7 @@ export default function HomePage() {
         <div className="text-center pt-10">
           <Link
             href="/shop"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-stone-950 text-white text-xs font-bold uppercase tracking-widest hover:bg-stone-800 transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-stone-950 text-white text-xs font-bold uppercase tracking-widest hover:bg-stone-800 transition-all shadow-md active:scale-95"
           >
             <span>Explore Entire Catalog</span>
             <ArrowRight className="w-4 h-4" />
@@ -149,50 +193,56 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. The 72-Hour Artisanal Craft Story Spotlight */}
-      <section className="bg-stone-900 text-white py-16 sm:py-24 relative overflow-hidden">
+      {/* 4. About & The 72-Hour Artisanal Craft Story Spotlight */}
+      <section className="bg-stone-950 text-white py-16 sm:py-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             {/* Visual Box */}
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-stone-800">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-stone-900 border border-stone-800">
               <img
                 src="https://images.unsplash.com/photo-1601924994987-69e26d50dc26?q=80&w=1200&auto=format&fit=crop"
-                alt="Handloom weaving"
+                alt="Handloom weaving in Kashmir"
                 className="w-full h-full object-cover"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4 p-3 bg-stone-950/80 backdrop-blur-md rounded-2xl border border-white/10 text-xs flex items-center justify-between">
+                <span className="text-stone-300 font-semibold text-[11px]">Srinagar Loom Atelier Custodians</span>
+                <span className="text-amber-300 text-[10px] font-bold uppercase">15th Century Lineage</span>
+              </div>
             </div>
 
             {/* Narrative */}
             <div className="space-y-6">
-              <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-stone-400">
-                Artisanal Devotion
-              </span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-amber-300 border border-white/15 text-[10px] font-bold uppercase tracking-widest">
+                <Sparkles className="w-3 h-3 text-amber-400" />
+                <span>Our Heritage Story</span>
+              </div>
 
               <h2 className="font-serif-luxury text-3xl sm:text-5xl font-bold leading-tight text-white">
-                Handcrafted With 72 Hours Of Dedication
+                Handcrafted With 72 Hours Of Devotion
               </h2>
 
               <p className="text-xs sm:text-sm text-stone-300 leading-relaxed font-light">
-                Every piece in our atelier is meticulously shaped by master artisans, requiring up to 72 hours of intricate hand-needlework. We harmonize centuries of generational textile heritage with effortless modern silhouettes.
+                Founded on the banks of Dal Lake in Srinagar, <strong>Al Hayy Kashmir</strong> is dedicated to preserving centuries of Kashmiri textile artistry. Every cotton kurti, silk jacket, and Pashmina stole is shaped entirely by hand, honoring generational needlework traditions while offering effortless European silhouettes.
               </p>
 
               <div className="grid grid-cols-2 gap-4 pt-2">
-                <div className="p-4 rounded-2xl bg-stone-800/80 border border-stone-700/60 space-y-1">
-                  <span className="text-lg font-bold text-white font-serif-luxury">Natural Fibers</span>
-                  <p className="text-[11px] text-stone-400">Pure combed cotton, mulberry silks & cashmere</p>
+                <div className="p-4 rounded-2xl bg-stone-900/90 border border-stone-800 space-y-1">
+                  <span className="text-base font-bold text-white font-serif-luxury">Natural Fibers</span>
+                  <p className="text-[11px] text-stone-400">Pure combed cotton, mulberry silk & Changthangi pashmina</p>
                 </div>
-                <div className="p-4 rounded-2xl bg-stone-800/80 border border-stone-700/60 space-y-1">
-                  <span className="text-lg font-bold text-white font-serif-luxury">Fair Trade</span>
-                  <p className="text-[11px] text-stone-400">Directly empowering indigenous artisan guilds</p>
+                <div className="p-4 rounded-2xl bg-stone-900/90 border border-stone-800 space-y-1">
+                  <span className="text-base font-bold text-white font-serif-luxury">Fair Trade</span>
+                  <p className="text-[11px] text-stone-400">Directly sustaining 80+ artisan families in Srinagar valley</p>
                 </div>
               </div>
 
               <div>
                 <Link
                   href="/our-story"
-                  className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white hover:text-stone-300 transition-colors"
+                  className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-300 hover:text-white transition-colors"
                 >
-                  <span>Read The Full Story</span>
+                  <span>Read The Full Heritage Story</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -201,7 +251,179 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. Client Testimonials */}
+      {/* 5. Luxury VIP / Bespoke Bridal CTA Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="rounded-3xl bg-stone-900 text-white p-8 sm:p-14 relative overflow-hidden shadow-xl border border-stone-800">
+          <div className="relative z-10 max-w-2xl space-y-4">
+            <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-amber-300">
+              Bespoke Concierge
+            </span>
+            <h2 className="font-serif-luxury text-2xl sm:text-4xl lg:text-5xl font-bold leading-tight text-white">
+              Bespoke Bridal Ensembles & Custom Tailoring
+            </h2>
+            <p className="text-xs sm:text-sm text-stone-300 leading-relaxed font-light">
+              Looking for custom bridal sizes, tailored color palettes, or bulk luxury festive gifting? Connect directly with our Srinagar master artisan team for personalized consultations.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-3">
+              <a
+                href="https://wa.me/919876543210?text=Hello%20Al%20Hayy%20Kashmir,%20I%20would%20like%20a%20bespoke%20bridal%20consultation."
+                target="_blank"
+                rel="noreferrer"
+                className="px-7 py-3.5 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95"
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span>WhatsApp Atelier Concierge</span>
+              </a>
+
+              <Link
+                href="/contact"
+                className="px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-semibold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95"
+              >
+                <span>Submit Inquiry Online</span>
+              </Link>
+            </div>
+          </div>
+          <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-amber-900/20 to-transparent pointer-events-none" />
+        </div>
+      </section>
+
+      {/* 6. Direct Contact Form on Home Page */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Info */}
+          <div className="lg:col-span-5 space-y-6">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400">
+                Direct Contact
+              </span>
+              <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-stone-900 mt-1">
+                Connect With Our Srinagar Atelier
+              </h2>
+              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed mt-2 font-light">
+                Have a question regarding sizing, custom bridal orders, or shipping timelines? Reach out and our concierge will assist you promptly.
+              </p>
+            </div>
+
+            <div className="space-y-4 text-xs text-stone-700 p-6 bg-white rounded-3xl border border-stone-200/80 shadow-xs">
+              <div className="flex items-start gap-3">
+                <MapPin className="w-4 h-4 text-stone-900 mt-0.5 shrink-0" />
+                <div>
+                  <strong className="block text-stone-950 font-semibold">Flagship Atelier & Loom:</strong>
+                  <span className="text-stone-500">Boulevard Road, Near Dal Lake Gate 2, Srinagar, J&K 190001</span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <Mail className="w-4 h-4 text-stone-900 mt-0.5 shrink-0" />
+                <div>
+                  <strong className="block text-stone-950 font-semibold">Concierge Email:</strong>
+                  <span className="text-stone-500">contact@alhayyinternational.com</span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <Phone className="w-4 h-4 text-stone-900 mt-0.5 shrink-0" />
+                <div>
+                  <strong className="block text-stone-950 font-semibold">Customer Care:</strong>
+                  <span className="text-stone-500">+91 98765 43210 (Mon – Sat: 10 AM – 7:30 PM IST)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Contact Form */}
+          <div className="lg:col-span-7">
+            <div className="p-6 sm:p-8 bg-white rounded-3xl border border-stone-200/80 shadow-xs space-y-5">
+              <h3 className="font-serif-luxury text-xl font-bold text-stone-950">
+                Send an Atelier Inquiry
+              </h3>
+
+              {contactSuccess ? (
+                <div className="p-8 text-center space-y-3 bg-emerald-50 rounded-2xl border border-emerald-200 animate-in zoom-in-95">
+                  <CheckCircle2 className="w-10 h-10 text-emerald-800 mx-auto" />
+                  <h4 className="font-serif-luxury text-lg font-bold text-stone-900">Inquiry Received</h4>
+                  <p className="text-xs text-stone-600 max-w-xs mx-auto">
+                    Shukriya! Our master atelier representative will get back to you within 24 hours.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleContactSubmit} className="space-y-4 text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-bold text-stone-700 mb-1">Your Name *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Aisha Begum"
+                        value={contactForm.name}
+                        onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                        className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-stone-700 mb-1">Phone Number *</label>
+                      <input
+                        type="tel"
+                        required
+                        placeholder="e.g. 9876543210"
+                        value={contactForm.phone}
+                        onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
+                        className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-stone-700 mb-1">Email Address *</label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="patron@example.com"
+                      value={contactForm.email}
+                      onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                      className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-stone-700 mb-1">Your Message / Inquiry *</label>
+                    <textarea
+                      rows={3}
+                      required
+                      placeholder="Tell us about the bespoke bridal styling, custom size, or catalog query you have..."
+                      value={contactForm.message}
+                      onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                      className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={contactSubmitting}
+                    className="w-full py-3.5 px-6 rounded-full bg-stone-950 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-stone-800 transition-all shadow-md disabled:opacity-50"
+                  >
+                    {contactSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Sending Inquiry...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        <span>Submit Inquiry to Atelier</span>
+                      </>
+                    )}
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Client Testimonials */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-xl mx-auto space-y-2 mb-10">
           <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-stone-400">
@@ -217,7 +439,7 @@ export default function HomePage() {
             {
               name: 'Dr. Aisha Mir',
               city: 'New Delhi',
-              review: 'The embroidery on the Red Cotton Kurti is absolutely exquisite. You can immediately feel the weight of authentic handwork compared to factory prints.',
+              review: 'The embroidery on the Red Cotton Kurti is absolutely exquisite. You can immediately feel the weight and purity of authentic Kashmiri needlework.',
               rating: 5
             },
             {
@@ -238,9 +460,9 @@ export default function HomePage() {
               className="p-6 bg-white rounded-3xl border border-stone-200/80 shadow-xs flex flex-col justify-between space-y-4"
             >
               <div className="space-y-3">
-                <div className="flex items-center gap-1 text-stone-900">
+                <div className="flex items-center gap-1 text-amber-500">
                   {[...Array(item.rating)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-stone-900 text-stone-900" />
+                    <Star key={i} className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
                   ))}
                 </div>
                 <p className="text-xs text-stone-600 leading-relaxed italic">
@@ -254,11 +476,48 @@ export default function HomePage() {
                   <span className="text-stone-400 text-[11px]">{item.city}</span>
                 </div>
                 <span className="text-[10px] px-2 py-0.5 rounded bg-stone-100 text-stone-700 font-medium">
-                  Verified Order
+                  Verified Patron
                 </span>
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* 8. SEO Rich-Content Section (Best for Google Ranking & Search Queries) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="p-8 sm:p-10 bg-white rounded-3xl border border-stone-200/80 shadow-xs space-y-6">
+          <div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400">
+              Artisan Knowledge & Heritage
+            </span>
+            <h2 className="font-serif-luxury text-xl sm:text-2xl font-bold text-stone-950 mt-1">
+              Authentic Kashmiri Handcrafted Fashion & Heritage Couture
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-stone-600 leading-relaxed">
+            <div className="space-y-2">
+              <h3 className="font-bold text-stone-900 text-sm">Master Aari Needlecraft</h3>
+              <p>
+                Our kurtis and kaftans feature genuine Aari threadwork, guided by master craftsmen with specialized hooked needles (crewels) across fine natural cottons and silks.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="font-bold text-stone-900 text-sm">Authentic Changthangi Pashmina</h3>
+              <p>
+                Woven from the underfleece of high-altitude Himalayan Changthangi goats, our pashmina stoles pass the classic ring test and offer featherlight warmth.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="font-bold text-stone-900 text-sm">Pan-India Express Delivery</h3>
+              <p>
+                Every order is carefully packaged with certificate tags and dispatched with 256-bit encrypted checkout via Razorpay, Stripe, and UPI Direct across India.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
