@@ -44,7 +44,7 @@ export default function ProductCard({ product, onQuickView }) {
 
   return (
     <div
-      className="group relative flex flex-col h-full bg-white rounded-2xl sm:rounded-3xl overflow-hidden border border-stone-200/80 hover:border-stone-900 transition-all duration-300 shadow-xs hover:shadow-lg"
+      className="group relative flex flex-col h-full bg-white rounded-2xl sm:rounded-3xl overflow-hidden border border-stone-200/80 hover:border-stone-900 transition-all duration-500 shadow-xs hover:shadow-xl sheen-effect hover:-translate-y-1.5"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

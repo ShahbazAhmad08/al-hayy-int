@@ -77,6 +77,8 @@ export const metadata = {
   },
 };
 
+import LuxuryPreloader from '@/components/LuxuryPreloader';
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
@@ -86,10 +88,11 @@ export default function RootLayout({ children }) {
         <SEOStructuredData type="Organization" />
       </head>
       <body className="min-h-screen flex flex-col bg-[#FCFBF7] text-slate-900 antialiased selection:bg-[#C46210] selection:text-white">
+        <LuxuryPreloader />
         <AuthProvider>
           <CartProvider>
             <Navbar />
-            <main className="flex-1 w-full">{children}</main>
+            <main className="flex-1 w-full animate-fade-slide-up">{children}</main>
             <CartDrawer />
             <Footer />
           </CartProvider>

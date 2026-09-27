@@ -107,29 +107,32 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {CATEGORIES.slice(0, 4).map((cat) => (
-            <Link
-              key={cat.id}
-              href={`/shop?category=${encodeURIComponent(cat.name)}`}
-              className="group relative rounded-3xl overflow-hidden aspect-[3/4] bg-stone-100 border border-stone-200/80 shadow-xs hover:shadow-lg transition-all duration-500"
-            >
-              <img
-                src={cat.image}
-                alt={cat.name}
-                className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+          {CATEGORIES.slice(0, 4).map((cat) => {
+            const liveCount = products.filter(p => p.category?.toLowerCase() === cat.name.toLowerCase()).length;
+            return (
+              <Link
+                key={cat.id}
+                href={`/shop?category=${encodeURIComponent(cat.name)}`}
+                className="group relative rounded-3xl overflow-hidden aspect-[3/4] bg-stone-100 border border-stone-200/80 shadow-xs hover:shadow-2xl transition-all duration-500 sheen-effect hover:-translate-y-2"
+              >
+                <img
+                  src={cat.image}
+                  alt={cat.name}
+                  className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-300 group-hover:from-black/90" />
 
-              <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                <span className="text-[10px] uppercase tracking-widest text-amber-300 font-bold">
-                  Atelier Line
-                </span>
-                <h3 className="font-serif-luxury text-base sm:text-lg font-bold tracking-wide mt-0.5">
-                  {cat.name}
-                </h3>
-              </div>
-            </Link>
-          ))}
+                <div className="absolute inset-x-0 bottom-0 p-5 text-white transform transition-transform duration-300 group-hover:-translate-y-1">
+                  <span className="text-[10px] uppercase tracking-widest text-amber-300 font-bold">
+                    {liveCount > 0 ? `${liveCount} Creations` : 'Atelier Line'}
+                  </span>
+                  <h3 className="font-serif-luxury text-base sm:text-lg font-bold tracking-wide mt-0.5">
+                    {cat.name}
+                  </h3>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

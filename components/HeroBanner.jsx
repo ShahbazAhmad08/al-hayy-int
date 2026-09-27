@@ -145,7 +145,7 @@ export default function HeroBanner() {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
               <Link
                 href={slide.ctaPrimaryLink}
-                className="px-8 py-4 rounded-full bg-white hover:bg-amber-100 text-stone-950 font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl transition-all transform active:scale-95"
+                className="px-8 py-4 rounded-full bg-white hover:bg-amber-100 text-stone-950 font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl transition-all transform active:scale-95 animate-gold-pulse"
               >
                 <span>{slide.ctaPrimary}</span>
                 <ArrowRight className="w-4 h-4" />
