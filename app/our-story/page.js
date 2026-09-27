@@ -4,11 +4,11 @@ import { Sparkles, Clock, MapPin, Feather, Heart, ArrowRight, ShieldCheck } from
 import SEOStructuredData from '@/components/SEOStructuredData';
 
 export const metadata = {
-  title: 'Our Story & 72-Hour Kashmiri Artisan Heritage | Al Hayy Kashmir',
-  description: 'Learn about Al Hayy Kashmir, our indigenous master artisan families in Srinagar, and the timeless 72-hour hand-embroidery process behind our luxury kurtis, kaftans, and Pashmina.',
+  title: 'Our Story & Artisanal Craft Heritage | Al Hayy International',
+  description: 'Learn about Al Hayy International, our master artisan families, and the timeless hand-embroidery process behind our luxury kurtis, kaftans, and designer fashion.',
   openGraph: {
-    title: 'Our Story & Kashmiri Artisan Heritage | Al Hayy Kashmir',
-    description: 'Learn about Al Hayy Kashmir, our master artisan families in Srinagar, and the 72-hour hand-embroidery process.',
+    title: 'Our Story & Artisan Heritage | Al Hayy International',
+    description: 'Learn about Al Hayy International, our master artisan families, and the bespoke hand-embroidery process.',
     url: 'https://www.alhayyinternational.com/our-story',
   }
 };
@@ -28,7 +28,7 @@ export default function OurStoryPage() {
         <div className="absolute inset-0 opacity-25">
           <img
             src="https://images.unsplash.com/photo-1601924994987-69e26d50dc26?q=80&w=1600&auto=format&fit=crop"
-            alt="Kashmir Valley Loom"
+            alt="Loom Atelier"
             className="w-full h-full object-cover"
           />
         </div>
@@ -37,13 +37,13 @@ export default function OurStoryPage() {
         <div className="relative max-w-3xl mx-auto space-y-4 z-10">
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/10 backdrop-blur-md text-amber-300 border border-white/20 text-[11px] font-bold uppercase tracking-widest">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Preserving Kashmiri Heritage</span>
+            <span>Preserving Artisan Heritage</span>
           </div>
           <h1 className="font-serif-luxury text-4xl sm:text-6xl font-bold leading-tight text-white">
-            The 72-Hour Devotion
+            The Artisanal Devotion
           </h1>
           <p className="text-xs sm:text-base text-stone-300 leading-relaxed font-light">
-            Behind every delicate curve of Aari needlecraft and every whisper-light pashmina fold lies centuries of generational devotion from the jewel of the Himalayas.
+            Behind every delicate curve of needlecraft and every pure silk fold lies decades of generational devotion and contemporary luxury couture.
           </p>
         </div>
       </section>
@@ -54,10 +54,10 @@ export default function OurStoryPage() {
           <div className="space-y-4">
             <span className="text-[11px] font-bold uppercase tracking-widest text-stone-400">Chapter I</span>
             <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-stone-900">
-              Born on the Banks of Dal Lake
+              The Genesis of Al Hayy
             </h2>
             <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-light">
-              Founded in Srinagar, Kashmir, <strong>Al Hayy Kashmir</strong> was envisioned as a sanctuary for traditional textile arts threatened by industrial mass manufacture. We work directly with generational master weavers, needlework artisans, and loom custodians whose craft dates back to the 15th-century Mughal atelier era.
+              <strong>Al Hayy International</strong> was envisioned as a sanctuary for traditional textile arts and high-end couture. We work directly with generational master weavers, needlework artisans, and loom custodians to bring bespoke, handcrafted fashion to modern discerning wardrobes worldwide.
             </p>
             <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-light">
               Every kurti, flowing kaftan, and tailored co-ord is conceptualized to harmonize heritage grandeur with breezy, contemporary European silhouette wearability.

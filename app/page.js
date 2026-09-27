@@ -242,7 +242,7 @@ export default function HomePage() {
               </h2>
 
               <p className="text-xs sm:text-sm text-stone-300 leading-relaxed font-light">
-                Founded on the banks of Dal Lake in Srinagar, <strong>Al Hayy Kashmir</strong> is dedicated to preserving centuries of Kashmiri textile artistry. Every cotton kurti, silk jacket, and Pashmina stole is shaped entirely by hand, honoring generational needlework traditions while offering effortless European silhouettes.
+                <strong>Al Hayy International</strong> is dedicated to celebrating the pinnacle of handcrafted textile artistry. Every cotton kurti, silk jacket, and couture ensemble is shaped with meticulous artisanal devotion, blending rich heritage needlework with effortless contemporary silhouettes.
               </p>
 
               <div className="grid grid-cols-2 gap-4 pt-2">
@@ -287,7 +287,7 @@ export default function HomePage() {
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-3">
                 <a
-                  href="https://wa.me/919876543210?text=Hello%20Al%20Hayy%20Kashmir,%20I%20would%20like%20a%20bespoke%20bridal%20consultation."
+                  href="https://wa.me/919876543210?text=Hello%20Al%20Hayy%20International,%20I%20would%20like%20a%20bespoke%20bridal%20consultation."
                   target="_blank"
                   rel="noreferrer"
                   className="px-7 py-3.5 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95"

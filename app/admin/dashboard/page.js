@@ -885,7 +885,7 @@ export default function AdminDashboardPage() {
                       <label className="block font-bold text-stone-700 mb-1">Payee Business Name (Shown on App)</label>
                       <input
                         type="text"
-                        placeholder="Al Hayy Kashmir"
+                        placeholder="Al Hayy International"
                         value={paymentConfig.upi?.merchantName || ''}
                         onChange={(e) => handlePaymentFieldChange('upi', 'merchantName', e.target.value)}
                         className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900"

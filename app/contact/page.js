@@ -30,7 +30,7 @@ export default function ContactPage() {
           Bespoke Concierge & Support
         </span>
         <h1 className="font-serif-luxury text-3xl sm:text-4xl font-bold text-[#022C22]">
-          Connect With Al Hayy Kashmir
+          Connect With Al Hayy International
         </h1>
         <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto">
           For custom bridal orders, size customization, or wholesale inquiries, our Srinagar atelier team is here to assist.
@@ -81,7 +81,7 @@ export default function ContactPage() {
 
             <div className="pt-2">
               <a
-                href="https://wa.me/919876543210?text=Hello%20Al%20Hayy%20Kashmir%20Atelier,%20I%20have%20an%20inquiry."
+                href="https://wa.me/919876543210?text=Hello%20Al%20Hayy%20International%20Atelier,%20I%20have%20an%20inquiry."
                 target="_blank"
                 rel="noreferrer"
                 className="w-full py-3 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-colors"

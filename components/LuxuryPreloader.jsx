@@ -64,15 +64,15 @@ export default function LuxuryPreloader() {
         <div className="space-y-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-300 text-[10px] font-bold uppercase tracking-[0.25em]">
             <Sparkles className="w-3 h-3 text-amber-300 animate-spin" style={{ animationDuration: '4s' }} />
-            <span>Kashmir Valley Couture</span>
+            <span>Haute Couture Atelier</span>
           </div>
 
           <h1 className="font-serif-luxury text-2xl sm:text-3xl font-bold tracking-[0.18em] uppercase bg-gradient-to-r from-amber-100 via-white to-amber-200 bg-clip-text text-transparent">
-            Al Hayy Kashmir
+            Al Hayy International
           </h1>
 
           <p className="text-[11px] text-stone-300/80 font-light tracking-widest uppercase">
-            72-Hour Artisan Devotion &bull; Handcrafted Heritage
+            Artisanal Devotion &bull; Luxury Handcrafted Elegance
           </p>
         </div>
 

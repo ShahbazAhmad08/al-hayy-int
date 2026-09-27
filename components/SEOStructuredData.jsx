@@ -7,14 +7,13 @@ export default function SEOStructuredData({ type = 'Organization', data = {} }) 
     schema = {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: 'Al Hayy Kashmir',
+      name: 'Al Hayy International',
       url: 'https://www.alhayyinternational.com',
-      logo: 'https://www.alhayyinternational.com/logo.png',
-      description: 'Authentic Kashmiri Heritage & Luxury Handcrafted Apparel, Kurtis, Kaftans, and Pashmina.',
+      logo: 'https://www.alhayyinternational.com/logo.avif',
+      description: 'Luxury Handcrafted Designer Apparel, Embroidered Kurtis, Kaftans, and Silk Ensembles by Al Hayy International.',
       sameAs: [
-        'https://www.facebook.com/alhayykashmir',
-        'https://www.instagram.com/alhayykashmir',
-        'https://www.tiktok.com/@alhayykashmir',
+        'https://www.facebook.com/alhayyinternational',
+        'https://www.instagram.com/alhayyinternational',
       ],
       contactPoint: {
         '@type': 'ContactPoint',
@@ -33,7 +32,7 @@ export default function SEOStructuredData({ type = 'Organization', data = {} }) 
       description: data.description,
       brand: {
         '@type': 'Brand',
-        name: 'Al Hayy Kashmir'
+        name: 'Al Hayy International'
       },
       offers: {
         '@type': 'Offer',
@@ -44,7 +43,7 @@ export default function SEOStructuredData({ type = 'Organization', data = {} }) 
         availability: 'https://schema.org/InStock',
         seller: {
           '@type': 'Organization',
-          name: 'Al Hayy Kashmir'
+          name: 'Al Hayy International'
         }
       },
       aggregateRating: {

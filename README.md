@@ -1,6 +1,6 @@
 # al-hayy-int
 
-**Al Hayy Kashmir** (`alhayyinternational.com`) — High-converting, bespoke European & American luxury minimalist E-Commerce atelier platform. Built with Next.js 16 App Router, Tailwind CSS, Lucide Icons, Canvas Confetti, and integrated with live PHP/MySQL backend APIs.
+**Al Hayy International** (`alhayyinternational.com`) — High-converting, bespoke European & American luxury minimalist E-Commerce atelier platform. Built with Next.js 16 App Router, Tailwind CSS, Lucide Icons, Canvas Confetti, and integrated with live PHP/MySQL backend APIs.
 
 ---
 

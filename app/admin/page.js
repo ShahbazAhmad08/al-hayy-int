@@ -64,7 +64,7 @@ export default function AdminAuthPage() {
           {/* Logo & Header */}
           <div className="text-center space-y-3">
             <div className="relative h-10 w-40 mx-auto">
-              <Image src="/logo.avif" alt="Al Hayy Kashmir" fill className="object-contain" priority />
+              <Image src="/logo.avif" alt="Al Hayy International" fill className="object-contain" priority />
             </div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-900 text-amber-300 text-[10px] font-bold uppercase tracking-widest">
               <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
