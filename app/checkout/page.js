@@ -159,15 +159,37 @@ export default function CheckoutPage() {
 
   const handlePaymentSuccess = (confirmedOrderId, gatewayName) => {
     setShowPaymentModal(false);
-    setOrderSuccess({
+    const successObj = {
       orderId: confirmedOrderId,
-      method: `${gatewayName.toUpperCase()} Online Payment (Paid)`,
+      method: `${gatewayName.toUpperCase()} (Paid)`,
       customer_name: formData.customer_name,
       phone: formData.phone,
       address: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.pincode}`,
       total: grandTotal,
-      items: [...cart]
-    });
+      items: [...cart],
+      date: new Date().toISOString()
+    };
+
+    try {
+      const stored = localStorage.getItem('alhayy_customer_orders');
+      const orderList = stored ? JSON.parse(stored) : [];
+      orderList.unshift({
+        id: String(confirmedOrderId),
+        customer_name: formData.customer_name,
+        phone: formData.phone,
+        address: successObj.address,
+        total_amount: grandTotal,
+        payment_status: 'paid',
+        order_status: 'processing',
+        created_at: new Date().toISOString(),
+        items: [...cart]
+      });
+      localStorage.setItem('alhayy_customer_orders', JSON.stringify(orderList));
+      localStorage.setItem('alhayy_last_order_phone', formData.phone);
+      localStorage.setItem('alhayy_last_order_id', String(confirmedOrderId));
+    } catch (e) {}
+
+    setOrderSuccess(successObj);
     clearCart();
     triggerConfetti();
   };
@@ -586,6 +608,7 @@ export default function CheckoutPage() {
         <PaymentModal
           orderId={pendingOrderId}
           totalAmount={grandTotal}
+          customerDetails={formData}
           gateway={selectedGateway}
           onSuccess={handlePaymentSuccess}
           onClose={() => setShowPaymentModal(false)}

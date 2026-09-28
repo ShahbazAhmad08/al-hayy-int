@@ -88,14 +88,14 @@ export default function AdminAuthPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-stone-700 mb-1.5">
-                Admin Username
+                Admin Email / Username
               </label>
               <div className="relative">
                 <User className="w-4 h-4 text-stone-400 absolute left-3.5 top-3" />
                 <input
                   type="text"
                   required
-                  placeholder="admin"
+                  placeholder="Admin@alhayyinternational.com"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950 transition-all bg-stone-50/50 focus:bg-white"
