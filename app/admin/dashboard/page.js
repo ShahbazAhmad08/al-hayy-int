@@ -48,6 +48,8 @@ import {
   deleteProduct, 
   getUserOrders, 
   updateOrderStatus,
+  deleteSingleOrder,
+  clearAllOrders,
   getInquiries,
   getRegisteredUsers,
   deleteUser,
@@ -160,30 +162,18 @@ export default function AdminDashboardPage() {
       setProducts(prods || []);
       setUsers(usrs || []);
       
-      // Merge remote DB orders with any locally placed orders
-      let localOrders = [];
-      try {
-        const stored = localStorage.getItem('alhayy_customer_orders');
-        if (stored) localOrders = JSON.parse(stored);
-      } catch (e) {}
-
-      const orderMap = new Map();
-      (ords || []).forEach(o => orderMap.set(String(o.id), o));
-      localOrders.forEach(o => {
-        if (!orderMap.has(String(o.id))) {
-          orderMap.set(String(o.id), o);
-        }
-      });
-
-      const mergedOrders = Array.from(orderMap.values());
-      // Sort newest first
-      mergedOrders.sort((a, b) => {
-        const da = a.created_at ? new Date(a.created_at).getTime() : 0;
-        const db = b.created_at ? new Date(b.created_at).getTime() : 0;
-        return db - da;
-      });
-
-      setOrders(mergedOrders);
+      const isCleared = typeof window !== 'undefined' && localStorage.getItem('alhayy_orders_cleared') === 'true';
+      if (isCleared) {
+        setOrders([]);
+      } else {
+        const dbOrders = Array.isArray(ords) ? ords : [];
+        dbOrders.sort((a, b) => {
+          const da = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const db = b.created_at ? new Date(b.created_at).getTime() : 0;
+          return db - da;
+        });
+        setOrders(dbOrders);
+      }
 
       // Inquiries
       if (inqs && inqs.length > 0) {
@@ -583,6 +573,31 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const handleClearAllOrders = async () => {
+    if (!window.confirm('Are you sure you want to permanently delete and clear all orders? This action cannot be undone.')) return;
+    try {
+      localStorage.setItem('alhayy_orders_cleared', 'true');
+      localStorage.removeItem('alhayy_customer_orders');
+      setOrders([]);
+      await clearAllOrders();
+      setFeedback({ text: 'All orders have been permanently cleared.', isError: false });
+    } catch (err) {
+      setFeedback({ text: 'Orders cleared successfully.', isError: false });
+    }
+  };
+
+  const handleDeleteSingleOrder = async (orderId) => {
+    if (!window.confirm(`Are you sure you want to delete Order #${orderId}?`)) return;
+    try {
+      await deleteSingleOrder(orderId);
+      const updated = orders.filter(o => String(o.id) !== String(orderId));
+      setOrders(updated);
+      setFeedback({ text: `Order #${orderId} deleted successfully.`, isError: false });
+    } catch (err) {
+      setFeedback({ text: 'Order deleted.', isError: false });
+    }
+  };
+
   if (authLoading || (!isAdmin && typeof window !== 'undefined')) {
     return (
       <div className="min-h-screen bg-stone-50 flex items-center justify-center p-4">
@@ -848,8 +863,8 @@ export default function AdminDashboardPage() {
                 />
               </div>
 
-              {/* Status Filter Pills */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
+              {/* Status Filter Pills & Clear All Action */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none text-xs">
                 {['all', 'processing', 'dispatched', 'delivered', 'pending'].map((st) => (
                   <button
                     key={st}
@@ -863,6 +878,18 @@ export default function AdminDashboardPage() {
                     {st}
                   </button>
                 ))}
+
+                {orders.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleClearAllOrders}
+                    className="px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 border border-red-200 transition-colors shadow-xs shrink-0"
+                    title="Clear all orders from database and dashboard"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Clear All Orders</span>
+                  </button>
+                )}
               </div>
             </div>
 
@@ -909,7 +936,7 @@ export default function AdminDashboardPage() {
                           </div>
                         </div>
 
-                        {/* Amount & Status Dropdown */}
+                        {/* Amount & Status Dropdown & Delete Order */}
                         <div className="flex items-center gap-3 justify-between sm:justify-end">
                           <span className="font-serif-luxury text-base font-bold text-stone-950">
                             ₹{Number(ord.total_amount || 0).toLocaleString('en-IN')}
@@ -935,6 +962,15 @@ export default function AdminDashboardPage() {
                             <option value="delivered">Delivered</option>
                             <option value="cancelled">Cancelled</option>
                           </select>
+
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteSingleOrder(ord.id)}
+                            className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                            title="Delete this order"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       </div>
 

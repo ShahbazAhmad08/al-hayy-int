@@ -314,13 +314,13 @@ export default function HomePage() {
         </ScrollReveal>
       </section>
 
-      {/* 5. Authentic Lookbook Gallery (All 41 Master Valley Archive Photographs) */}
+      {/* 5. Authentic Lookbook Gallery (Dynamic Master Visuals) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal animation="fade-up" className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/40 text-[10px] font-bold uppercase tracking-widest mb-2">
               <Images className="w-3 h-3 text-[#D4AF37]" />
-              <span>Full Atelier Archive &bull; 41 Curated Photographs</span>
+              <span>Atelier Visual Lookbook</span>
             </div>
             <h2 className="font-serif-luxury text-2xl sm:text-3.5xl font-bold text-[#070E1E] tracking-tight">
               Curated Lookbook &amp; Textures
@@ -331,22 +331,25 @@ export default function HomePage() {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xs font-mono font-bold text-[#AA7E18] bg-[#D4AF37]/10 px-3 py-1.5 rounded-xl border border-[#D4AF37]/20">
-              {galleryFilter === 'All' ? '41 Photographs' : `${GALLERY_LOOKBOOK.filter(i => i.category === galleryFilter).length} Photos`}
-            </span>
+            <Link
+              href="/lookbook"
+              className="text-xs font-bold uppercase tracking-wider text-[#070E1E] hover:text-[#AA7E18] flex items-center gap-1.5 px-4 py-2 rounded-full border border-[#D4AF37]/40 bg-white shadow-xs hover:bg-[#FAF7F2] transition-all"
+            >
+              <span>Explore Lookbook</span>
+              <ArrowRight className="w-3.5 h-3.5 text-[#D4AF37]" />
+            </Link>
           </div>
         </ScrollReveal>
 
         {/* Lookbook Category Filter Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-4 scrollbar-none mb-6">
           {[
-            { label: 'All Archive (41)', value: 'All' },
-            { label: 'Royal Packaging', value: 'Packaging' },
-            { label: 'Kurtis & Suits', value: 'Kurtis' },
-            { label: 'Flowing Kaftans', value: 'Kaftans' },
-            { label: 'Co-Ord Sets', value: 'Co-Ords' },
-            { label: 'Silk Jackets', value: 'Jackets' },
-            { label: 'Pashmina & Loom', value: 'Pashmina' }
+            { label: 'All Silhouettes', value: 'All' },
+            { label: 'Kurtis & Suits', value: 'Tops & Kurtis' },
+            { label: 'Flowing Kaftans', value: 'Kaftaans' },
+            { label: 'Co-Ord Sets', value: 'co-ord sets' },
+            { label: 'Silk Jackets', value: 'Silk jackets' },
+            { label: 'Pashmina & Shawls', value: 'Pashmina & Shawls' }
           ].map((tab) => {
             const isSelected = galleryFilter === tab.value;
             return (
