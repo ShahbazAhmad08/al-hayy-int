@@ -10,7 +10,21 @@ export const metadata = {
     title: 'Our Story & Artisan Heritage | Al Hayy International',
     description: 'Learn about Al Hayy International, our master artisan families, and the bespoke hand-embroidery process.',
     url: 'https://www.alhayyinternational.com/our-story',
-  }
+    images: [
+      {
+        url: 'https://www.alhayyinternational.com/images/gallery-37.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Al Hayy International Srinagar Loom Atelier Custodians',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Our Story & Artisan Heritage | Al Hayy International',
+    description: 'Generational craftsmanship, 15th-century Mughal Aari needlework, and fair-trade artisans.',
+    images: ['https://www.alhayyinternational.com/images/gallery-37.jpg'],
+  },
 };
 
 export default function OurStoryPage() {

@@ -40,10 +40,10 @@ export const metadata = {
     siteName: 'Al Hayy International',
     images: [
       {
-        url: 'https://www.alhayyinternational.com/images/hero-packaging.jpg',
+        url: 'https://www.alhayyinternational.com/images/gallery-4.jpg',
         width: 1200,
         height: 630,
-        alt: 'Al Hayy International Luxury Handcrafted Kurtis, Kaftans & Royal Unboxing Packaging',
+        alt: 'Al Hayy International Luxury Handcrafted Kurtis and Aari Needlework Couture',
       },
     ],
     locale: 'en_IN',
@@ -53,7 +53,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Al Hayy International | Luxury Handcrafted Fashion Atelier',
     description: 'Handcrafted cotton kurtis, kaftans, and fine silk jackets from Al Hayy International.',
-    images: ['https://www.alhayyinternational.com/images/hero-packaging.jpg'],
+    images: ['https://www.alhayyinternational.com/images/gallery-4.jpg'],
   },
   icons: {
     icon: [
