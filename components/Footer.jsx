@@ -136,13 +136,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-[#D4AF37] transition-colors">
-                  Contact &amp; Concierge (+91 96224 80276)
+                <Link href="/market-areas" className="hover:text-[#D4AF37] transition-colors text-[#F7E7B6] font-medium">
+                  Market Areas &amp; Global Supply
                 </Link>
               </li>
               <li>
-                <Link href="/admin" className="hover:text-[#D4AF37] transition-colors">
-                  Admin Portal
+                <Link href="/contact" className="hover:text-[#D4AF37] transition-colors">
+                  Contact &amp; Concierge (+91 96224 80276)
                 </Link>
               </li>
             </ul>
@@ -178,118 +178,6 @@ export default function Footer() {
                 </div>
               </form>
             )}
-          </div>
-        </div>
-
-        {/* SEO Topical Keywords & Internal Category Directory */}
-        <div className="pt-8 border-t border-[#D4AF37]/15 space-y-3 text-[11px] text-stone-400">
-          <h5 className="font-semibold text-[#F7E7B6] uppercase tracking-wider text-[10px]">
-            Popular Atelier Searches &amp; Handcrafted Categories:
-          </h5>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 leading-relaxed text-stone-400">
-            <Link href="/shop?category=Tops & Kurtis" className="hover:text-[#D4AF37] transition-colors">
-              Pure Cotton Embroidered Kurtis
-            </Link>
-            <span>•</span>
-            <Link href="/shop?category=Kaftaans" className="hover:text-[#D4AF37] transition-colors">
-              Luxury Handcrafted Kaftans
-            </Link>
-            <span>•</span>
-            <Link href="/shop?category=co-ord sets" className="hover:text-[#D4AF37] transition-colors">
-              Designer Ethnic Co-ord Sets
-            </Link>
-            <span>•</span>
-            <Link href="/shop?category=Silk jackets" className="hover:text-[#D4AF37] transition-colors">
-              Modal Silk Embroidered Jackets
-            </Link>
-            <span>•</span>
-            <Link href="/shop?category=Pashmina & Shawls" className="hover:text-[#D4AF37] transition-colors">
-              Changthangi Pashmina Shawls
-            </Link>
-            <span>•</span>
-            <Link href="/our-story" className="hover:text-[#D4AF37] transition-colors">
-              Kashmiri Aari Needlework Artisans
-            </Link>
-            <span>•</span>
-            <Link href="/lookbook" className="hover:text-[#D4AF37] transition-colors">
-              Srinagar Atelier Visual Lookbook
-            </Link>
-            <span>•</span>
-            <Link href="/wholesale" className="hover:text-[#D4AF37] transition-colors text-[#F7E7B6] font-medium">
-              B2B Wholesale &amp; Manufacturing
-            </Link>
-            <span>•</span>
-            <Link href="/export" className="hover:text-[#D4AF37] transition-colors text-[#F7E7B6] font-medium">
-              Global Export Desk
-            </Link>
-            <span>•</span>
-            <Link href="/export/uae" className="hover:text-[#D4AF37] transition-colors">
-              UAE 🇦🇪
-            </Link>
-            <span>•</span>
-            <Link href="/export/usa" className="hover:text-[#D4AF37] transition-colors">
-              USA 🇺🇸
-            </Link>
-            <span>•</span>
-            <Link href="/export/uk" className="hover:text-[#D4AF37] transition-colors">
-              UK 🇬🇧
-            </Link>
-            <span>•</span>
-            <Link href="/export/canada" className="hover:text-[#D4AF37] transition-colors">
-              Canada 🇨🇦
-            </Link>
-            <span>•</span>
-            <Link href="/export/australia" className="hover:text-[#D4AF37] transition-colors">
-              Australia 🇦🇺
-            </Link>
-            <span>•</span>
-            <Link href="/export/saudi-arabia" className="hover:text-[#D4AF37] transition-colors">
-              Saudi Arabia 🇸🇦
-            </Link>
-            <span>•</span>
-            <Link href="/export/qatar" className="hover:text-[#D4AF37] transition-colors">
-              Qatar 🇶🇦
-            </Link>
-            <span>•</span>
-            <Link href="/export/singapore" className="hover:text-[#D4AF37] transition-colors">
-              Singapore 🇸🇬
-            </Link>
-            <span>•</span>
-            <Link href="/wholesale/srinagar" className="hover:text-[#D4AF37] transition-colors">
-              Srinagar
-            </Link>
-            <span>•</span>
-            <Link href="/wholesale/jammu" className="hover:text-[#D4AF37] transition-colors">
-              Jammu
-            </Link>
-            <span>•</span>
-            <Link href="/wholesale/delhi" className="hover:text-[#D4AF37] transition-colors">
-              Delhi NCR
-            </Link>
-            <span>•</span>
-            <Link href="/wholesale/mumbai" className="hover:text-[#D4AF37] transition-colors">
-              Mumbai
-            </Link>
-            <span>•</span>
-            <Link href="/wholesale/jaipur" className="hover:text-[#D4AF37] transition-colors">
-              Jaipur
-            </Link>
-            <span>•</span>
-            <Link href="/wholesale/surat" className="hover:text-[#D4AF37] transition-colors">
-              Surat
-            </Link>
-            <span>•</span>
-            <Link href="/wholesale/bengaluru" className="hover:text-[#D4AF37] transition-colors">
-              Bengaluru
-            </Link>
-            <span>•</span>
-            <Link href="/wholesale/hyderabad" className="hover:text-[#D4AF37] transition-colors">
-              Hyderabad
-            </Link>
-            <span>•</span>
-            <Link href="/contact" className="hover:text-[#D4AF37] transition-colors">
-              Bespoke Bridal &amp; Festive Trousseau
-            </Link>
           </div>
         </div>
 

@@ -10,11 +10,33 @@ import {
   User, 
   Menu, 
   X, 
-  Package
+  Package,
+  Phone,
+  Sparkles
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { getProducts } from '@/lib/api';
+
+function InstagramIcon({ className = "w-3.5 h-3.5" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+  );
+}
+
+function LinkedinIcon({ className = "w-3.5 h-3.5" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect width="4" height="12" x="2" y="9" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  );
+}
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -85,6 +107,53 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 w-full transition-all duration-300">
+      {/* Top Luxury Announcement & Social Hotline Bar */}
+      <div className="bg-[#050A15] border-b border-[#D4AF37]/20 text-[11px] text-stone-300 py-1.5 px-4 hidden sm:block">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-[#F7E7B6] font-medium flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+              Authentic Kashmiri Master Artisans
+            </span>
+            <span className="text-stone-700">•</span>
+            <span className="text-stone-400">Insured Worldwide Dispatch</span>
+          </div>
+          <div className="flex items-center gap-4 text-xs">
+            <a
+              href="https://www.instagram.com/Alhayyofficial/"
+              target="_blank"
+              rel="noreferrer"
+              className="text-stone-400 hover:text-[#D4AF37] transition-colors flex items-center gap-1.5"
+              aria-label="Instagram @Alhayyofficial"
+            >
+              <InstagramIcon className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="hidden md:inline">@Alhayyofficial</span>
+            </a>
+            <span className="text-stone-700">•</span>
+            <a
+              href="https://www.linkedin.com/company/alhayykashmir/"
+              target="_blank"
+              rel="noreferrer"
+              className="text-stone-400 hover:text-[#D4AF37] transition-colors flex items-center gap-1.5"
+              aria-label="LinkedIn"
+            >
+              <LinkedinIcon className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="hidden md:inline">LinkedIn</span>
+            </a>
+            <span className="text-stone-700">•</span>
+            <a
+              href="https://wa.me/919622480276"
+              target="_blank"
+              rel="noreferrer"
+              className="text-[#F7E7B6] hover:text-[#D4AF37] font-mono font-semibold transition-colors flex items-center gap-1"
+            >
+              <Phone className="w-3 h-3 text-[#D4AF37]" />
+              <span>+91 96224 80276</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
       {/* Sleek Royal Luxury Navigation */}
       <nav
         className={`w-full transition-all duration-300 ${
@@ -293,8 +362,31 @@ export default function Navbar() {
                 rel="noreferrer"
                 className="w-full py-3 rounded-xl bg-[#0B162C] text-[#F7E7B6] border border-[#D4AF37]/40 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:bg-[#102142]"
               >
-                <span>WhatsApp Concierge: +91 96224 80276</span>
+                <Phone className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>WhatsApp: +91 96224 80276</span>
               </a>
+
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <a
+                  href="https://www.instagram.com/Alhayyofficial/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="py-2.5 px-3 rounded-xl bg-white/5 border border-white/10 hover:border-[#D4AF37]/50 text-stone-300 hover:text-[#D4AF37] flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  <InstagramIcon className="w-3.5 h-3.5" />
+                  <span>Instagram</span>
+                </a>
+                <a
+                  href="https://www.linkedin.com/company/alhayykashmir/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="py-2.5 px-3 rounded-xl bg-white/5 border border-white/10 hover:border-[#D4AF37]/50 text-stone-300 hover:text-[#D4AF37] flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  <LinkedinIcon className="w-3.5 h-3.5" />
+                  <span>LinkedIn</span>
+                </a>
+              </div>
+
               <Link
                 href="/login"
                 onClick={() => setMobileMenuOpen(false)}

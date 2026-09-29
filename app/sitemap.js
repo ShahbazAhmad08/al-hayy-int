@@ -16,12 +16,13 @@ export default async function sitemap() {
     '/orders',
     '/login',
     '/wholesale',
-    '/export'
+    '/export',
+    '/market-areas'
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date().toISOString(),
-    changeFrequency: route === '' || route === '/wholesale' || route === '/export' ? 'daily' : 'weekly',
-    priority: route === '' ? 1.0 : (route === '/shop' || route === '/wholesale' || route === '/export' || route === '/lookbook' ? 0.9 : 0.8),
+    changeFrequency: route === '' || route === '/wholesale' || route === '/export' || route === '/market-areas' ? 'daily' : 'weekly',
+    priority: route === '' ? 1.0 : (route === '/shop' || route === '/wholesale' || route === '/export' || route === '/market-areas' || route === '/lookbook' ? 0.9 : 0.8),
   }));
 
   // Dynamic wholesale city routes (India)
