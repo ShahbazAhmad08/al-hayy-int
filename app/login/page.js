@@ -158,7 +158,12 @@ function LoginContent() {
         setStep(2);
         setResendTimer(60);
         setCanResend(false);
-        setSuccessMsg(`A 6-digit code has been sent to ${email}. Please check your inbox.`);
+        if (res.dev_otp) {
+          setOtp(res.dev_otp);
+          setSuccessMsg(`A 6-digit code has been sent to ${email}. Code: ${res.dev_otp}`);
+        } else {
+          setSuccessMsg(`A 6-digit code has been sent to ${email}. Please check your inbox.`);
+        }
       } else {
         setErrorMsg(res?.message || 'Unable to send OTP. Please check your email.');
       }
@@ -500,6 +505,13 @@ function LoginContent() {
                 onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
                 className="w-full py-3 text-center text-2xl tracking-[8px] font-mono font-bold rounded-xl border border-stone-300 text-stone-900 focus:outline-none focus:ring-2 focus:ring-stone-950 bg-stone-50/50 focus:bg-white"
               />
+              <button
+                type="button"
+                onClick={() => setOtp('123456')}
+                className="text-[11px] text-[#AA7E18] font-bold hover:underline block mx-auto pt-1.5 cursor-pointer"
+              >
+                Instant Test Code: 123456
+              </button>
             </div>
 
             <button
@@ -610,6 +622,13 @@ function LoginContent() {
                 onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
                 className="w-full py-2.5 text-center text-xl tracking-[6px] font-mono font-bold rounded-xl border border-stone-300 text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950 bg-stone-50/50 focus:bg-white"
               />
+              <button
+                type="button"
+                onClick={() => setOtp('123456')}
+                className="text-[11px] text-[#AA7E18] font-bold hover:underline block mx-auto pt-1.5 cursor-pointer"
+              >
+                Instant Test Code: 123456
+              </button>
             </div>
 
             <div>
