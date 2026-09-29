@@ -17,7 +17,7 @@ export default function SEOStructuredData({ type = 'Organization', data = {} }) 
       ],
       contactPoint: {
         '@type': 'ContactPoint',
-        telephone: '+91-9876543210',
+        telephone: '+91-962248076',
         contactType: 'customer service',
         areaServed: 'IN',
         availableLanguage: ['English', 'Hindi', 'Urdu']

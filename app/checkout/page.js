@@ -202,19 +202,19 @@ export default function CheckoutPage() {
   if (orderSuccess) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center space-y-8 animate-in zoom-in-95 duration-300">
-        <div className="w-16 h-16 rounded-full bg-stone-100 text-stone-900 flex items-center justify-center mx-auto border border-stone-300">
-          <CheckCircle2 className="w-8 h-8 text-emerald-700" />
+        <div className="w-16 h-16 rounded-full bg-[#070E1E] text-[#F7E7B6] flex items-center justify-center mx-auto border border-[#D4AF37]/50 shadow-xl">
+          <CheckCircle2 className="w-8 h-8 text-[#D4AF37]" />
         </div>
 
         <div className="space-y-1">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-[#AA7E18]">
             Order Confirmation
           </span>
-          <h1 className="font-serif-luxury text-3xl font-bold text-stone-900">
+          <h1 className="font-serif-luxury text-3xl font-bold text-[#070E1E]">
             Thank you for your order
           </h1>
           <p className="text-xs text-stone-500">
-            Order Reference: <strong className="text-stone-900 font-mono text-sm px-2 py-0.5 bg-stone-100 rounded">{orderSuccess.orderId}</strong>
+            Order Reference: <strong className="text-[#070E1E] font-mono text-sm px-2 py-0.5 bg-stone-100 rounded border border-[#E5D9C8]">{orderSuccess.orderId}</strong>
           </p>
         </div>
 
@@ -228,7 +228,7 @@ export default function CheckoutPage() {
             </div>
             <div className="text-right">
               <span className="text-stone-400 block text-[10px] uppercase">Payment Status</span>
-              <span className="px-2.5 py-0.5 bg-emerald-50 text-emerald-800 font-bold rounded-md text-[11px]">
+              <span className="px-2.5 py-0.5 bg-[#D4AF37]/15 text-[#AA7E18] font-bold rounded-md text-[11px] border border-[#D4AF37]/30">
                 {orderSuccess.method}
               </span>
             </div>
@@ -340,10 +340,10 @@ export default function CheckoutPage() {
                   type="tel"
                   name="phone"
                   required
-                  placeholder="9876543210"
+                  placeholder="962248076"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950"
+                  className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
                 />
               </div>
             </div>
@@ -585,14 +585,14 @@ export default function CheckoutPage() {
                 <span>₹{subtotal.toLocaleString('en-IN')}</span>
               </div>
               {discountAmount > 0 && (
-                <div className="flex justify-between text-emerald-800 font-semibold">
+                <div className="flex justify-between text-[#AA7E18] font-semibold">
                   <span>Savings</span>
                   <span>-₹{discountAmount.toLocaleString('en-IN')}</span>
                 </div>
               )}
               <div className="flex justify-between text-stone-600">
                 <span>Shipping</span>
-                <span>{isFreeShipping ? <span className="text-emerald-800 font-bold">FREE</span> : `₹${shippingFee}`}</span>
+                <span>{isFreeShipping ? <span className="text-[#AA7E18] font-bold">FREE</span> : `₹${shippingFee}`}</span>
               </div>
               <div className="flex justify-between text-sm font-bold text-stone-900 pt-3 border-t border-stone-200">
                 <span className="font-serif-luxury">Grand Total</span>

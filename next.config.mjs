@@ -33,6 +33,14 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/backend-api/:path*',
+        destination: 'http://alhayyinternational-com.stackstaging.com/v2/api/:path*',
+      },
+    ];
+  },
 };
 
 export default nextConfig;

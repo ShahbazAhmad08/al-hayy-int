@@ -96,7 +96,7 @@ export default function CartDrawer() {
             <div className="flex items-center gap-1.5 text-stone-700">
               <Truck className="w-3.5 h-3.5 text-stone-800" />
               {isFreeShipping ? (
-                <span className="text-emerald-800 font-bold flex items-center gap-1">
+                <span className="text-[#AA7E18] font-bold flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" /> Free Express Delivery Unlocked!
                 </span>
               ) : (
@@ -252,7 +252,7 @@ export default function CartDrawer() {
               </div>
 
               {discountAmount > 0 && (
-                <div className="flex justify-between text-emerald-800 font-medium">
+                <div className="flex justify-between text-[#AA7E18] font-medium">
                   <span>Savings</span>
                   <span>-₹{discountAmount.toLocaleString('en-IN')}</span>
                 </div>
@@ -262,7 +262,7 @@ export default function CartDrawer() {
                 <span>Shipping</span>
                 <span>
                   {isFreeShipping ? (
-                    <span className="text-emerald-800 font-bold">FREE</span>
+                    <span className="text-[#AA7E18] font-bold">FREE</span>
                   ) : (
                     `₹${shippingFee}`
                   )}

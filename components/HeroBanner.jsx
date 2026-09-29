@@ -6,43 +6,56 @@ import { ArrowRight, ChevronRight, ChevronLeft, Sparkles, ShieldCheck, Truck, Re
 
 const HERO_SLIDES = [
   {
-    tag: 'Haute Couture • Summer 2026',
+    tag: 'Signature Unboxing • Royal Kashmir Haute Couture',
+    title: 'Unbox Royal',
+    titleItalic: 'Kashmiri Opulence',
+    subtitle: 'Each Al Hayy master creation arrives nested inside our bespoke Midnight Navy rigid box, hand-tied with pure silk ribbons, gold-embossed Arabic seals, and certificates of valley authenticity.',
+    ctaPrimary: 'Shop Signature Collection',
+    ctaPrimaryLink: '/shop',
+    ctaSecondary: 'The Packaging Story',
+    ctaSecondaryLink: '/our-story',
+    image: '/images/hero-packaging.jpg',
+    objectPosition: 'object-[center_center]',
+    artisanNote: 'Bespoke Rigid Navy Box • Gold-Foil Embossed • Pure Silk Ribbon'
+  },
+  {
+    tag: 'Atelier Needlework • Spring-Summer 2026',
     title: 'The Contemporary',
-    titleItalic: 'Kurti Atelier',
-    subtitle: 'Hand-tailored from pure combed cotton with authentic Kashmiri needlecraft. Minimalist luxury crafted for modern silhouettes.',
-    ctaPrimary: 'Explore Kurtis & Tops',
+    titleItalic: 'Kurti & Suit Atelier',
+    subtitle: 'Hand-tailored from pure combed cotton and raw silks with authentic Kashmiri needlecraft. Minimalist luxury crafted for modern silhouettes.',
+    ctaPrimary: 'Explore Kurtis & Sets',
     ctaPrimaryLink: '/shop?category=Tops+%26+Kurtis',
     ctaSecondary: 'View All Catalog',
     ctaSecondaryLink: '/shop',
-    image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=85&w=2000&auto=format&fit=crop',
+    image: '/images/gallery-4.jpg',
     objectPosition: 'object-[center_top]',
-    artisanNote: '72h Hand Needlework • 100% Combed Cotton'
+    artisanNote: '72h Hand Needlework • 100% Combed Cotton & Resham'
   },
   {
     tag: 'Resort & Evening Silhouettes',
     title: 'Flowing Kaftans &',
     titleItalic: 'Tailored Co-Ords',
-    subtitle: 'Breezy silhouettes infused with saffron and botanical dyes. Effortlessly chic ensembles designed for festive poise.',
+    subtitle: 'Breezy silhouettes infused with saffron and botanical dyes. Effortlessly chic ensembles designed for festive celebrations and serene poise.',
     ctaPrimary: 'Discover Kaftans',
     ctaPrimaryLink: '/shop?category=Kaftaans',
     ctaSecondary: 'Shop Co-Ord Sets',
-    ctaSecondaryLink: '/shop?category=Co-ord+sets',
-    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=85&w=2000&auto=format&fit=crop',
-    objectPosition: 'object-[center_20%]',
+    ctaSecondaryLink: '/shop?category=co-ord+sets',
+    image: '/images/gallery-19.jpg',
+    objectPosition: 'object-[center_25%]',
     artisanNote: 'Pure Saffron Dye • Generational Handcraft'
   },
   {
     tag: 'Signature Heirloom',
     title: 'Mulberry Silk &',
     titleItalic: 'Changthangi Pashmina',
-    subtitle: 'Century-old wooden loom weaving meets modern couture. Featherlight warmth and royal statement outerwear.',
+    subtitle: 'Century-old wooden loom weaving meets modern couture. Featherlight warmth, passes the ring test, and royal statement outerwear.',
     ctaPrimary: 'Explore Silk & Shawls',
-    ctaPrimaryLink: '/shop?category=Silk+jackets',
+    ctaPrimaryLink: '/shop?category=Pashmina+%26+Shawls',
     ctaSecondary: 'Read Our Story',
     ctaSecondaryLink: '/our-story',
-    image: 'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?q=85&w=2000&auto=format&fit=crop',
-    objectPosition: 'object-[center_15%]',
-    artisanNote: 'Passes Ring Test • 100% Changthangi Goat'
+    image: '/images/gallery-31.jpg',
+    objectPosition: 'object-[center_20%]',
+    artisanNote: 'Passes Ring Test • 100% Changthangi Cashmere'
   }
 ];
 
@@ -87,15 +100,15 @@ export default function HeroBanner() {
   const slide = HERO_SLIDES[currentSlide];
 
   return (
-    <div className="relative w-full bg-stone-950 text-white overflow-hidden">
-      {/* Full-Width Cinematic Hero Canvas */}
+    <div className="relative w-full bg-[#070E1E] text-white overflow-hidden border-b border-[#D4AF37]/25">
+      {/* Full-Width Hero Canvas with max-h 100vh on large screens */}
       <div 
-        className="relative w-full h-[580px] sm:h-[660px] lg:h-[740px] flex items-center justify-center overflow-hidden"
+        className="relative w-full min-h-[580px] sm:min-h-[660px] lg:h-[calc(100vh-84px)] lg:max-h-[880px] flex items-center overflow-hidden"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Full-Width Background Slides with Ken Burns transition */}
+        {/* Ambient Blurred Background for depth on all viewports */}
         {HERO_SLIDES.map((s, idx) => (
           <div
             key={s.tag}
@@ -105,83 +118,111 @@ export default function HeroBanner() {
           >
             <img
               src={s.image}
-              alt={`${s.title} ${s.titleItalic}`}
-              className={`w-full h-full object-cover ${s.objectPosition} transition-transform duration-[9000ms] ease-out ${
-                idx === currentSlide ? 'scale-105' : 'scale-100'
-              }`}
-              loading={idx === 0 ? 'eager' : 'lazy'}
+              alt=""
+              className="w-full h-full object-cover blur-2xl scale-125 opacity-25"
+              aria-hidden="true"
             />
-            {/* Multi-layered cinematic gradient overlays for pristine readability */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/55 to-black/20 sm:to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-transparent to-black/30" />
+            {/* Mobile Background Image (Clean full cover on mobile) */}
+            <div className="lg:hidden absolute inset-0">
+              <img
+                src={s.image}
+                alt=""
+                className={`w-full h-full object-cover ${s.objectPosition}`}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#070E1E] via-[#070E1E]/80 to-[#070E1E]/40" />
+            </div>
+
+            {/* Desktop Ambient Vignette */}
+            <div className="hidden lg:block absolute inset-0 bg-gradient-to-r from-[#070E1E] via-[#070E1E]/95 to-[#0B162C]/90" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(212,175,55,0.08),transparent_60%)]" />
           </div>
         ))}
 
-        {/* Editorial Text Container over Full-Width Background */}
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 z-10 w-full">
-          <div className="max-w-2xl space-y-6">
-            {/* Tag Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-stone-200">
-              <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
-              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.25em]">
-                {slide.tag}
-              </span>
-            </div>
+        {/* Dual-Column Main Content Container */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 z-10 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            
+            {/* Left Column: Editorial Narrative & CTAs (7 cols) */}
+            <div className="lg:col-span-7 space-y-5 sm:space-y-6">
+              {/* Tag Badge */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0B162C]/90 backdrop-blur-md border border-[#D4AF37]/50 text-[#F7E7B6] shadow-lg">
+                <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.25em]">
+                  {slide.tag}
+                </span>
+              </div>
 
-            {/* Main Headline */}
-            <h1 className="font-serif-luxury text-3.5xl sm:text-5xl lg:text-6.5xl font-bold tracking-tight text-white leading-[1.1]">
-              {slide.title}{' '}
-              <span className="font-normal italic font-serif text-amber-200 block sm:inline">
-                {slide.titleItalic}
-              </span>
-            </h1>
+              {/* Main Headline */}
+              <h1 className="font-serif-luxury text-3xl sm:text-4.5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.12]">
+                {slide.title}{' '}
+                <span className="font-normal italic font-serif text-[#F7E7B6] block sm:inline">
+                  {slide.titleItalic}
+                </span>
+              </h1>
 
-            {/* Subtitle */}
-            <p className="text-xs sm:text-sm lg:text-base text-stone-200/90 leading-relaxed font-light max-w-xl">
-              {slide.subtitle}
-            </p>
+              {/* Subtitle */}
+              <p className="text-xs sm:text-sm lg:text-base text-[#FAF7F2]/90 leading-relaxed font-light max-w-xl">
+                {slide.subtitle}
+              </p>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
-              <Link
-                href={slide.ctaPrimaryLink}
-                className="px-8 py-4 rounded-full bg-white hover:bg-amber-100 text-stone-950 font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl transition-all transform active:scale-95 animate-gold-pulse"
-              >
-                <span>{slide.ctaPrimary}</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+                <Link
+                  href={slide.ctaPrimaryLink}
+                  className="px-8 py-4 rounded-full bg-[#D4AF37] hover:bg-[#F7E7B6] text-[#070E1E] font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl transition-all transform active:scale-95 animate-gold-pulse cursor-pointer"
+                >
+                  <span>{slide.ctaPrimary}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
 
-              <Link
-                href={slide.ctaSecondaryLink}
-                className="px-7 py-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/25 text-white font-semibold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95"
-              >
-                <span>{slide.ctaSecondary}</span>
-              </Link>
-            </div>
+                <Link
+                  href={slide.ctaSecondaryLink}
+                  className="px-7 py-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-[#D4AF37]/40 text-white font-semibold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
+                >
+                  <span>{slide.ctaSecondary}</span>
+                </Link>
+              </div>
 
-            {/* Floating Artisan Note Pill */}
-            <div className="pt-2">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-stone-950/60 backdrop-blur-md border border-white/10 text-[11px] text-stone-300">
-                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-                <span>{slide.artisanNote}</span>
+              {/* Floating Artisan Note Pill */}
+              <div className="pt-2">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#0B162C]/90 backdrop-blur-md border border-[#D4AF37]/30 text-[11px] text-[#F7E7B6]">
+                  <div className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse shrink-0" />
+                  <span>{slide.artisanNote}</span>
+                </div>
               </div>
             </div>
+
+            {/* Right Column: Uncropped High-Res 3:4 Luxury Portrait Showcase (Desktop Only, 5 cols) */}
+            <div className="hidden lg:flex lg:col-span-5 items-center justify-center relative">
+              <div className="relative w-full max-w-[400px] aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#D4AF37]/40 bg-[#0B162C] group">
+                <img
+                  src={slide.image}
+                  alt={`${slide.title} ${slide.titleItalic}`}
+                  className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#070E1E]/40 via-transparent to-transparent opacity-0 group-hover:opacity-20 transition-opacity" />
+              </div>
+
+              {/* Decorative Gold Glow around the showcase */}
+              <div className="absolute -inset-4 bg-gradient-to-tr from-[#D4AF37]/20 via-transparent to-[#F7E7B6]/15 rounded-3xl blur-xl -z-10 pointer-events-none" />
+            </div>
+
           </div>
         </div>
 
         {/* Navigation Controls (Desktop Arrows + Slide Counters) */}
-        <div className="absolute bottom-8 right-4 sm:right-10 z-20 flex items-center gap-4">
+        <div className="absolute bottom-6 right-4 sm:right-10 z-20 flex items-center gap-4">
           <div className="hidden sm:flex items-center gap-2 mr-2">
             <button
               onClick={handlePrev}
-              className="p-2.5 rounded-full bg-white/10 hover:bg-white/25 backdrop-blur-md border border-white/20 text-white transition-colors"
+              className="p-2.5 rounded-full bg-black/50 hover:bg-[#D4AF37] hover:text-[#070E1E] backdrop-blur-md border border-white/20 text-white transition-all cursor-pointer"
               aria-label="Previous Slide"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={handleNext}
-              className="p-2.5 rounded-full bg-white/10 hover:bg-white/25 backdrop-blur-md border border-white/20 text-white transition-colors"
+              className="p-2.5 rounded-full bg-black/50 hover:bg-[#D4AF37] hover:text-[#070E1E] backdrop-blur-md border border-white/20 text-white transition-all cursor-pointer"
               aria-label="Next Slide"
             >
               <ChevronRight className="w-4 h-4" />
@@ -190,7 +231,7 @@ export default function HeroBanner() {
 
           {/* Slide Indicator Bars with Numbers */}
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-bold text-white/90">
+            <span className="text-xs font-mono font-bold text-[#F7E7B6]">
               0{currentSlide + 1}
             </span>
             <div className="flex gap-1.5">
@@ -198,8 +239,8 @@ export default function HeroBanner() {
                 <button
                   key={i}
                   onClick={() => setCurrentSlide(i)}
-                  className={`h-1 rounded-full transition-all duration-300 ${
-                    i === currentSlide ? 'w-8 bg-amber-300' : 'w-2 bg-white/30 hover:bg-white/60'
+                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    i === currentSlide ? 'w-8 bg-[#D4AF37]' : 'w-2.5 bg-white/30 hover:bg-white/60'
                   }`}
                   aria-label={`Go to slide ${i + 1}`}
                 />
@@ -213,24 +254,24 @@ export default function HeroBanner() {
       </div>
 
       {/* Trust Highlights Full-Width Micro-Bar */}
-      <div className="border-t border-stone-800 bg-stone-900/95 backdrop-blur-md">
+      <div className="border-t border-[#D4AF37]/20 bg-[#0B162C] text-[#F7E7B6]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-[11px] sm:text-xs text-stone-300">
-            <div className="flex items-center gap-2 justify-center sm:justify-start">
-              <Truck className="w-4 h-4 text-amber-300 shrink-0" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-[11px] sm:text-xs">
+            <div className="flex items-center gap-2 justify-center sm:justify-start text-stone-200">
+              <Truck className="w-4 h-4 text-[#D4AF37] shrink-0" />
               <span>Free Express Shipping Across India</span>
             </div>
-            <div className="flex items-center gap-2 justify-center sm:justify-start">
-              <Sparkles className="w-4 h-4 text-amber-300 shrink-0" />
+            <div className="flex items-center gap-2 justify-center sm:justify-start text-stone-200">
+              <Sparkles className="w-4 h-4 text-[#D4AF37] shrink-0" />
               <span>100% Authentic Hand Needlecraft</span>
             </div>
-            <div className="hidden lg:flex items-center gap-2 justify-start">
-              <ShieldCheck className="w-4 h-4 text-amber-300 shrink-0" />
-              <span>Encrypted Multi-Gateway Checkout</span>
+            <div className="hidden lg:flex items-center gap-2 justify-start text-stone-200">
+              <ShieldCheck className="w-4 h-4 text-[#D4AF37] shrink-0" />
+              <span>Signature Midnight Navy Packaging</span>
             </div>
-            <div className="hidden lg:flex items-center gap-2 justify-start">
-              <RefreshCw className="w-4 h-4 text-amber-300 shrink-0" />
-              <span>Complimentary Size Alterations</span>
+            <div className="hidden lg:flex items-center gap-2 justify-start text-stone-200">
+              <RefreshCw className="w-4 h-4 text-[#D4AF37] shrink-0" />
+              <span>Direct Atelier Concierge Support</span>
             </div>
           </div>
         </div>

@@ -6,6 +6,7 @@ import {
   ArrowRight, 
   Star, 
   ChevronRight,
+  ChevronLeft,
   Sparkles, 
   ShieldCheck, 
   Truck, 
@@ -18,13 +19,17 @@ import {
   Mail,
   MapPin,
   Loader2,
-  Heart
+  Heart,
+  Maximize2,
+  X,
+  Layers,
+  Images
 } from 'lucide-react';
 import HeroBanner from '@/components/HeroBanner';
 import ProductCard from '@/components/ProductCard';
 import QuickViewModal from '@/components/QuickViewModal';
 import ScrollReveal from '@/components/ScrollReveal';
-import { getProducts, CATEGORIES, submitContact } from '@/lib/api';
+import { getProducts, CATEGORIES, GALLERY_LOOKBOOK, submitContact } from '@/lib/api';
 
 export default function HomePage() {
   const [products, setProducts] = useState([]);
@@ -32,12 +37,17 @@ export default function HomePage() {
   const [activeCategoryFilter, setActiveCategoryFilter] = useState('All');
   const [quickViewProduct, setQuickViewProduct] = useState(null);
 
+  // Gallery Lookbook State
+  const [galleryFilter, setGalleryFilter] = useState('All');
+  const [showAllGallery, setShowAllGallery] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(null);
+
   // Home Contact Form State
   const [contactForm, setContactForm] = useState({
     name: '',
     email: '',
     phone: '',
-    subject: 'Bespoke Atelier Inquiry',
+    subject: 'Bespoke Atelier & Packaging Inquiry',
     message: ''
   });
   const [contactSubmitting, setContactSubmitting] = useState(false);
@@ -67,7 +77,7 @@ export default function HomePage() {
         name: '',
         email: '',
         phone: '',
-        subject: 'Bespoke Atelier Inquiry',
+        subject: 'Bespoke Atelier & Packaging Inquiry',
         message: ''
       });
     } catch (err) {
@@ -86,24 +96,24 @@ export default function HomePage() {
   const displayedProducts = filteredProducts.slice(0, 6);
 
   return (
-    <div className="space-y-16 sm:space-y-24 pb-20 overflow-x-hidden">
-      {/* 1. Full-Width Cinematic European Luxury Hero Banner */}
+    <div className="space-y-16 sm:space-y-24 pb-20 overflow-x-hidden bg-[#FAF7F2]">
+      {/* 1. Full-Width Cinematic Royal Midnight Navy Hero Banner */}
       <HeroBanner />
 
       {/* 2. Curated Categories / Silhouettes */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal animation="fade-down" className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-2">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-stone-400">
-              Curated Collections
+            <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#AA7E18]">
+              Royal Collections
             </span>
-            <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-stone-900 mt-1">
+            <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#070E1E] mt-1">
               Shop by Silhouette
             </h2>
           </div>
-          <Link href="/shop" className="text-xs font-bold uppercase tracking-wider text-stone-900 hover:text-stone-600 flex items-center gap-1">
+          <Link href="/shop" className="text-xs font-bold uppercase tracking-wider text-[#070E1E] hover:text-[#AA7E18] flex items-center gap-1">
             <span>View All Collections</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <ArrowRight className="w-3.5 h-3.5 text-[#D4AF37]" />
           </Link>
         </ScrollReveal>
 
@@ -119,20 +129,20 @@ export default function HomePage() {
               >
                 <Link
                   href={`/shop?category=${encodeURIComponent(cat.name)}`}
-                  className="group relative rounded-3xl overflow-hidden aspect-[3/4] bg-stone-100 border border-stone-200/80 shadow-xs hover:shadow-2xl transition-all duration-500 sheen-effect hover:-translate-y-2 block h-full"
+                  className="group relative rounded-3xl overflow-hidden aspect-[3/4] bg-stone-100 border border-[#E5D9C8] shadow-xs hover:shadow-2xl transition-all duration-500 sheen-effect hover:-translate-y-2 block h-full"
                 >
                   <img
                     src={cat.image}
                     alt={cat.name}
                     className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-300 group-hover:from-black/90" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#070E1E]/90 via-black/25 to-transparent transition-opacity duration-300 group-hover:from-[#070E1E]" />
 
                   <div className="absolute inset-x-0 bottom-0 p-5 text-white transform transition-transform duration-300 group-hover:-translate-y-1">
-                    <span className="text-[10px] uppercase tracking-widest text-amber-300 font-bold">
-                      {liveCount > 0 ? `${liveCount} Creations` : 'Atelier Line'}
+                    <span className="text-[10px] uppercase tracking-widest text-[#F7E7B6] font-bold">
+                      {liveCount > 0 ? `${liveCount} Masterworks` : 'Atelier Line'}
                     </span>
-                    <h3 className="font-serif-luxury text-base sm:text-lg font-bold tracking-wide mt-0.5">
+                    <h3 className="font-serif-luxury text-base sm:text-lg font-bold tracking-wide mt-0.5 text-white">
                       {cat.name}
                     </h3>
                   </div>
@@ -147,24 +157,24 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal animation="fade-up" className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-stone-400">
+            <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#AA7E18]">
               Signature Line
             </span>
-            <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-stone-900 mt-1">
+            <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#070E1E] mt-1">
               Featured Creations
             </h2>
           </div>
 
           {/* Category Filter Tabs */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-            {['All', 'Tops & Kurtis', 'Kaftaans', 'co-ord sets', 'Silk jackets'].map((filter) => (
+            {['All', 'Tops & Kurtis', 'Kaftaans', 'co-ord sets', 'Silk jackets', 'Pashmina & Shawls'].map((filter) => (
               <button
                 key={filter}
                 onClick={() => setActiveCategoryFilter(filter)}
                 className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
                   activeCategoryFilter === filter
-                    ? 'bg-stone-950 text-white shadow-sm'
-                    : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                    ? 'bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/40 shadow-sm'
+                    : 'bg-white border border-[#E5D9C8] text-stone-700 hover:bg-[#F4EFE6]'
                 }`}
               >
                 {filter}
@@ -177,7 +187,7 @@ export default function HomePage() {
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             {[1, 2, 3, 4, 5, 6].map((n) => (
-              <div key={n} className="rounded-3xl bg-stone-100 aspect-[3/4] animate-pulse" />
+              <div key={n} className="rounded-3xl bg-white border border-[#E5D9C8] aspect-[3/4] animate-pulse" />
             ))}
           </div>
         ) : (
@@ -202,38 +212,266 @@ export default function HomePage() {
         <ScrollReveal animation="zoom-in" delay={200} className="text-center pt-10">
           <Link
             href="/shop"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-stone-950 text-white text-xs font-bold uppercase tracking-widest hover:bg-stone-800 transition-all shadow-md active:scale-95"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#070E1E] text-[#F7E7B6] text-xs font-bold uppercase tracking-widest hover:bg-[#102142] border border-[#D4AF37]/40 transition-all shadow-lg active:scale-95 animate-gold-pulse"
           >
             <span>Explore Entire Catalog</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4 text-[#D4AF37]" />
           </Link>
         </ScrollReveal>
       </section>
 
-      {/* 4. About & The 72-Hour Artisanal Craft Story Spotlight */}
-      <section className="bg-stone-950 text-white py-16 sm:py-24 relative overflow-hidden">
+      {/* 4. THE SIGNATURE ROYAL PACKAGING EXPERIENCE (Centerpiece Showcase) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ScrollReveal animation="fade-up" duration={800}>
+          <div className="rounded-3xl bg-[#070E1E] text-white p-8 sm:p-14 lg:p-16 relative overflow-hidden shadow-2xl border border-[#D4AF37]/30">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center relative z-10">
+              {/* Image Frame */}
+              <div className="lg:col-span-7 relative group">
+                <div className="relative rounded-2xl overflow-hidden aspect-[16/10] border border-[#D4AF37]/40 shadow-2xl bg-[#0B162C]">
+                  <img
+                    src="/images/hero-packaging.jpg"
+                    alt="Al Hayy Royal Midnight Navy Luxury Unboxing Packaging"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                  
+                  {/* Floating Gold Monogram Badge */}
+                  <div className="absolute top-4 left-4 px-3.5 py-1.5 rounded-xl bg-[#070E1E]/90 backdrop-blur-md border border-[#D4AF37]/60 text-xs flex items-center gap-2 text-[#F7E7B6] shadow-lg">
+                    <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <span className="font-semibold text-[11px]">Signature Rigid Box & Gold Foil Calligraphy</span>
+                  </div>
+
+                  <div className="absolute bottom-4 left-4 right-4 p-3.5 bg-[#070E1E]/90 backdrop-blur-md rounded-xl border border-[#D4AF37]/30 text-xs flex items-center justify-between text-[#FAF7F2]">
+                    <div>
+                      <span className="block font-serif-luxury font-bold text-sm text-[#F7E7B6]">The Al Hayy Presentation Box</span>
+                      <span className="text-[11px] text-stone-300">Silk Ribbon Bow • Authenticity Certificate • Gift Bag</span>
+                    </div>
+                    <span className="font-mono text-[#D4AF37] font-bold text-xs">Included with Every Order</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Story Details */}
+              <div className="lg:col-span-5 space-y-6">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#102142] text-[#F7E7B6] border border-[#D4AF37]/40 text-[10px] font-bold uppercase tracking-widest">
+                  <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+                  <span>The Unboxing Ritual</span>
+                </div>
+
+                <h2 className="font-serif-luxury text-2xl sm:text-4xl font-bold leading-tight text-white">
+                  Crafted To Be <br />
+                  <span className="italic font-serif text-[#F7E7B6]">Unboxed In Splendor</span>
+                </h2>
+
+                <p className="text-xs sm:text-sm text-stone-300 leading-relaxed font-light">
+                  Every creation from our Srinagar atelier is an heirloom. To honor the master artisans who pour weeks into every stitch, each ensemble is folded in whisper-soft tissue, bound in silk ribbon with the golden <strong className="text-[#F7E7B6]">الحَي</strong> seal, and presented in our iconic matte midnight navy rigid keepsake box.
+                </p>
+
+                <div className="space-y-3 pt-1">
+                  <div className="flex items-center gap-3 text-xs text-stone-200">
+                    <div className="w-6 h-6 rounded-full bg-[#102142] border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] font-bold shrink-0">
+                      ✓
+                    </div>
+                    <span>Matte Midnight Navy Box with Gilded Embossed Arabic Calligraphy</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-xs text-stone-200">
+                    <div className="w-6 h-6 rounded-full bg-[#102142] border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] font-bold shrink-0">
+                      ✓
+                    </div>
+                    <span>Hand-Tied Silk Bow Ribbon & Gold Stamped Wax Seal</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-xs text-stone-200">
+                    <div className="w-6 h-6 rounded-full bg-[#102142] border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] font-bold shrink-0">
+                      ✓
+                    </div>
+                    <span>Signature Heavyweight Carrier Bag & Hand-Signed Authenticity Card</span>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex items-center gap-4">
+                  <Link
+                    href="/shop"
+                    className="px-7 py-3.5 rounded-full bg-[#D4AF37] hover:bg-[#F7E7B6] text-[#070E1E] font-bold text-xs uppercase tracking-widest flex items-center gap-2 shadow-lg transition-all"
+                  >
+                    <span>Shop Giftable Couture</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                  <a
+                    href="https://wa.me/91962248076?text=Salam%20Al%20Hayy,%20I%20would%20like%20to%20know%20more%20about%20your%20luxury%20gift%20packaging."
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs text-[#F7E7B6] hover:underline font-medium"
+                  >
+                    WhatsApp Concierge
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ScrollReveal>
+      </section>
+
+      {/* 5. Authentic Lookbook Gallery (All 41 Master Valley Archive Photographs) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ScrollReveal animation="fade-up" className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/40 text-[10px] font-bold uppercase tracking-widest mb-2">
+              <Images className="w-3 h-3 text-[#D4AF37]" />
+              <span>Full Atelier Archive &bull; 41 Curated Photographs</span>
+            </div>
+            <h2 className="font-serif-luxury text-2xl sm:text-3.5xl font-bold text-[#070E1E] tracking-tight">
+              Curated Lookbook &amp; Textures
+            </h2>
+            <p className="text-xs sm:text-sm text-stone-600 mt-1 max-w-xl">
+              Authentic valley captures documenting our royal rigid packaging, bespoke needlework, fluid kaftans, tailored co-ords, and heirloom loom weaves.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-xs font-mono font-bold text-[#AA7E18] bg-[#D4AF37]/10 px-3 py-1.5 rounded-xl border border-[#D4AF37]/20">
+              {galleryFilter === 'All' ? '41 Photographs' : `${GALLERY_LOOKBOOK.filter(i => i.category === galleryFilter).length} Photos`}
+            </span>
+          </div>
+        </ScrollReveal>
+
+        {/* Lookbook Category Filter Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-4 scrollbar-none mb-6">
+          {[
+            { label: 'All Archive (41)', value: 'All' },
+            { label: 'Royal Packaging', value: 'Packaging' },
+            { label: 'Kurtis & Suits', value: 'Kurtis' },
+            { label: 'Flowing Kaftans', value: 'Kaftans' },
+            { label: 'Co-Ord Sets', value: 'Co-Ords' },
+            { label: 'Silk Jackets', value: 'Jackets' },
+            { label: 'Pashmina & Loom', value: 'Pashmina' }
+          ].map((tab) => {
+            const isSelected = galleryFilter === tab.value;
+            return (
+              <button
+                key={tab.value}
+                onClick={() => {
+                  setGalleryFilter(tab.value);
+                  setShowAllGallery(false);
+                }}
+                className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                  isSelected
+                    ? 'bg-[#070E1E] text-[#F7E7B6] shadow-md border border-[#D4AF37]'
+                    : 'bg-white text-stone-600 hover:text-[#070E1E] border border-stone-200 hover:border-[#D4AF37]/40'
+                }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* The Lookbook Photo Grid */}
+        {(() => {
+          const filteredGallery = galleryFilter === 'All'
+            ? GALLERY_LOOKBOOK
+            : GALLERY_LOOKBOOK.filter(item => item.category === galleryFilter);
+
+          const displayedGallery = filteredGallery.slice(0, 8);
+
+          return (
+            <div className="space-y-8">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                {displayedGallery.map((item, idx) => (
+                  <ScrollReveal
+                    key={item.id}
+                    animation="fade-up"
+                    delay={Math.min(idx * 40, 300)}
+                    duration={500}
+                  >
+                    <div 
+                      onClick={() => setLightboxIndex(GALLERY_LOOKBOOK.findIndex(g => g.id === item.id))}
+                      className="group relative rounded-2xl overflow-hidden aspect-[3/4] bg-[#070E1E] border border-[#E5D9C8] shadow-xs hover:shadow-2xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer"
+                    >
+                      {/* Ambient Blurred Background */}
+                      <img
+                        src={item.src}
+                        alt=""
+                        className="absolute inset-0 w-full h-full object-cover blur-md scale-110 opacity-35"
+                        aria-hidden="true"
+                      />
+                      <img
+                        src={item.src}
+                        alt={item.title}
+                        className="relative z-10 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#070E1E]/90 via-[#070E1E]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4 z-20" />
+                      
+                      {/* Top Action Badge */}
+                      <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
+                        <span className="p-2 rounded-full bg-[#070E1E]/80 backdrop-blur-md border border-[#D4AF37]/50 text-[#F7E7B6] flex items-center justify-center shadow-lg">
+                          <Maximize2 className="w-3.5 h-3.5" />
+                        </span>
+                      </div>
+
+                      {/* Bottom Details */}
+                      <div className="absolute inset-x-0 bottom-0 p-4 text-white transform translate-y-3 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300 z-30">
+                        <span className="text-[9px] uppercase tracking-widest text-[#F7E7B6] font-bold block mb-0.5">
+                          {item.tag}
+                        </span>
+                        <h4 className="font-serif-luxury text-xs sm:text-sm font-bold text-white line-clamp-1">
+                          {item.title}
+                        </h4>
+                      </div>
+                    </div>
+                  </ScrollReveal>
+                ))}
+              </div>
+
+              {/* View Full Lookbook Page CTA Link */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                <Link
+                  href="/lookbook"
+                  className="px-8 py-4 rounded-full bg-[#070E1E] text-[#F7E7B6] hover:bg-[#102142] border border-[#D4AF37] font-bold text-xs uppercase tracking-widest flex items-center gap-2 shadow-2xl transition-all hover:scale-105 cursor-pointer"
+                >
+                  <span>Explore Full Live Atelier Lookbook</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          );
+        })()}
+      </section>
+
+      {/* 6. About & The 72-Hour Artisanal Craft Story Spotlight */}
+      <section className="bg-[#070E1E] text-white py-16 sm:py-24 relative overflow-hidden border-t border-b border-[#D4AF37]/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-            {/* Visual Box (Slides in smoothly from left) */}
+            {/* Visual Box with Blurred Backdrop & Top Alignment so No Head Cropping */}
             <ScrollReveal animation="fade-right" duration={800}>
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-stone-900 border border-stone-800">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[3/4] max-h-[580px] bg-[#0B162C] border border-[#D4AF37]/30 group">
+                {/* Ambient Blurred Backdrop */}
                 <img
-                  src="https://images.unsplash.com/photo-1601924994987-69e26d50dc26?q=80&w=1200&auto=format&fit=crop"
-                  alt="Handloom weaving in Kashmir"
-                  className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
+                  src="/images/gallery-37.jpg"
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover blur-xl scale-125 opacity-50"
+                  aria-hidden="true"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4 p-3 bg-stone-950/80 backdrop-blur-md rounded-2xl border border-white/10 text-xs flex items-center justify-between">
-                  <span className="text-stone-300 font-semibold text-[11px]">Srinagar Loom Atelier Custodians</span>
-                  <span className="text-amber-300 text-[10px] font-bold uppercase">15th Century Lineage</span>
+                <div className="absolute inset-0 bg-[#070E1E]/30 backdrop-blur-xs" />
+                
+                {/* Main Crisp Image Top-Aligned */}
+                <img
+                  src="/images/gallery-37.jpg"
+                  alt="Handloom weaving and embroidery in Kashmir"
+                  className="relative z-10 w-full h-full object-cover object-top transition-transform duration-1000 group-hover:scale-103"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#070E1E]/90 via-transparent to-transparent pointer-events-none z-10" />
+                <div className="absolute bottom-4 left-4 right-4 p-3.5 bg-[#070E1E]/90 backdrop-blur-md rounded-2xl border border-[#D4AF37]/30 text-xs flex items-center justify-between z-20">
+                  <span className="text-[#FAF7F2] font-semibold text-[11px]">Srinagar Loom Atelier Custodians</span>
+                  <span className="text-[#D4AF37] text-[10px] font-bold uppercase">15th Century Lineage</span>
                 </div>
               </div>
             </ScrollReveal>
 
-            {/* Narrative (Slides in smoothly from right) */}
+            {/* Narrative */}
             <ScrollReveal animation="fade-left" duration={800} delay={150} className="space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-amber-300 border border-white/15 text-[10px] font-bold uppercase tracking-widest">
-                <Sparkles className="w-3 h-3 text-amber-400" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#102142] text-[#F7E7B6] border border-[#D4AF37]/40 text-[10px] font-bold uppercase tracking-widest">
+                <Sparkles className="w-3 h-3 text-[#D4AF37]" />
                 <span>Our Heritage Story</span>
               </div>
 
@@ -242,16 +480,16 @@ export default function HomePage() {
               </h2>
 
               <p className="text-xs sm:text-sm text-stone-300 leading-relaxed font-light">
-                <strong>Al Hayy International</strong> is dedicated to celebrating the pinnacle of handcrafted textile artistry. Every cotton kurti, silk jacket, and couture ensemble is shaped with meticulous artisanal devotion, blending rich heritage needlework with effortless contemporary silhouettes.
+                <strong className="text-[#F7E7B6]">Al Hayy International</strong> is dedicated to celebrating the pinnacle of handcrafted textile artistry. Every cotton kurti, silk jacket, and couture ensemble is shaped with meticulous artisanal devotion, blending rich heritage needlework with effortless contemporary silhouettes.
               </p>
 
               <div className="grid grid-cols-2 gap-4 pt-2">
-                <div className="p-4 rounded-2xl bg-stone-900/90 border border-stone-800 space-y-1">
-                  <span className="text-base font-bold text-white font-serif-luxury">Natural Fibers</span>
+                <div className="p-4 rounded-2xl bg-[#0B162C] border border-[#D4AF37]/20 space-y-1">
+                  <span className="text-base font-bold text-[#F7E7B6] font-serif-luxury">Natural Fibers</span>
                   <p className="text-[11px] text-stone-400">Pure combed cotton, mulberry silk & Changthangi pashmina</p>
                 </div>
-                <div className="p-4 rounded-2xl bg-stone-900/90 border border-stone-800 space-y-1">
-                  <span className="text-base font-bold text-white font-serif-luxury">Fair Trade</span>
+                <div className="p-4 rounded-2xl bg-[#0B162C] border border-[#D4AF37]/20 space-y-1">
+                  <span className="text-base font-bold text-[#F7E7B6] font-serif-luxury">Fair Trade</span>
                   <p className="text-[11px] text-stone-400">Directly sustaining 80+ artisan families in Srinagar valley</p>
                 </div>
               </div>
@@ -259,7 +497,7 @@ export default function HomePage() {
               <div>
                 <Link
                   href="/our-story"
-                  className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-300 hover:text-white transition-colors"
+                  className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#D4AF37] hover:text-[#F7E7B6] transition-colors"
                 >
                   <span>Read The Full Heritage Story</span>
                   <ArrowRight className="w-4 h-4" />
@@ -270,84 +508,87 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. Luxury VIP / Bespoke Bridal CTA Section */}
+      {/* 7. Luxury VIP / Bespoke Bridal CTA Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal animation="zoom-in" duration={800}>
-          <div className="rounded-3xl bg-stone-900 text-white p-8 sm:p-14 relative overflow-hidden shadow-xl border border-stone-800">
+          <div className="rounded-3xl bg-[#0B162C] text-white p-8 sm:p-14 relative overflow-hidden shadow-xl border border-[#D4AF37]/30">
             <div className="relative z-10 max-w-2xl space-y-4">
-              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-amber-300">
+              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
                 Bespoke Concierge
               </span>
               <h2 className="font-serif-luxury text-2xl sm:text-4xl lg:text-5xl font-bold leading-tight text-white">
                 Bespoke Bridal Ensembles & Custom Tailoring
               </h2>
               <p className="text-xs sm:text-sm text-stone-300 leading-relaxed font-light">
-                Looking for custom bridal sizes, tailored color palettes, or bulk luxury festive gifting? Connect directly with our Srinagar master artisan team for personalized consultations.
+                Looking for custom bridal sizes, tailored color palettes, or bulk luxury festive gifting? Connect directly with our Srinagar master atelier for personal consultations.
               </p>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-3">
                 <a
-                  href="https://wa.me/919876543210?text=Hello%20Al%20Hayy%20International,%20I%20would%20like%20a%20bespoke%20bridal%20consultation."
+                  href="https://wa.me/91962248076?text=Salam%20Al%20Hayy%20International,%20I%20would%20like%20a%20bespoke%20bridal%20or%20gift%20consultation."
                   target="_blank"
                   rel="noreferrer"
-                  className="px-7 py-3.5 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95"
+                  className="px-7 py-3.5 rounded-full bg-[#D4AF37] hover:bg-[#F7E7B6] text-[#070E1E] font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95"
                 >
                   <MessageSquare className="w-4 h-4" />
-                  <span>WhatsApp Atelier Concierge</span>
+                  <span>WhatsApp Atelier Concierge: +91 96224 8076</span>
                 </a>
 
                 <Link
                   href="/contact"
-                  className="px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-semibold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95"
+                  className="px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-[#D4AF37]/40 text-white font-semibold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95"
                 >
                   <span>Submit Inquiry Online</span>
                 </Link>
               </div>
             </div>
-            <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-amber-900/20 to-transparent pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-[#D4AF37]/10 to-transparent pointer-events-none" />
           </div>
         </ScrollReveal>
       </section>
 
-      {/* 6. Direct Contact Form on Home Page */}
+      {/* 8. Direct Contact Form on Home Page with Updated Contact */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Info */}
           <ScrollReveal animation="fade-right" className="lg:col-span-5 space-y-6">
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#AA7E18]">
                 Direct Contact
               </span>
-              <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-stone-900 mt-1">
-                Connect With Our Srinagar Atelier
+              <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#070E1E] mt-1">
+                Connect With Our Atelier
               </h2>
               <p className="text-xs sm:text-sm text-stone-600 leading-relaxed mt-2 font-light">
-                Have a question regarding sizing, custom bridal orders, or shipping timelines? Reach out and our concierge will assist you promptly.
+                Have a question regarding sizing, gift packaging, custom bridal orders, or shipping timelines? Reach out and our concierge will assist you promptly.
               </p>
             </div>
 
-            <div className="space-y-4 text-xs text-stone-700 p-6 bg-white rounded-3xl border border-stone-200/80 shadow-xs">
+            <div className="space-y-4 text-xs text-stone-700 p-6 bg-white rounded-3xl border border-[#E5D9C8] shadow-xs">
               <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-stone-900 mt-0.5 shrink-0" />
+                <MapPin className="w-4 h-4 text-[#D4AF37] mt-0.5 shrink-0" />
                 <div>
-                  <strong className="block text-stone-950 font-semibold">Flagship Atelier & Loom:</strong>
-                  <span className="text-stone-500">Boulevard Road, Near Dal Lake Gate 2, Srinagar, J&K 190001</span>
+                  <strong className="block text-[#070E1E] font-semibold">Flagship Atelier & Loom:</strong>
+                  <span className="text-stone-500">Boulevard Road, Near Dal Lake, Srinagar, Jammu & Kashmir 190001</span>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
-                <Mail className="w-4 h-4 text-stone-900 mt-0.5 shrink-0" />
+                <Mail className="w-4 h-4 text-[#D4AF37] mt-0.5 shrink-0" />
                 <div>
-                  <strong className="block text-stone-950 font-semibold">Concierge Email:</strong>
+                  <strong className="block text-[#070E1E] font-semibold">Concierge Email:</strong>
                   <span className="text-stone-500">contact@alhayyinternational.com</span>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
-                <Phone className="w-4 h-4 text-stone-900 mt-0.5 shrink-0" />
+                <Phone className="w-4 h-4 text-[#D4AF37] mt-0.5 shrink-0" />
                 <div>
-                  <strong className="block text-stone-950 font-semibold">Customer Care:</strong>
-                  <span className="text-stone-500">+91 98765 43210 (Mon – Sat: 10 AM – 7:30 PM IST)</span>
+                  <strong className="block text-[#070E1E] font-semibold">Direct Atelier Phone & WhatsApp:</strong>
+                  <a href="tel:+91962248076" className="text-[#AA7E18] font-mono font-bold hover:underline">
+                    +91 96224 8076
+                  </a>
+                  <span className="block text-stone-400 text-[11px]">(Mon – Sat: 10:00 AM – 8:00 PM IST)</span>
                 </div>
               </div>
             </div>
@@ -355,17 +596,17 @@ export default function HomePage() {
 
           {/* Right Contact Form */}
           <ScrollReveal animation="fade-left" delay={150} className="lg:col-span-7">
-            <div className="p-6 sm:p-8 bg-white rounded-3xl border border-stone-200/80 shadow-xs space-y-5">
-              <h3 className="font-serif-luxury text-xl font-bold text-stone-950">
+            <div className="p-6 sm:p-8 bg-white rounded-3xl border border-[#E5D9C8] shadow-xs space-y-5">
+              <h3 className="font-serif-luxury text-xl font-bold text-[#070E1E]">
                 Send an Atelier Inquiry
               </h3>
 
               {contactSuccess ? (
-                <div className="p-8 text-center space-y-3 bg-emerald-50 rounded-2xl border border-emerald-200 animate-in zoom-in-95">
-                  <CheckCircle2 className="w-10 h-10 text-emerald-800 mx-auto" />
-                  <h4 className="font-serif-luxury text-lg font-bold text-stone-900">Inquiry Received</h4>
+                <div className="p-8 text-center space-y-3 bg-[#F4EFE6] rounded-2xl border border-[#D4AF37]/50 animate-in zoom-in-95">
+                  <CheckCircle2 className="w-10 h-10 text-[#AA7E18] mx-auto" />
+                  <h4 className="font-serif-luxury text-lg font-bold text-[#070E1E]">Inquiry Received</h4>
                   <p className="text-xs text-stone-600 max-w-xs mx-auto">
-                    Shukriya! Our master atelier representative will get back to you within 24 hours.
+                    Shukriya! Our master concierge will connect with you on WhatsApp/Phone shortly.
                   </p>
                 </div>
               ) : (
@@ -379,7 +620,7 @@ export default function HomePage() {
                         placeholder="e.g. Aisha Begum"
                         value={contactForm.name}
                         onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                        className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950"
+                        className="w-full py-2.5 px-3.5 rounded-xl border border-[#E5D9C8] text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
                       />
                     </div>
 
@@ -388,10 +629,10 @@ export default function HomePage() {
                       <input
                         type="tel"
                         required
-                        placeholder="e.g. 9876543210"
+                        placeholder="e.g. 962248076"
                         value={contactForm.phone}
                         onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
-                        className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950"
+                        className="w-full py-2.5 px-3.5 rounded-xl border border-[#E5D9C8] text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
                       />
                     </div>
                   </div>
@@ -404,7 +645,7 @@ export default function HomePage() {
                       placeholder="patron@example.com"
                       value={contactForm.email}
                       onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                      className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950"
+                      className="w-full py-2.5 px-3.5 rounded-xl border border-[#E5D9C8] text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
                     />
                   </div>
 
@@ -413,26 +654,26 @@ export default function HomePage() {
                     <textarea
                       rows={3}
                       required
-                      placeholder="Tell us about the bespoke bridal styling, custom size, or catalog query you have..."
+                      placeholder="Tell us about the bespoke bridal styling, custom size, or luxury gift packaging query you have..."
                       value={contactForm.message}
                       onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                      className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950"
+                      className="w-full py-2.5 px-3.5 rounded-xl border border-[#E5D9C8] text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={contactSubmitting}
-                    className="w-full py-3.5 px-6 rounded-full bg-stone-950 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-stone-800 transition-all shadow-md disabled:opacity-50"
+                    className="w-full py-3.5 px-6 rounded-full bg-[#070E1E] text-[#F7E7B6] font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-[#102142] border border-[#D4AF37]/40 transition-all shadow-md disabled:opacity-50"
                   >
                     {contactSubmitting ? (
                       <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Loader2 className="w-4 h-4 animate-spin text-[#D4AF37]" />
                         <span>Sending Inquiry...</span>
                       </>
                     ) : (
                       <>
-                        <Send className="w-4 h-4" />
+                        <Send className="w-4 h-4 text-[#D4AF37]" />
                         <span>Submit Inquiry to Atelier</span>
                       </>
                     )}
@@ -444,13 +685,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 7. Client Testimonials */}
+      {/* 9. Client Testimonials */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal animation="fade-down" className="text-center max-w-xl mx-auto space-y-2 mb-10">
-          <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-stone-400">
+          <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#AA7E18]">
             Client Accolades
           </span>
-          <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-stone-900">
+          <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#070E1E]">
             What Our Patrons Say
           </h2>
         </ScrollReveal>
@@ -460,19 +701,19 @@ export default function HomePage() {
             {
               name: 'Dr. Aisha Mir',
               city: 'New Delhi',
-              review: 'The embroidery on the Red Cotton Kurti is absolutely exquisite. You can immediately feel the weight and purity of authentic Kashmiri needlework.',
+              review: 'The unboxing experience is breathtaking! The Midnight Navy rigid box with gold Arabic calligraphy and the pure silk ribbon feels like receiving royalty. The embroidery on the kurti is masterclass.',
               rating: 5
             },
             {
               name: 'Meera Sengupta',
               city: 'Mumbai',
-              review: 'Ordered the Cotton Kaftan and Co-ord set for my holiday. The fabric is so breathable and the silhouette is pure elegance. Express shipping was super fast!',
+              review: 'Ordered the Cotton Kaftan and Co-ord set for a wedding celebration. The fabric is so breathable and the silhouette is pure elegance. Express shipping was remarkably prompt!',
               rating: 5
             },
             {
               name: 'Zoya Fatima',
               city: 'Bengaluru',
-              review: 'The silk jacket is breathtaking. True royal craftsmanship. Packaged in a beautiful gift box with an authenticity tag.',
+              review: 'The Changthangi pashmina shawl is sublime. Passes the ring test effortlessly and the signature packaging with the note card made it the most memorable gift.',
               rating: 5
             }
           ].map((item, idx) => (
@@ -483,11 +724,11 @@ export default function HomePage() {
               duration={700}
               className="h-full"
             >
-              <div className="p-6 bg-white rounded-3xl border border-stone-200/80 shadow-xs flex flex-col justify-between space-y-4 h-full hover:shadow-lg transition-all duration-300">
+              <div className="p-6 bg-white rounded-3xl border border-[#E5D9C8] shadow-xs flex flex-col justify-between space-y-4 h-full hover:shadow-lg transition-all duration-300">
                 <div className="space-y-3">
-                  <div className="flex items-center gap-1 text-amber-500">
+                  <div className="flex items-center gap-1 text-[#D4AF37]">
                     {[...Array(item.rating)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+                      <Star key={i} className="w-3.5 h-3.5 fill-[#D4AF37] text-[#D4AF37]" />
                     ))}
                   </div>
                   <p className="text-xs text-stone-600 leading-relaxed italic">
@@ -495,12 +736,12 @@ export default function HomePage() {
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-stone-100 flex items-center justify-between text-xs">
+                <div className="pt-3 border-t border-[#E5D9C8]/60 flex items-center justify-between text-xs">
                   <div>
-                    <h4 className="font-bold text-stone-900">{item.name}</h4>
+                    <h4 className="font-bold text-[#070E1E]">{item.name}</h4>
                     <span className="text-stone-400 text-[11px]">{item.city}</span>
                   </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-stone-100 text-stone-700 font-medium">
+                  <span className="text-[10px] px-2 py-0.5 rounded bg-[#FAF7F2] text-[#AA7E18] font-bold border border-[#E5D9C8]">
                     Verified Patron
                   </span>
                 </div>
@@ -510,42 +751,80 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 8. SEO Rich-Content Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <ScrollReveal animation="fade-up" className="p-8 sm:p-10 bg-white rounded-3xl border border-stone-200/80 shadow-xs space-y-6">
-          <div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400">
-              Artisan Knowledge & Heritage
-            </span>
-            <h2 className="font-serif-luxury text-xl sm:text-2xl font-bold text-stone-950 mt-1">
-              Authentic Kashmiri Handcrafted Fashion & Heritage Couture
-            </h2>
+      {/* Floating WhatsApp Concierge Button */}
+      <div className="fixed bottom-6 right-6 z-40">
+        <a
+          href="https://wa.me/91962248076?text=Salam%20Al%20Hayy%20Atelier,%20I%20need%20assistance."
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center gap-2 px-4 py-3 rounded-full bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37] shadow-2xl hover:bg-[#102142] hover:scale-105 transition-all group"
+          aria-label="Direct WhatsApp Concierge"
+        >
+          <div className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] animate-pulse" />
+          <MessageSquare className="w-4 h-4 text-[#D4AF37]" />
+          <span className="text-xs font-bold uppercase tracking-wider hidden sm:inline">WhatsApp Concierge</span>
+        </a>
+      </div>
+
+      {/* Fullscreen Interactive Lightbox Modal */}
+      {lightboxIndex !== null && GALLERY_LOOKBOOK[lightboxIndex] && (
+        <div 
+          className="fixed inset-0 z-[9999] bg-[#070E1E]/95 backdrop-blur-xl flex items-center justify-center p-4 sm:p-6 select-none animate-in fade-in duration-200"
+          onClick={() => setLightboxIndex(null)}
+        >
+          <div 
+            className="relative max-w-4xl w-full max-h-[92vh] flex flex-col items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setLightboxIndex(null)}
+              className="absolute -top-12 right-0 sm:-right-4 p-2.5 rounded-full bg-white/10 hover:bg-white/25 text-white border border-[#D4AF37]/50 transition-all cursor-pointer"
+              aria-label="Close Lightbox"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Main Image Frame */}
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-[#D4AF37]/50 bg-[#0B162C] max-h-[75vh] aspect-[3/4] sm:aspect-auto sm:max-w-xl sm:h-[75vh]">
+              <img
+                src={GALLERY_LOOKBOOK[lightboxIndex].src}
+                alt={GALLERY_LOOKBOOK[lightboxIndex].title}
+                className="w-full h-full object-contain"
+              />
+            </div>
+
+            {/* Navigation Arrows */}
+            <button
+              onClick={() => setLightboxIndex((prev) => (prev - 1 + GALLERY_LOOKBOOK.length) % GALLERY_LOOKBOOK.length)}
+              className="absolute left-2 sm:-left-14 top-1/2 -translate-y-1/2 p-3 rounded-full bg-[#070E1E]/80 hover:bg-[#D4AF37] hover:text-[#070E1E] text-white border border-[#D4AF37]/40 backdrop-blur-md transition-all cursor-pointer"
+              aria-label="Previous Photo"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <button
+              onClick={() => setLightboxIndex((prev) => (prev + 1) % GALLERY_LOOKBOOK.length)}
+              className="absolute right-2 sm:-right-14 top-1/2 -translate-y-1/2 p-3 rounded-full bg-[#070E1E]/80 hover:bg-[#D4AF37] hover:text-[#070E1E] text-white border border-[#D4AF37]/40 backdrop-blur-md transition-all cursor-pointer"
+              aria-label="Next Photo"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+
+            {/* Photo Info Bar */}
+            <div className="mt-4 px-6 py-2.5 bg-[#0B162C]/90 rounded-2xl border border-[#D4AF37]/40 backdrop-blur-md text-center flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+              <span className="text-[10px] font-mono text-[#F7E7B6] uppercase tracking-widest px-2.5 py-0.5 rounded bg-[#D4AF37]/20 border border-[#D4AF37]/30">
+                {GALLERY_LOOKBOOK[lightboxIndex].tag}
+              </span>
+              <h3 className="font-serif-luxury text-sm font-bold text-white">
+                {GALLERY_LOOKBOOK[lightboxIndex].title}
+              </h3>
+              <span className="text-xs text-stone-400 font-mono">
+                {lightboxIndex + 1} / {GALLERY_LOOKBOOK.length}
+              </span>
+            </div>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-stone-600 leading-relaxed">
-            <div className="space-y-2">
-              <h3 className="font-bold text-stone-900 text-sm">Master Aari Needlecraft</h3>
-              <p>
-                Our kurtis and kaftans feature genuine Aari threadwork, guided by master craftsmen with specialized hooked needles (crewels) across fine natural cottons and silks.
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <h3 className="font-bold text-stone-900 text-sm">Authentic Changthangi Pashmina</h3>
-              <p>
-                Woven from the underfleece of high-altitude Himalayan Changthangi goats, our pashmina stoles pass the classic ring test and offer featherlight warmth.
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <h3 className="font-bold text-stone-900 text-sm">Pan-India Express Delivery</h3>
-              <p>
-                Every order is carefully packaged with certificate tags and dispatched with 256-bit encrypted checkout via Razorpay, Stripe, and UPI Direct across India.
-              </p>
-            </div>
-          </div>
-        </ScrollReveal>
-      </section>
+        </div>
+      )}
 
       {/* Quick View Modal */}
       {quickViewProduct && (

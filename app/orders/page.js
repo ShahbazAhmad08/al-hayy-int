@@ -185,12 +185,12 @@ function OrdersContent() {
               </div>
               <div className="pt-2 flex justify-center gap-3">
                 <a
-                  href={`https://wa.me/919876543210?text=${encodeURIComponent(`Hi, I need assistance tracking my Al Hayy order for: ${searchQuery}`)}`}
+                  href={`https://wa.me/91962248076?text=${encodeURIComponent(`Hi, I need assistance tracking my Al Hayy order for: ${searchQuery}`)}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-semibold shadow-sm transition-all"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#070E1E] hover:bg-[#102142] text-[#F7E7B6] border border-[#D4AF37]/40 rounded-xl text-xs font-semibold shadow-sm transition-all"
                 >
-                  <MessageSquare className="w-4 h-4" /> Message WhatsApp Concierge
+                  <MessageSquare className="w-4 h-4 text-[#D4AF37]" /> Message WhatsApp Concierge (+91 96224 8076)
                 </a>
               </div>
             </div>
@@ -219,12 +219,12 @@ function OrdersContent() {
                     <div className="flex items-center gap-3 text-xs">
                       <span className={`px-3 py-1 rounded-full font-bold uppercase tracking-wider text-[10px] border ${
                         String(order.payment_status).toLowerCase() === 'paid'
-                          ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                          ? 'bg-[#D4AF37]/15 text-[#AA7E18] border-[#D4AF37]/30'
                           : 'bg-amber-50 text-amber-800 border-amber-200'
                       }`}>
                         {order.payment_status || 'Paid / Confirmed'}
                       </span>
-                      <span className="font-bold text-[#064E3B] text-lg font-sans">
+                      <span className="font-bold text-[#070E1E] text-lg font-sans">
                         ₹{Number(order.total_amount || 0).toLocaleString('en-IN')}
                       </span>
                     </div>
@@ -236,7 +236,7 @@ function OrdersContent() {
                       {/* Connecting line */}
                       <div className="absolute top-4 left-6 right-6 h-0.5 bg-stone-200 -z-0" />
                       <div
-                        className="absolute top-4 left-6 h-0.5 bg-emerald-700 transition-all duration-500 -z-0"
+                        className="absolute top-4 left-6 h-0.5 bg-[#AA7E18] transition-all duration-500 -z-0"
                         style={{ width: `${((currentStep - 1) / 4) * 100}%` }}
                       />
 
@@ -249,13 +249,13 @@ function OrdersContent() {
                           <div key={st.title} className="text-center relative z-10 space-y-2">
                             <div className={`w-8 h-8 rounded-full mx-auto flex items-center justify-center text-xs font-bold transition-all ${
                               isDone
-                                ? 'bg-emerald-800 text-white shadow-sm ring-4 ring-emerald-50'
+                                ? 'bg-[#070E1E] text-[#F7E7B6] shadow-sm ring-4 ring-[#D4AF37]/20 border border-[#D4AF37]'
                                 : 'bg-stone-100 text-stone-400 border border-stone-300'
                             }`}>
-                              {isDone ? <Check className="w-4 h-4" /> : stepNum}
+                              {isDone ? <Check className="w-4 h-4 text-[#D4AF37]" /> : stepNum}
                             </div>
                             <div>
-                              <span className={`block text-[11px] font-bold ${isCurrent ? 'text-emerald-900' : isDone ? 'text-stone-900' : 'text-stone-400'}`}>
+                              <span className={`block text-[11px] font-bold ${isCurrent ? 'text-[#070E1E]' : isDone ? 'text-stone-900' : 'text-stone-400'}`}>
                                 {st.title}
                               </span>
                               <span className="hidden sm:block text-[10px] text-stone-400 leading-tight">
@@ -334,12 +334,12 @@ function OrdersContent() {
                       Need urgent dispatch updates or address changes?
                     </span>
                     <a
-                      href={`https://wa.me/919876543210?text=${encodeURIComponent(`Salam Al Hayy, I need help with my Order #${displayId}`)}`}
+                      href={`https://wa.me/91962248076?text=${encodeURIComponent(`Salam Al Hayy, I need help with my Order #${displayId}`)}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-semibold shadow-xs transition-all"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#070E1E] hover:bg-[#102142] text-[#F7E7B6] border border-[#D4AF37]/40 rounded-xl font-semibold shadow-xs transition-all"
                     >
-                      <MessageSquare className="w-3.5 h-3.5" /> WhatsApp Support
+                      <MessageSquare className="w-3.5 h-3.5 text-[#D4AF37]" /> WhatsApp Concierge (+91 96224 8076)
                     </a>
                   </div>
                 </div>

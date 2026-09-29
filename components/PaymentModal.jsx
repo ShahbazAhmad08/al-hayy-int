@@ -262,12 +262,12 @@ export default function PaymentModal({ orderId, totalAmount, customerDetails = {
           {/* TAB 1: RAZORPAY OFFICIAL POPUP */}
           {activeGatewayTab === 'razorpay' && (
             <div className="space-y-4 text-xs">
-              <div className="p-4 bg-emerald-50/70 rounded-2xl border border-emerald-200/80 space-y-1.5">
+              <div className="p-4 bg-[#D4AF37]/10 rounded-2xl border border-[#D4AF37]/30 space-y-1.5">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-800" />
-                  <span className="font-bold text-emerald-950">Razorpay Official Fast Checkout</span>
+                  <ShieldCheck className="w-4 h-4 text-[#AA7E18]" />
+                  <span className="font-bold text-[#070E1E]">Razorpay Official Fast Checkout</span>
                 </div>
-                <p className="text-emerald-800/80 text-[11px] leading-relaxed">
+                <p className="text-stone-600 text-[11px] leading-relaxed">
                   Opens official Razorpay pop-up supporting Google Pay, PhonePe, Paytm, all Indian bank cards, and NetBanking with instant OTP verification.
                 </p>
               </div>
@@ -283,7 +283,7 @@ export default function PaymentModal({ orderId, totalAmount, customerDetails = {
                 </div>
                 <div className="flex justify-between items-center text-[11px] text-stone-600">
                   <span>Convenience Fee:</span>
-                  <span className="text-emerald-700 font-bold">₹0 (Free)</span>
+                  <span className="text-[#AA7E18] font-bold">₹0 (Free)</span>
                 </div>
               </div>
 
@@ -291,16 +291,16 @@ export default function PaymentModal({ orderId, totalAmount, customerDetails = {
                 type="button"
                 disabled={processing}
                 onClick={handleRazorpayPayment}
-                className="w-full py-3.5 px-4 rounded-xl bg-[#022C22] hover:bg-[#064E3B] text-amber-200 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md disabled:opacity-50"
+                className="w-full py-3.5 px-4 rounded-xl bg-[#070E1E] hover:bg-[#102142] text-[#F7E7B6] border border-[#D4AF37]/50 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md disabled:opacity-50 cursor-pointer"
               >
                 {processing ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin text-amber-200" />
+                    <Loader2 className="w-4 h-4 animate-spin text-[#D4AF37]" />
                     <span>Connecting to Razorpay...</span>
                   </>
                 ) : (
                   <>
-                    <ShieldCheck className="w-4 h-4 text-amber-300" />
+                    <ShieldCheck className="w-4 h-4 text-[#D4AF37]" />
                     <span>Launch Razorpay Gateway (₹{Number(totalAmount).toLocaleString('en-IN')})</span>
                   </>
                 )}
@@ -352,7 +352,7 @@ export default function PaymentModal({ orderId, totalAmount, customerDetails = {
                   <div className="grid grid-cols-2 gap-2">
                     <a
                       href={upiIntentUrl}
-                      className="p-3 rounded-2xl border border-stone-200 bg-white hover:border-emerald-600 hover:bg-emerald-50/40 transition-all flex items-center gap-2.5 text-stone-900 font-semibold"
+                      className="p-3 rounded-2xl border border-stone-200 bg-white hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 transition-all flex items-center gap-2.5 text-stone-900 font-semibold"
                     >
                       <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs">
                         G
@@ -434,7 +434,7 @@ export default function PaymentModal({ orderId, totalAmount, customerDetails = {
                       onClick={handleCopyVpa}
                       className="px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-stone-700 hover:text-stone-950 font-semibold text-[11px] flex items-center gap-1.5"
                     >
-                      {copiedVpa ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                      {copiedVpa ? <Check className="w-3.5 h-3.5 text-[#AA7E18]" /> : <Copy className="w-3.5 h-3.5" />}
                       <span>{copiedVpa ? 'Copied' : 'Copy ID'}</span>
                     </button>
                   </div>

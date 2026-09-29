@@ -57,13 +57,15 @@ export const metadata = {
   },
   icons: {
     icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
       { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
       { url: '/icon.png', sizes: '512x512', type: 'image/png' }
     ],
     apple: [
       { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }
     ],
-    shortcut: ['/favicon.png']
+    shortcut: ['/favicon.svg']
   },
   robots: {
     index: true,
@@ -82,18 +84,18 @@ import LuxuryPreloader from '@/components/LuxuryPreloader';
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth overflow-x-hidden max-w-full">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <SEOStructuredData type="Organization" />
       </head>
-      <body className="min-h-screen flex flex-col bg-[#FCFBF7] text-slate-900 antialiased selection:bg-[#C46210] selection:text-white">
+      <body className="min-h-screen flex flex-col bg-[#FAF7F2] text-[#070E1E] antialiased selection:bg-[#070E1E] selection:text-[#F7E7B6] overflow-x-hidden max-w-full w-full">
         <LuxuryPreloader />
         <AuthProvider>
           <CartProvider>
             <Navbar />
-            <main className="flex-1 w-full">{children}</main>
+            <main className="flex-1 w-full overflow-x-hidden max-w-full">{children}</main>
             <CartDrawer />
             <Footer />
           </CartProvider>

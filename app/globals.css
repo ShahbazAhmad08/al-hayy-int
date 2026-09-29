@@ -6,32 +6,43 @@
   --font-editorial: 'Cormorant Garamond', Georgia, serif;
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 
-  /* Kashmiri Luxury Palette */
-  --emerald-deep: #022C22;
-  --emerald-rich: #064E3B;
-  --emerald-emerald: #047857;
-  --gold-accent: #D97706;
-  --gold-light: #F59E0B;
-  --gold-warm: #B45309;
-  --ruby-kashmir: #881337;
-  --ruby-deep: #4C0519;
-  --ivory-base: #FCFBF7;
-  --ivory-card: #FFFFFF;
-  --ivory-border: #EADBCC;
-  --dark-slate: #0F172A;
+  /* Kashmiri Royal Navy & Gilded Gold Luxury Palette (Inspired by Al Hayy Royal Unboxing) */
+  --midnight-navy: #070E1E;
+  --navy-deep: #0B162C;
+  --navy-rich: #102142;
+  --navy-card: #15274D;
+  --navy-accent: #1E3768;
+  
+  --gold-foil: #D4AF37;
+  --gold-metallic: #C59B27;
+  --gold-champagne: #E6C875;
+  --gold-light: #F7E7B6;
+  --gold-warm: #AA7E18;
+  
+  --sand-base: #FAF7F2;
+  --sand-card: #FFFFFF;
+  --sand-warm: #F4EFE6;
+  --sand-border: #E5D9C8;
+  --sand-muted: #8C7E6D;
+  
+  --dark-slate: #0A1120;
   --charcoal-muted: #475569;
 }
 
+html,
 body {
   font-family: var(--font-sans);
-  background-color: var(--ivory-base);
+  background-color: var(--sand-base);
   color: var(--dark-slate);
-  overflow-x: hidden;
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+  width: 100%;
+  position: relative;
 }
 
 ::selection {
-  background: #C46210;
-  color: #ffffff;
+  background: #0B162C;
+  color: #F7E7B6;
 }
 
 .font-serif-luxury {
@@ -44,24 +55,31 @@ body {
 
 /* Glassmorphism Styles */
 .glass-nav {
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border-bottom: 1px solid rgba(226, 213, 194, 0.4);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
 }
 
-.glass-nav-dark {
-  background: rgba(2, 44, 34, 0.92);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-bottom: 1px solid rgba(217, 119, 6, 0.25);
+.glass-nav-navy {
+  background: rgba(7, 14, 30, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(234, 219, 204, 0.65);
+  border: 1px solid rgba(229, 217, 200, 0.7);
+}
+
+.glass-card-navy {
+  background: rgba(11, 22, 44, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
 .glass-card-hover {
@@ -70,42 +88,42 @@ body {
 
 .glass-card-hover:hover {
   transform: translateY(-5px);
-  box-shadow: 0 22px 40px -10px rgba(6, 78, 59, 0.1), 0 12px 18px -5px rgba(217, 119, 6, 0.06);
-  border-color: rgba(217, 119, 6, 0.45);
+  box-shadow: 0 22px 40px -10px rgba(7, 14, 30, 0.15), 0 12px 18px -5px rgba(212, 175, 55, 0.12);
+  border-color: rgba(212, 175, 55, 0.5);
 }
 
-/* Luxury Gold & Emerald Gradients */
+/* Luxury Gold & Midnight Navy Gradients */
 .bg-gold-gradient {
-  background: linear-gradient(135deg, #D97706 0%, #F59E0B 50%, #B45309 100%);
+  background: linear-gradient(135deg, #C59B27 0%, #D4AF37 40%, #F7E7B6 70%, #AA7E18 100%);
 }
 
-.bg-emerald-gradient {
-  background: linear-gradient(135deg, #022C22 0%, #064E3B 60%, #065F46 100%);
+.bg-navy-gradient {
+  background: linear-gradient(145deg, #070E1E 0%, #0B162C 50%, #15274D 100%);
 }
 
 .bg-royal-gradient {
-  background: linear-gradient(135deg, #1A0E2A 0%, #064E3B 50%, #881337 100%);
+  background: linear-gradient(135deg, #070E1E 0%, #102142 50%, #1E3768 100%);
 }
 
 .text-gold-gradient {
-  background: linear-gradient(135deg, #B45309 0%, #D97706 40%, #F59E0B 80%, #B45309 100%);
+  background: linear-gradient(135deg, #B8860B 0%, #D4AF37 35%, #F7E7B6 70%, #AA7E18 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .gold-border {
-  border: 1px solid rgba(217, 119, 6, 0.25);
+  border: 1px solid rgba(212, 175, 55, 0.35);
 }
 
 .gold-glow {
-  box-shadow: 0 0 30px rgba(217, 119, 6, 0.25);
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.25);
 }
 
 /* Artisan Badge */
 .artisan-badge {
-  background: linear-gradient(135deg, rgba(217, 119, 6, 0.12), rgba(245, 158, 11, 0.08));
-  border: 1px solid rgba(217, 119, 6, 0.3);
-  color: #B45309;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(11, 22, 44, 0.04));
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #996515;
 }
 
 /* Shimmer Effect for Loading / Highlights */

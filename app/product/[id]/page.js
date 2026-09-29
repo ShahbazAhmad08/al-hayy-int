@@ -14,7 +14,10 @@ import {
   Share2, 
   Check, 
   Ruler, 
-  Clock
+  Clock,
+  Play,
+  Video,
+  Image as ImageIcon
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { getProductById, getProducts } from '@/lib/api';
@@ -30,6 +33,7 @@ export default function ProductDetailPage() {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState('');
+  const [mediaType, setMediaType] = useState('image'); // 'image' | 'video'
   const [selectedSize, setSelectedSize] = useState('M');
   const [selectedColor, setSelectedColor] = useState('Standard');
   const [quantity, setQuantity] = useState(1);
@@ -47,6 +51,7 @@ export default function ProductDetailPage() {
         setProduct(item);
         if (item) {
           setSelectedImage(item.image);
+          setMediaType('image');
           if (item.variants && item.variants[0]) {
             setSelectedSize(item.variants[0].size);
             if (item.variants[0].colors && item.variants[0].colors[0]) {
@@ -134,21 +139,53 @@ export default function ProductDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
         {/* Left: Gallery Column */}
         <div className="space-y-4 lg:sticky lg:top-28">
-          {/* Main Large Image (Strict 3:4 Aspect Ratio) */}
-          <div className="relative aspect-[3/4] w-full rounded-3xl overflow-hidden bg-stone-100 border border-stone-200/80 shadow-md">
-            <img
-              src={selectedImage || product.image}
-              alt={product.title}
-              className="w-full h-full object-cover object-center transition-all duration-300"
-            />
-            {hasDiscount && (
+          {/* Main Display: Image or Video Player (Strict 3:4 Aspect Ratio) */}
+          <div className="relative aspect-[3/4] w-full rounded-3xl overflow-hidden bg-stone-900 border border-stone-200/80 shadow-md flex items-center justify-center">
+            {mediaType === 'video' && product.video_url ? (
+              <div className="w-full h-full relative bg-black flex items-center justify-center">
+                <video
+                  src={product.video_url}
+                  controls
+                  autoPlay
+                  loop
+                  playsInline
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  onClick={() => setMediaType('image')}
+                  className="absolute top-4 left-4 px-3 py-1.5 bg-black/70 hover:bg-black/90 backdrop-blur-md text-white text-[11px] font-bold rounded-full flex items-center gap-1.5 transition-all shadow-lg cursor-pointer"
+                >
+                  <ImageIcon className="w-3.5 h-3.5" />
+                  <span>Back to Photos</span>
+                </button>
+              </div>
+            ) : (
+              <img
+                src={selectedImage || product.image}
+                alt={product.title}
+                className="w-full h-full object-cover object-center transition-all duration-300"
+              />
+            )}
+
+            {mediaType === 'image' && hasDiscount && (
               <span className="absolute top-4 left-4 px-3 py-1 bg-stone-950 text-white text-[11px] font-bold uppercase tracking-wider rounded-full shadow-md">
                 Sale • {discountPercent}% OFF
               </span>
             )}
+
+            {product.video_url && mediaType === 'image' && (
+              <button
+                onClick={() => setMediaType('video')}
+                className="absolute bottom-4 left-4 px-4 py-2 rounded-full bg-[#070E1E]/90 hover:bg-[#070E1E] text-[#D4AF37] border border-[#D4AF37]/40 shadow-xl backdrop-blur-md text-xs font-bold flex items-center gap-2 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+              >
+                <Play className="w-3.5 h-3.5 fill-[#D4AF37]" />
+                <span>Watch Fabric Video</span>
+              </button>
+            )}
+
             <button
               onClick={handleShare}
-              className="absolute top-4 right-4 p-2.5 rounded-full bg-white/90 backdrop-blur-md text-stone-700 hover:text-stone-950 shadow-sm transition-all"
+              className="absolute top-4 right-4 p-2.5 rounded-full bg-white/90 backdrop-blur-md text-stone-700 hover:text-stone-950 shadow-sm transition-all cursor-pointer"
               title="Share Creation"
             >
               <Share2 className="w-4 h-4" />
@@ -160,22 +197,44 @@ export default function ProductDetailPage() {
             )}
           </div>
 
-          {/* Thumbnails Strip */}
-          {product.images && product.images.length > 1 && (
+          {/* Thumbnails Strip (Images + Video button) */}
+          {((product.images && product.images.length > 1) || product.video_url) && (
             <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
-              {product.images.map((img, idx) => (
+              {product.images?.map((img, idx) => (
                 <button
                   key={idx}
-                  onClick={() => setSelectedImage(img)}
-                  className={`relative w-20 h-24 rounded-2xl overflow-hidden border-2 shrink-0 transition-all ${
-                    selectedImage === img
-                      ? 'border-stone-950 shadow-md scale-102'
+                  onClick={() => {
+                    setSelectedImage(img);
+                    setMediaType('image');
+                  }}
+                  className={`relative w-20 h-24 rounded-2xl overflow-hidden border-2 shrink-0 transition-all cursor-pointer ${
+                    mediaType === 'image' && selectedImage === img
+                      ? 'border-[#AA7E18] shadow-md scale-102 ring-2 ring-[#AA7E18]/30'
                       : 'border-transparent opacity-70 hover:opacity-100'
                   }`}
                 >
                   <img src={img} alt="" className="w-full h-full object-cover" />
                 </button>
               ))}
+
+              {/* Video Thumbnail Button if video exists */}
+              {product.video_url && (
+                <button
+                  onClick={() => setMediaType('video')}
+                  className={`relative w-20 h-24 rounded-2xl overflow-hidden border-2 shrink-0 flex flex-col items-center justify-center bg-[#070E1E] text-white transition-all cursor-pointer ${
+                    mediaType === 'video'
+                      ? 'border-[#D4AF37] ring-2 ring-[#D4AF37]/50 shadow-md'
+                      : 'border-transparent opacity-85 hover:opacity-100'
+                  }`}
+                >
+                  <div className="w-8 h-8 rounded-full bg-[#D4AF37] flex items-center justify-center text-[#070E1E] mb-1 shadow-md">
+                    <Play className="w-4 h-4 fill-[#070E1E] ml-0.5" />
+                  </div>
+                  <span className="text-[10px] font-bold text-[#F7E7B6] uppercase tracking-wider">
+                    Video
+                  </span>
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -208,7 +267,7 @@ export default function ProductDetailPage() {
                   ₹{price.toLocaleString('en-IN')}
                 </span>
               )}
-              <span className="text-[11px] px-2.5 py-0.5 bg-emerald-50 text-emerald-800 font-bold rounded-md">
+              <span className="text-[11px] px-2.5 py-0.5 bg-[#D4AF37]/15 text-[#AA7E18] font-bold rounded-md border border-[#D4AF37]/30">
                 Inclusive of all taxes
               </span>
             </div>
@@ -299,8 +358,8 @@ export default function ProductDetailPage() {
                 onClick={handleAddToCart}
                 className={`flex-1 py-4 px-6 rounded-full text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg transition-all transform active:scale-95 ${
                   added
-                    ? 'bg-emerald-800 text-white'
-                    : 'bg-stone-950 text-white hover:bg-stone-800'
+                    ? 'bg-[#AA7E18] text-white shadow-xl'
+                    : 'bg-[#070E1E] text-[#F7E7B6] hover:bg-[#102142] border border-[#D4AF37]/40'
                 }`}
               >
                 {added ? (
@@ -310,7 +369,7 @@ export default function ProductDetailPage() {
                   </>
                 ) : (
                   <>
-                    <ShoppingBag className="w-4 h-4 text-white" />
+                    <ShoppingBag className="w-4 h-4 text-[#D4AF37]" />
                     <span>Add to Bag • ₹{(discountPrice * quantity).toLocaleString('en-IN')}</span>
                   </>
                 )}
@@ -452,8 +511,8 @@ export default function ProductDetailPage() {
           onClick={handleAddToCart}
           className={`flex-1 py-3 px-5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 ${
             added
-              ? 'bg-emerald-800 text-white'
-              : 'bg-stone-950 text-white'
+              ? 'bg-[#AA7E18] text-white'
+              : 'bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/40'
           }`}
         >
           {added ? (

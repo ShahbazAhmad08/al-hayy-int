@@ -262,12 +262,12 @@ function LoginContent() {
   return (
     <div className="max-w-md mx-auto px-4 py-16 sm:py-24 space-y-6">
       {redirectUrl === '/checkout' && (
-        <div className="p-4 bg-stone-100 rounded-2xl border border-stone-200 text-center space-y-1">
-          <span className="text-xs font-bold text-stone-900 flex items-center justify-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-emerald-700" />
+        <div className="p-4 bg-[#070E1E] rounded-2xl border border-[#D4AF37]/40 text-center space-y-1 shadow-lg text-[#FAF7F2]">
+          <span className="text-xs font-bold flex items-center justify-center gap-1.5 text-[#F7E7B6]">
+            <ShieldCheck className="w-4 h-4 text-[#D4AF37]" />
             Please sign in to proceed with secure checkout
           </span>
-          <p className="text-[11px] text-stone-500">Your bag items are saved safely.</p>
+          <p className="text-[11px] text-stone-300">Your bag items are saved safely.</p>
         </div>
       )}
 
@@ -303,7 +303,7 @@ function LoginContent() {
                 setStep(1);
               }}
               className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
-                authMode === 'login' ? 'bg-white text-stone-950 shadow-sm' : 'text-stone-500 hover:text-stone-900'
+                authMode === 'login' ? 'bg-[#070E1E] text-[#F7E7B6] shadow-sm border border-[#D4AF37]/40' : 'text-stone-500 hover:text-stone-900'
               }`}
             >
               Sign In
@@ -318,7 +318,7 @@ function LoginContent() {
                 setStep(1);
               }}
               className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
-                authMode === 'register' ? 'bg-white text-stone-950 shadow-sm' : 'text-stone-500 hover:text-stone-900'
+                authMode === 'register' ? 'bg-[#070E1E] text-[#F7E7B6] shadow-sm border border-[#D4AF37]/40' : 'text-stone-500 hover:text-stone-900'
               }`}
             >
               Create Account
@@ -334,7 +334,7 @@ function LoginContent() {
         )}
 
         {successMsg && (
-          <div className="p-3.5 rounded-2xl bg-emerald-50 text-emerald-800 text-xs border border-emerald-200 animate-in fade-in duration-200">
+          <div className="p-3.5 rounded-2xl bg-[#D4AF37]/15 text-[#AA7E18] text-xs border border-[#D4AF37]/30 animate-in fade-in duration-200 font-medium">
             {successMsg}
           </div>
         )}
@@ -511,7 +511,7 @@ function LoginContent() {
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <>
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <CheckCircle2 className="w-4 h-4 text-[#D4AF37]" />
                   <span>Verify & Create Account</span>
                 </>
               )}

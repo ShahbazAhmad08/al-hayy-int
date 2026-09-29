@@ -33,7 +33,9 @@ import {
   ChevronDown,
   ChevronUp,
   MapPin,
-  RefreshCw
+  RefreshCw,
+  Images,
+  Sparkles
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { 
@@ -44,7 +46,11 @@ import {
   getUserOrders, 
   updateOrderStatus,
   getInquiries,
-  CATEGORIES as INITIAL_CATEGORIES 
+  CATEGORIES as INITIAL_CATEGORIES,
+  getLiveLookbookArchive,
+  addLookbookEntry,
+  deleteLookbookEntry,
+  uploadImage
 } from '@/lib/api';
 import { getPaymentConfig, savePaymentConfig } from '@/lib/paymentConfig';
 
@@ -52,7 +58,7 @@ export default function AdminDashboardPage() {
   const router = useRouter();
   const { adminUser, isAdmin, adminLogout, loading: authLoading } = useAuth();
 
-  const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'products' | 'categories' | 'inquiries' | 'payments'
+  const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'products' | 'categories' | 'lookbook' | 'inquiries' | 'payments'
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState(INITIAL_CATEGORIES);
   const [orders, setOrders] = useState([]);
@@ -60,6 +66,18 @@ export default function AdminDashboardPage() {
   const [paymentConfig, setPaymentConfig] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
+  // Lookbook Live Management State
+  const [lookbookItems, setLookbookItems] = useState([]);
+  const [showLookbookModal, setShowLookbookModal] = useState(false);
+  const [lookbookFormData, setLookbookFormData] = useState({
+    title: '',
+    tag: 'Atelier Lookbook',
+    category: 'Kurtis',
+    imageUrl: '',
+    imageFile: null
+  });
+  const [lookbookSubmitting, setLookbookSubmitting] = useState(false);
   
   // Search & Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -100,7 +118,7 @@ export default function AdminDashboardPage() {
     }
   }, [isAdmin, authLoading, router]);
 
-  // Load custom categories and payment settings
+  // Load custom categories, payment settings, and lookbook items
   useEffect(() => {
     try {
       const savedCats = localStorage.getItem('alhayy_custom_categories');
@@ -111,6 +129,9 @@ export default function AdminDashboardPage() {
 
     const pConfig = getPaymentConfig();
     setPaymentConfig(pConfig);
+
+    // Load Live Lookbook Items
+    setLookbookItems(getLiveLookbookArchive());
   }, []);
 
   const saveCategories = (newCats) => {
@@ -259,6 +280,9 @@ export default function AdminDashboardPage() {
       category_id: String(categories[0]?.id || '1'),
       is_featured: false,
       imageFile: null,
+      additionalImageFiles: [],
+      imageUrls: [],
+      video_url: '',
       variants: [
         { size: 'S', stock: 10 },
         { size: 'M', stock: 15 },
@@ -271,6 +295,7 @@ export default function AdminDashboardPage() {
 
   const handleOpenEditProduct = (p) => {
     setEditingProduct(p);
+    const existingImages = Array.isArray(p.images) ? p.images : (p.image ? [p.image] : []);
     setProductFormData({
       title: p.title || '',
       description: p.description || '',
@@ -280,6 +305,9 @@ export default function AdminDashboardPage() {
       category_id: String(p.category_id || '1'),
       is_featured: Boolean(p.is_featured),
       imageFile: null,
+      additionalImageFiles: [],
+      imageUrls: existingImages,
+      video_url: p.video_url || '',
       variants: p.variants && p.variants.length > 0 ? p.variants : [
         { size: 'S', stock: 10 },
         { size: 'M', stock: 15 },
@@ -309,6 +337,20 @@ export default function AdminDashboardPage() {
     }));
   };
 
+  const handleRemoveExistingImage = (index) => {
+    setProductFormData(prev => ({
+      ...prev,
+      imageUrls: prev.imageUrls.filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleRemoveAdditionalFile = (index) => {
+    setProductFormData(prev => ({
+      ...prev,
+      additionalImageFiles: prev.additionalImageFiles.filter((_, i) => i !== index)
+    }));
+  };
+
   const handleSubmitProduct = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -317,16 +359,32 @@ export default function AdminDashboardPage() {
     try {
       const data = new FormData();
       data.append('title', productFormData.title);
-      data.append('description', productFormData.description);
+      
+      let finalDescription = productFormData.description || '';
+      if (productFormData.video_url && !finalDescription.includes('[VIDEO:')) {
+        finalDescription = `${finalDescription.trim()}\n\n[VIDEO: ${productFormData.video_url.trim()}]`;
+      }
+      data.append('description', finalDescription);
       data.append('price', productFormData.price);
       data.append('discount_price', productFormData.discount_price || productFormData.price);
       data.append('category_id', productFormData.category_id);
       data.append('category_name', productFormData.category);
       data.append('is_featured', productFormData.is_featured ? '1' : '0');
+      data.append('video_url', productFormData.video_url || '');
       data.append('variants', JSON.stringify(productFormData.variants));
 
       if (productFormData.imageFile) {
         data.append('image', productFormData.imageFile);
+      }
+      
+      if (productFormData.additionalImageFiles && productFormData.additionalImageFiles.length > 0) {
+        productFormData.additionalImageFiles.forEach((file, idx) => {
+          data.append(`images[${idx}]`, file);
+        });
+      }
+
+      if (productFormData.imageUrls && productFormData.imageUrls.length > 0) {
+        data.append('images', JSON.stringify(productFormData.imageUrls));
       }
 
       let res;
@@ -444,6 +502,63 @@ export default function AdminDashboardPage() {
     setFeedback({ text: 'Payment gateway API credentials and configurations saved securely.', isError: false });
   };
 
+  // Lookbook Live Management Handlers
+  const handleOpenAddLookbook = () => {
+    setLookbookFormData({
+      title: '',
+      tag: 'Atelier Lookbook',
+      category: 'Kurtis',
+      imageUrl: '',
+      imageFile: null
+    });
+    setShowLookbookModal(true);
+  };
+
+  const handleSaveLookbook = async (e) => {
+    e.preventDefault();
+    setLookbookSubmitting(true);
+    try {
+      let finalUrl = lookbookFormData.imageUrl;
+      if (lookbookFormData.imageFile) {
+        // Upload image to backend via proxy-safe helper
+        const formData = new FormData();
+        formData.append('image', lookbookFormData.imageFile);
+        const json = await uploadImage(formData);
+        if (json && json.success && json.url) {
+          finalUrl = json.url;
+        }
+      }
+      if (!finalUrl) {
+        setFeedback({ text: 'Please select an image file or provide a valid image URL', isError: true });
+        setLookbookSubmitting(false);
+        return;
+      }
+      addLookbookEntry({
+        title: lookbookFormData.title || 'Atelier Masterpiece',
+        tag: lookbookFormData.tag || 'Handcrafted Haute',
+        category: lookbookFormData.category || 'Kurtis',
+        src: finalUrl
+      });
+      setLookbookItems(getLiveLookbookArchive());
+      setShowLookbookModal(false);
+      setFeedback({ text: 'New Lookbook photograph added successfully to live archive!', isError: false });
+    } catch (err) {
+      console.error(err);
+      setFeedback({ text: 'Failed to add lookbook photograph: ' + err.message, isError: true });
+    } finally {
+      setLookbookSubmitting(false);
+    }
+  };
+
+  const handleDeleteLookbook = (id, title) => {
+    if (!window.confirm(`Are you sure you want to delete "${title || 'this photo'}" from the Lookbook archive?`)) return;
+    const success = deleteLookbookEntry(id);
+    if (success) {
+      setLookbookItems(getLiveLookbookArchive());
+      setFeedback({ text: `Photograph "${title || id}" deleted from Lookbook archive.`, isError: false });
+    }
+  };
+
   if (authLoading || (!isAdmin && typeof window !== 'undefined')) {
     return (
       <div className="min-h-screen bg-stone-50 flex items-center justify-center p-4">
@@ -512,10 +627,10 @@ export default function AdminDashboardPage() {
           <div className="p-5 rounded-3xl bg-white border border-stone-200/80 shadow-xs space-y-1">
             <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block">Total Gross Sales</span>
             <div className="flex items-baseline justify-between">
-              <span className="font-serif-luxury text-2xl font-bold text-[#022C22]">
+              <span className="font-serif-luxury text-2xl font-bold text-[#070E1E]">
                 ₹{Number(totalRevenue).toLocaleString('en-IN')}
               </span>
-              <span className="text-emerald-700 text-[10px] font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+              <span className="text-[#AA7E18] text-[10px] font-bold bg-[#D4AF37]/15 px-2.5 py-0.5 rounded-full border border-[#D4AF37]/30">
                 Live Sync
               </span>
             </div>
@@ -571,8 +686,16 @@ export default function AdminDashboardPage() {
 
           <div className="flex items-center gap-2">
             <button
+              onClick={handleOpenAddLookbook}
+              className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white border border-[#D4AF37]/50 hover:bg-[#D4AF37]/10 text-[#070E1E] text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-xs"
+            >
+              <Images className="w-3.5 h-3.5 text-[#AA7E18]" />
+              <span>Add Lookbook Photo</span>
+            </button>
+
+            <button
               onClick={handleOpenAddCategory}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-bold uppercase tracking-wider transition-all"
+              className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
             >
               <Tag className="w-3.5 h-3.5" />
               <span>Add Category</span>
@@ -580,9 +703,9 @@ export default function AdminDashboardPage() {
 
             <button
               onClick={handleOpenAddProduct}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#022C22] text-amber-200 text-xs font-bold uppercase tracking-wider hover:bg-[#064E3B] transition-all shadow-sm"
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#070E1E] text-[#F7E7B6] hover:bg-[#102142] border border-[#D4AF37]/40 text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4 text-[#D4AF37]" />
               <span>Add Product</span>
             </button>
           </div>
@@ -591,7 +714,7 @@ export default function AdminDashboardPage() {
         {/* Feedback Alert */}
         {feedback.text && (
           <div className={`p-4 rounded-2xl text-xs flex items-center justify-between animate-in fade-in duration-200 ${
-            feedback.isError ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+            feedback.isError ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-[#D4AF37]/15 text-[#AA7E18] border border-[#D4AF37]/30 font-medium'
           }`}>
             <span className="font-medium">{feedback.text}</span>
             <button onClick={() => setFeedback({ text: '', isError: false })} className="text-stone-500 hover:text-stone-900 font-bold px-2">✕</button>
@@ -604,7 +727,7 @@ export default function AdminDashboardPage() {
             onClick={() => setActiveTab('orders')}
             className={`pb-3 text-xs font-bold uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
               activeTab === 'orders'
-                ? 'border-[#022C22] text-[#022C22]'
+                ? 'border-[#070E1E] text-[#070E1E] font-bold'
                 : 'border-transparent text-stone-400 hover:text-stone-700'
             }`}
           >
@@ -616,7 +739,7 @@ export default function AdminDashboardPage() {
             onClick={() => setActiveTab('products')}
             className={`pb-3 text-xs font-bold uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
               activeTab === 'products'
-                ? 'border-[#022C22] text-[#022C22]'
+                ? 'border-[#070E1E] text-[#070E1E] font-bold'
                 : 'border-transparent text-stone-400 hover:text-stone-700'
             }`}
           >
@@ -625,10 +748,22 @@ export default function AdminDashboardPage() {
           </button>
 
           <button
+            onClick={() => setActiveTab('lookbook')}
+            className={`pb-3 text-xs font-bold uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
+              activeTab === 'lookbook'
+                ? 'border-[#070E1E] text-[#070E1E] font-bold'
+                : 'border-transparent text-stone-400 hover:text-stone-700'
+            }`}
+          >
+            <Images className="w-4 h-4 text-[#AA7E18]" />
+            <span>Lookbook Archive ({lookbookItems.length})</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('categories')}
             className={`pb-3 text-xs font-bold uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
               activeTab === 'categories'
-                ? 'border-[#022C22] text-[#022C22]'
+                ? 'border-[#070E1E] text-[#070E1E] font-bold'
                 : 'border-transparent text-stone-400 hover:text-stone-700'
             }`}
           >
@@ -640,7 +775,7 @@ export default function AdminDashboardPage() {
             onClick={() => setActiveTab('inquiries')}
             className={`pb-3 text-xs font-bold uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
               activeTab === 'inquiries'
-                ? 'border-[#022C22] text-[#022C22]'
+                ? 'border-[#070E1E] text-[#070E1E] font-bold'
                 : 'border-transparent text-stone-400 hover:text-stone-700'
             }`}
           >
@@ -652,7 +787,7 @@ export default function AdminDashboardPage() {
             onClick={() => setActiveTab('payments')}
             className={`pb-3 text-xs font-bold uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
               activeTab === 'payments'
-                ? 'border-[#022C22] text-[#022C22]'
+                ? 'border-[#070E1E] text-[#070E1E] font-bold'
                 : 'border-transparent text-stone-400 hover:text-stone-700'
             }`}
           >
@@ -746,7 +881,7 @@ export default function AdminDashboardPage() {
 
                           <span className={`px-2.5 py-1 rounded-full font-bold uppercase tracking-wider text-[10px] border ${
                             String(ord.payment_status).toLowerCase() === 'paid'
-                              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                              ? 'bg-[#D4AF37]/15 text-[#AA7E18] border-[#D4AF37]/30'
                               : 'bg-amber-50 text-amber-800 border-amber-200'
                           }`}>
                             {ord.payment_status || 'Pending'}
@@ -780,7 +915,7 @@ export default function AdminDashboardPage() {
 
                             <div className="p-3.5 bg-white rounded-xl border border-stone-200 space-y-1">
                               <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 block flex items-center gap-1">
-                                <Phone className="w-3 h-3 text-amber-700" /> Customer Contact & Actions
+                                <Phone className="w-3 h-3 text-amber-700" /> Customer Contact &amp; Actions
                               </span>
                               <div className="flex items-center justify-between pt-1">
                                 <span className="font-mono text-stone-900">{ord.phone}</span>
@@ -788,9 +923,9 @@ export default function AdminDashboardPage() {
                                   href={`https://wa.me/${ord.phone?.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Salam ${ord.customer_name}, regarding your Al Hayy Order #${displayId}:`)}`}
                                   target="_blank"
                                   rel="noreferrer"
-                                  className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-700 text-white rounded-lg text-[11px] font-semibold"
+                                  className="inline-flex items-center gap-1 px-3 py-1 bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/40 rounded-lg text-[11px] font-semibold hover:bg-[#102142]"
                                 >
-                                  <MessageSquare className="w-3 h-3" /> WhatsApp
+                                  <MessageSquare className="w-3 h-3 text-[#D4AF37]" /> WhatsApp
                                 </a>
                               </div>
                             </div>
@@ -1054,7 +1189,7 @@ export default function AdminDashboardPage() {
                       onClick={() => handleTogglePayment('razorpay')}
                       className={`px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
                         paymentConfig.razorpay?.enabled
-                          ? 'bg-emerald-700 text-white'
+                          ? 'bg-[#AA7E18] text-white shadow-sm'
                           : 'bg-stone-200 text-stone-700'
                       }`}
                     >
@@ -1105,7 +1240,7 @@ export default function AdminDashboardPage() {
                       onClick={() => handleTogglePayment('upi')}
                       className={`px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
                         paymentConfig.upi?.enabled
-                          ? 'bg-emerald-700 text-white'
+                          ? 'bg-[#AA7E18] text-white shadow-sm'
                           : 'bg-stone-200 text-stone-700'
                       }`}
                     >
@@ -1140,6 +1275,96 @@ export default function AdminDashboardPage() {
               </div>
             </div>
           </form>
+        )}
+
+        {/* -------------------- TAB 6: LOOKBOOK ARCHIVE GALLERY -------------------- */}
+        {activeTab === 'lookbook' && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-white rounded-2xl border border-stone-200">
+              <div>
+                <h3 className="font-serif-luxury text-lg font-bold text-stone-900 flex items-center gap-2">
+                  <Images className="w-5 h-5 text-[#AA7E18]" />
+                  <span>Lookbook &amp; Atelier Archive Photographs ({lookbookItems.length})</span>
+                </h3>
+                <p className="text-xs text-stone-500 mt-0.5">
+                  Manage the photos displayed on the public <Link href="/lookbook" target="_blank" className="text-[#AA7E18] font-semibold underline">/lookbook</Link> and Home page gallery.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/lookbook"
+                  target="_blank"
+                  className="px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-semibold flex items-center gap-1.5 transition-all"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>View Live Lookbook</span>
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={handleOpenAddLookbook}
+                  className="px-4 py-2 rounded-xl bg-[#070E1E] text-[#F7E7B6] hover:bg-[#102142] border border-[#D4AF37]/40 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md cursor-pointer transition-all"
+                >
+                  <Plus className="w-4 h-4 text-[#D4AF37]" />
+                  <span>Add New Photograph</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Lookbook Items Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {lookbookItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="group relative rounded-2xl overflow-hidden aspect-[3/4] bg-[#070E1E] border border-stone-200 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between p-3"
+                >
+                  {/* Ambient Blurred Layer */}
+                  <img
+                    src={item.src}
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-cover blur-sm scale-110 opacity-35"
+                    aria-hidden="true"
+                  />
+
+                  {/* Main Image */}
+                  <img
+                    src={item.src}
+                    alt={item.title}
+                    className="relative z-10 w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                  />
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#070E1E]/95 via-[#070E1E]/20 to-transparent z-20 pointer-events-none" />
+
+                  {/* Top Bar (Category & Delete) */}
+                  <div className="relative z-30 flex items-center justify-between">
+                    <span className="text-[9px] font-mono text-[#F7E7B6] bg-[#070E1E]/80 backdrop-blur-md px-2 py-0.5 rounded-full border border-[#D4AF37]/40 uppercase tracking-wider">
+                      {item.category}
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteLookbook(item.id, item.title)}
+                      className="p-1.5 rounded-full bg-red-600/90 text-white hover:bg-red-700 shadow-md transition-all cursor-pointer"
+                      title="Delete from Lookbook"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Bottom Info */}
+                  <div className="relative z-30 space-y-0.5 text-white">
+                    <span className="text-[9px] uppercase tracking-widest text-[#F7E7B6] font-bold block">
+                      {item.tag}
+                    </span>
+                    <h4 className="font-serif-luxury text-xs font-bold text-white line-clamp-1">
+                      {item.title}
+                    </h4>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
 
         {/* ADD / EDIT PRODUCT MODAL */}
@@ -1220,14 +1445,100 @@ export default function AdminDashboardPage() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-stone-700 font-bold mb-1">Image Upload (File)</label>
+                {/* Primary & Multiple Image Uploads */}
+                <div className="p-3.5 bg-stone-50 rounded-2xl border border-stone-200 space-y-3">
+                  <div>
+                    <label className="block text-stone-700 font-bold mb-1">
+                      Primary Cover Image *
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setProductFormData({ ...productFormData, imageFile: e.target.files[0] })}
+                      className="w-full text-xs text-stone-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-stone-200 file:text-stone-800 hover:file:bg-stone-300 cursor-pointer"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-stone-700 font-bold mb-1">
+                      Additional Images (Multiple)
+                    </label>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={(e) => {
+                        const newFiles = Array.from(e.target.files || []);
+                        setProductFormData(prev => ({
+                          ...prev,
+                          additionalImageFiles: [...(prev.additionalImageFiles || []), ...newFiles]
+                        }));
+                      }}
+                      className="w-full text-xs text-stone-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-900 hover:file:bg-amber-200 cursor-pointer"
+                    />
+                  </div>
+
+                  {/* Existing & New Images Preview Grid */}
+                  {((productFormData.imageUrls && productFormData.imageUrls.length > 0) || (productFormData.additionalImageFiles && productFormData.additionalImageFiles.length > 0)) && (
+                    <div className="pt-2 border-t border-stone-200">
+                      <span className="text-[11px] font-bold text-stone-600 block mb-1.5">Image Gallery Previews:</span>
+                      <div className="flex flex-wrap gap-2">
+                        {productFormData.imageUrls?.map((url, i) => (
+                          <div key={`existing-${i}`} className="relative w-14 h-18 rounded-xl overflow-hidden border border-stone-300 group">
+                            <img src={url} alt="" className="w-full h-full object-cover" />
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveExistingImage(i)}
+                              className="absolute top-1 right-1 w-4 h-4 bg-red-600 text-white rounded-full flex items-center justify-center text-[9px] shadow-sm hover:bg-red-700 cursor-pointer"
+                              title="Remove image"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                        {productFormData.additionalImageFiles?.map((f, i) => (
+                          <div key={`file-${i}`} className="relative w-14 h-18 rounded-xl overflow-hidden border border-amber-400 bg-amber-50 group flex items-center justify-center">
+                            <span className="text-[9px] text-amber-800 text-center px-1 font-mono truncate">{f.name}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveAdditionalFile(i)}
+                              className="absolute top-1 right-1 w-4 h-4 bg-red-600 text-white rounded-full flex items-center justify-center text-[9px] shadow-sm hover:bg-red-700 cursor-pointer"
+                              title="Remove file"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Product Video Section */}
+                <div className="p-3.5 bg-[#070E1E]/5 rounded-2xl border border-[#D4AF37]/30 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-[#070E1E] font-bold text-xs">
+                      🎥 Product Video Walkthrough (Optional)
+                    </label>
+                    <span className="text-[10px] text-stone-500 font-mono">MP4 / WebM / CDN link</span>
+                  </div>
                   <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setProductFormData({ ...productFormData, imageFile: e.target.files[0] })}
-                    className="w-full text-xs text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-stone-100 file:text-stone-800 hover:file:bg-stone-200"
+                    type="url"
+                    placeholder="e.g. https://domain.com/videos/product-showcase.mp4"
+                    value={productFormData.video_url || ''}
+                    onChange={(e) => setProductFormData({ ...productFormData, video_url: e.target.value })}
+                    className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white"
                   />
+                  {productFormData.video_url && (
+                    <div className="mt-2 rounded-xl overflow-hidden border border-stone-300 max-h-36 bg-black flex items-center justify-center">
+                      <video
+                        src={productFormData.video_url}
+                        controls
+                        muted
+                        className="max-h-36 w-auto"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className="pt-2 border-t border-stone-100 space-y-2">
@@ -1344,6 +1655,148 @@ export default function AdminDashboardPage() {
                     className="px-5 py-2 rounded-xl bg-stone-950 text-white text-xs font-bold uppercase tracking-wider hover:bg-stone-800"
                   >
                     Save Category
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* ADD LOOKBOOK PHOTOGRAPH MODAL */}
+        {showLookbookModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs overflow-y-auto">
+            <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-[#D4AF37]/30 p-6 sm:p-8 space-y-6 my-8 animate-in fade-in zoom-in-95 duration-200">
+              <div className="flex items-center justify-between pb-4 border-b border-stone-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-[#070E1E] text-[#D4AF37] flex items-center justify-center">
+                    <Images className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif-luxury text-lg font-bold text-[#070E1E]">
+                      Add Lookbook Photograph
+                    </h3>
+                    <p className="text-[11px] text-stone-500">Live archive for lookbook &amp; atelier photography</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowLookbookModal(false)}
+                  className="p-1.5 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveLookbook} className="space-y-4 text-xs">
+                <div>
+                  <label className="block text-stone-800 font-bold mb-1">Photograph Title *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Imperial Silk Velvet Embroidered Kaftan"
+                    value={lookbookFormData.title}
+                    onChange={(e) => setLookbookFormData({ ...lookbookFormData, title: e.target.value })}
+                    className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#070E1E]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-stone-800 font-bold mb-1">Category</label>
+                    <select
+                      value={lookbookFormData.category}
+                      onChange={(e) => setLookbookFormData({ ...lookbookFormData, category: e.target.value })}
+                      className="w-full py-2.5 px-3 rounded-xl border border-stone-200 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#070E1E]"
+                    >
+                      <option value="Kurtis">Kurtis</option>
+                      <option value="Kaftans">Kaftans</option>
+                      <option value="Co-Ords">Co-Ords</option>
+                      <option value="Jackets">Jackets</option>
+                      <option value="Pashmina">Pashmina</option>
+                      <option value="Packaging">Packaging &amp; Unboxing</option>
+                      <option value="Atelier Collection">Atelier Collection</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-stone-800 font-bold mb-1">Craft / Subtitle Tag</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Gold Wire Tilla • Srinagar Atelier"
+                      value={lookbookFormData.tag}
+                      onChange={(e) => setLookbookFormData({ ...lookbookFormData, tag: e.target.value })}
+                      className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#070E1E]"
+                    />
+                  </div>
+                </div>
+
+                {/* Image Upload / URL Input */}
+                <div className="space-y-3 p-4 bg-stone-50 rounded-2xl border border-stone-200">
+                  <div>
+                    <label className="block text-stone-800 font-bold mb-1">Upload Photograph from Computer</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setLookbookFormData(prev => ({
+                            ...prev,
+                            imageFile: file,
+                            imageUrl: URL.createObjectURL(file)
+                          }));
+                        }
+                      }}
+                      className="w-full text-xs text-stone-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#070E1E] file:text-[#F7E7B6] hover:file:bg-[#102142] cursor-pointer"
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-2 text-stone-400">
+                    <div className="h-px bg-stone-200 flex-1" />
+                    <span className="text-[10px] uppercase font-bold tracking-wider">OR Image URL</span>
+                    <div className="h-px bg-stone-200 flex-1" />
+                  </div>
+
+                  <div>
+                    <input
+                      type="url"
+                      placeholder="https://images.unsplash.com/photo-... or hosted link"
+                      value={lookbookFormData.imageUrl}
+                      onChange={(e) => setLookbookFormData({ ...lookbookFormData, imageUrl: e.target.value, imageFile: null })}
+                      className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#070E1E]"
+                    />
+                  </div>
+
+                  {lookbookFormData.imageUrl && (
+                    <div className="mt-2 flex items-center gap-3 p-2 bg-white rounded-xl border border-stone-200">
+                      <div className="w-14 h-18 rounded-lg overflow-hidden relative border border-stone-200 shrink-0">
+                        <img
+                          src={lookbookFormData.imageUrl}
+                          alt="Preview"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="text-[11px] text-stone-600 truncate">
+                        <span className="font-bold text-stone-900 block">Image Preview</span>
+                        <span className="text-[10px] text-stone-400 truncate block">Ready to publish to lookbook</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-3 flex justify-end gap-2 border-t border-stone-100">
+                  <button
+                    type="button"
+                    onClick={() => setShowLookbookModal(false)}
+                    className="px-4 py-2 rounded-xl text-stone-600 hover:bg-stone-100 text-xs font-semibold cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={lookbookSubmitting || (!lookbookFormData.imageUrl && !lookbookFormData.imageFile)}
+                    className="px-6 py-2.5 rounded-xl bg-[#070E1E] text-[#F7E7B6] hover:bg-[#102142] border border-[#D4AF37]/40 text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer shadow-md"
+                  >
+                    {lookbookSubmitting ? 'Uploading...' : 'Publish to Lookbook'}
                   </button>
                 </div>
               </form>
