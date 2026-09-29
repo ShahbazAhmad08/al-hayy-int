@@ -1,11 +1,14 @@
 import { getProducts, CATEGORIES } from '@/lib/api';
 
+export const revalidate = 3600;
+
 export default async function sitemap() {
   const baseUrl = 'https://www.alhayyinternational.com';
 
   const staticRoutes = [
     '',
     '/shop',
+    '/lookbook',
     '/our-story',
     '/contact',
     '/orders',
@@ -13,8 +16,8 @@ export default async function sitemap() {
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date().toISOString(),
-    changeFrequency: 'daily',
-    priority: route === '' ? 1.0 : 0.8,
+    changeFrequency: route === '' ? 'daily' : 'weekly',
+    priority: route === '' ? 1.0 : (route === '/shop' || route === '/lookbook' ? 0.9 : 0.8),
   }));
 
   // Fetch all live database + catalog products for comprehensive indexing

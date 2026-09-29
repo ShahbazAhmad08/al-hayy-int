@@ -197,7 +197,7 @@ export default function HeroBanner() {
               <div className="relative w-full max-w-[400px] aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl border-2 border-[#D4AF37]/40 bg-[#0B162C] group">
                 <img
                   src={slide.image}
-                  alt={`${slide.title} ${slide.titleItalic}`}
+                  alt={`${slide.title} ${slide.titleItalic} - Al Hayy International Luxury Handcrafted Atelier`}
                   className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#070E1E]/40 via-transparent to-transparent opacity-0 group-hover:opacity-20 transition-opacity" />

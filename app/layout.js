@@ -35,15 +35,15 @@ export const metadata = {
   },
   openGraph: {
     title: 'Al Hayy International | Luxury Handcrafted Kurtis, Kaftans & Designer Fashion',
-    description: 'Heritage artisan craftsmanship woven into contemporary luxury fashion at Al Hayy International.',
+    description: 'Heritage artisan craftsmanship woven into contemporary luxury fashion at Al Hayy International. Pure cotton kurtis, silk jackets & signature royal packaging.',
     url: 'https://www.alhayyinternational.com',
     siteName: 'Al Hayy International',
     images: [
       {
-        url: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200&auto=format&fit=crop',
+        url: 'https://www.alhayyinternational.com/images/hero-packaging.jpg',
         width: 1200,
         height: 630,
-        alt: 'Al Hayy International Luxury Heritage Collection',
+        alt: 'Al Hayy International Luxury Handcrafted Kurtis, Kaftans & Royal Unboxing Packaging',
       },
     ],
     locale: 'en_IN',
@@ -51,21 +51,21 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Al Hayy International | Luxury Handcrafted Fashion',
+    title: 'Al Hayy International | Luxury Handcrafted Fashion Atelier',
     description: 'Handcrafted cotton kurtis, kaftans, and fine silk jackets from Al Hayy International.',
-    images: ['https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200&auto=format&fit=crop'],
+    images: ['https://www.alhayyinternational.com/images/hero-packaging.jpg'],
   },
   icons: {
     icon: [
+      { url: '/favicon.ico' },
       { url: '/favicon.svg', type: 'image/svg+xml' },
       { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
-      { url: '/icon.svg', type: 'image/svg+xml' },
       { url: '/icon.png', sizes: '512x512', type: 'image/png' }
     ],
     apple: [
       { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }
     ],
-    shortcut: ['/favicon.svg']
+    shortcut: ['/favicon.ico']
   },
   robots: {
     index: true,

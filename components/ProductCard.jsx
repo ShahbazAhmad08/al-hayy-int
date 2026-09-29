@@ -53,7 +53,7 @@ export default function ProductCard({ product, onQuickView }) {
         <Link href={`/product/${product.id}`} className="block w-full h-full">
           <img
             src={product.image || 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=900&auto=format&fit=crop'}
-            alt={product.title}
+            alt={product.title ? `${product.title} - Handcrafted ${product.category || 'Atelier'} by Al Hayy International` : 'Al Hayy International Luxury Handcrafted Fashion'}
             className={`w-full h-full object-cover object-center transition-transform duration-700 ease-out ${
               isHovered ? 'scale-105' : 'scale-100'
             }`}
