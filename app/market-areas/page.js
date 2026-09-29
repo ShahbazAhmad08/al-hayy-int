@@ -102,56 +102,101 @@ export default function MarketAreasPage() {
         </div>
       </div>
 
-      {/* Hero Header */}
-      <section className="relative bg-[#070E1E] text-white py-16 sm:py-24 border-b border-[#D4AF37]/30 overflow-hidden">
+      {/* Hero Header with Visual Showcase */}
+      <section className="relative bg-[#070E1E] text-white py-14 sm:py-20 border-b border-[#D4AF37]/30 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-[#070E1E] via-[#0B162C] to-[#070E1E] opacity-95" />
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-[#102142] rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#102142] border border-[#D4AF37]/40 text-[#F7E7B6] text-xs uppercase tracking-widest font-semibold">
-            <Globe2 className="w-3.5 h-3.5 text-[#D4AF37]" />
-            <span>Global Export &amp; Pan-India Loom Network</span>
-          </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left Column: Heading, Context & CTAs */}
+            <div className="lg:col-span-7 space-y-6">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#102142] border border-[#D4AF37]/40 text-[#F7E7B6] text-xs uppercase tracking-widest font-semibold">
+                <Globe2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>Global Export &amp; Pan-India Loom Network</span>
+              </div>
 
-          <h1 className="font-serif-luxury text-3xl sm:text-5xl font-bold text-[#FAF7F2] leading-tight max-w-3xl">
-            Our Dedicated <span className="text-[#D4AF37]">Market Areas</span>
-          </h1>
+              <h1 className="font-serif-luxury text-3xl sm:text-5xl font-bold text-[#FAF7F2] leading-tight">
+                Our Dedicated <span className="text-[#D4AF37]">Market Areas</span>
+              </h1>
 
-          <p className="text-stone-300 text-sm sm:text-base max-w-2xl leading-relaxed font-light">
-            Al Hayy International manufactures and delivers pure cotton embroidered kurtis, handcrafted kaftans, and designer co-ord sets directly to boutiques and retailers across 20+ international export countries and over 60+ commercial textile cities in India.
-          </p>
+              <p className="text-stone-300 text-sm sm:text-base leading-relaxed font-light">
+                Al Hayy International manufactures and delivers pure cotton embroidered kurtis, handcrafted kaftans, and designer co-ord sets directly to boutiques and retailers across 20+ international export countries and over 60+ commercial textile cities in India.
+              </p>
 
-          <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <a
-              href={whatsappInquiryUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="px-7 py-3.5 rounded-full bg-[#D4AF37] hover:bg-[#F7E7B6] text-[#070E1E] font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2.5 shadow-xl transition-all active:scale-95"
-            >
-              <MessageSquare className="w-4 h-4 text-[#070E1E]" />
-              <span>Connect with B2B Concierge: +91 96224 80276</span>
-            </a>
+              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <a
+                  href={whatsappInquiryUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-7 py-3.5 rounded-full bg-[#D4AF37] hover:bg-[#F7E7B6] text-[#070E1E] font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2.5 shadow-xl transition-all active:scale-95"
+                >
+                  <MessageSquare className="w-4 h-4 text-[#070E1E]" />
+                  <span>Connect with B2B Concierge: +91 96224 80276</span>
+                </a>
 
-            <Link
-              href="/shop"
-              className="px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-[#D4AF37]/40 text-[#FAF7F2] font-semibold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95"
-            >
-              <span>Explore Live Catalog</span>
-              <ArrowRight className="w-4 h-4 text-[#D4AF37]" />
-            </Link>
-          </div>
+                <Link
+                  href="/shop"
+                  className="px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-[#D4AF37]/40 text-[#FAF7F2] font-semibold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95"
+                >
+                  <span>Explore Live Catalog</span>
+                  <ArrowRight className="w-4 h-4 text-[#D4AF37]" />
+                </Link>
+              </div>
 
-          {/* Quick Jump Anchors */}
-          <div className="pt-6 flex items-center gap-4 text-xs">
-            <a href="#international-countries" className="text-[#F7E7B6] hover:underline flex items-center gap-1 font-semibold">
-              <span>1. International Countries (20+)</span>
-              <ArrowRight className="w-3 h-3 text-[#D4AF37]" />
-            </a>
-            <span className="text-stone-600">•</span>
-            <a href="#domestic-cities" className="text-[#F7E7B6] hover:underline flex items-center gap-1 font-semibold">
-              <span>2. Pan-India Cities (60+)</span>
-              <ArrowRight className="w-3 h-3 text-[#D4AF37]" />
-            </a>
+              {/* Quick Jump Anchors */}
+              <div className="pt-4 flex items-center gap-4 text-xs border-t border-white/10">
+                <a href="#international-countries" className="text-[#F7E7B6] hover:underline flex items-center gap-1 font-semibold">
+                  <span>1. International Countries (20+)</span>
+                  <ArrowRight className="w-3 h-3 text-[#D4AF37]" />
+                </a>
+                <span className="text-stone-600">•</span>
+                <a href="#domestic-cities" className="text-[#F7E7B6] hover:underline flex items-center gap-1 font-semibold">
+                  <span>2. Pan-India Cities (60+)</span>
+                  <ArrowRight className="w-3 h-3 text-[#D4AF37]" />
+                </a>
+              </div>
+            </div>
+
+            {/* Right Column: Visual Showcase */}
+            <div className="lg:col-span-5 relative">
+              <div className="relative mx-auto max-w-md lg:max-w-none">
+                <div className="relative rounded-3xl overflow-hidden border-2 border-[#D4AF37]/50 shadow-2xl bg-[#0B162C]">
+                  <div className="relative aspect-[4/5] w-full">
+                    <Image
+                      src="/images/gallery-1.jpg"
+                      alt="Al Hayy International Global Sourcing & Market Areas"
+                      fill
+                      priority
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#070E1E] via-transparent to-transparent opacity-80" />
+                  </div>
+
+                  <div className="absolute bottom-0 inset-x-0 p-5 space-y-2">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#070E1E]/90 border border-[#D4AF37]/60 text-[#F7E7B6] text-[11px] font-bold backdrop-blur-md">
+                      <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+                      <span>20+ Countries • 60+ Indian Cities</span>
+                    </div>
+                    <p className="text-xs text-[#FAF7F2] font-serif-luxury leading-snug">
+                      Supplying boutique retailers worldwide with pure cotton luxury apparel and authentic Kashmiri craft.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Floating Top Card */}
+                <div className="absolute -top-4 -left-4 sm:-left-6 bg-[#070E1E]/95 border border-[#D4AF37]/40 backdrop-blur-md rounded-2xl p-3 shadow-2xl flex items-center gap-2.5 max-w-[200px]">
+                  <div className="w-9 h-9 rounded-xl bg-[#D4AF37] flex items-center justify-center text-[#070E1E] shrink-0 font-bold">
+                    <Globe2 className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-stone-400 block uppercase font-bold tracking-wider">Global Reach</span>
+                    <span className="text-xs font-bold text-[#F7E7B6] leading-tight block">Worldwide Supply</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

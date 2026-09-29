@@ -106,7 +106,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full transition-all duration-300">
+    <header className="sticky top-0 z-50 w-full transition-all duration-300">
       {/* Top Luxury Announcement & Social Hotline Bar */}
       <div className="bg-[#050A15] border-b border-[#D4AF37]/20 text-[11px] text-stone-300 py-1.5 px-4 hidden sm:block">
         <div className="max-w-7xl mx-auto flex items-center justify-between">

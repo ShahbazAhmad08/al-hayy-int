@@ -34,8 +34,8 @@ body {
   font-family: var(--font-sans);
   background-color: var(--sand-base);
   color: var(--dark-slate);
-  overflow-x: hidden !important;
-  max-width: 100% !important;
+  overflow-x: clip;
+  max-width: 100%;
   width: 100%;
   position: relative;
 }

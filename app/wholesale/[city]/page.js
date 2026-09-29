@@ -225,63 +225,121 @@ export default async function CityWholesalePage({ params }) {
         </div>
       </div>
 
-      {/* Hero Banner with High Intent H1 */}
-      <section className="relative bg-[#070E1E] text-white py-16 sm:py-24 border-b border-[#D4AF37]/30 overflow-hidden">
+      {/* Hero Banner with High Intent H1 & Visual Showcase */}
+      <section className="relative bg-[#070E1E] text-white py-14 sm:py-20 border-b border-[#D4AF37]/30 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-[#070E1E] via-[#0B162C] to-[#070E1E] opacity-90" />
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-[#102142] rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#102142] border border-[#D4AF37]/40 text-[#F7E7B6] text-xs uppercase tracking-widest font-semibold">
-            <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
-            <span>Direct Manufacturer Supply • {city.name}, {city.state}</span>
-          </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left Column: Heading, Context & CTAs */}
+            <div className="lg:col-span-7 space-y-6">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#102142] border border-[#D4AF37]/40 text-[#F7E7B6] text-xs uppercase tracking-widest font-semibold">
+                <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>Direct Manufacturer Supply • {city.name}, {city.state}</span>
+              </div>
 
-          <h1 className="font-serif-luxury text-3xl sm:text-5xl font-bold text-[#FAF7F2] leading-tight max-w-4xl">
-            Women Co-ord Set &amp; Pure Cotton Kurti <span className="text-[#D4AF37]">Manufacturer in {city.name}</span>
-          </h1>
+              <h1 className="font-serif-luxury text-3xl sm:text-5xl font-bold text-[#FAF7F2] leading-tight">
+                Women Co-ord Set &amp; Pure Cotton Kurti <span className="text-[#D4AF37]">Manufacturer in {city.name}</span>
+              </h1>
 
-          <p className="text-stone-300 text-sm sm:text-base max-w-3xl leading-relaxed font-light">
-            Al Hayy International is an authentic direct loom manufacturer and wholesale supplier of pure combed cotton embroidered kurtis, handcrafted cotton kaftans, and designer women co-ord sets. Supplying leading boutique owners, retail showrooms, and online fashion entrepreneurs across <strong className="text-[#F7E7B6] font-semibold">{city.name}</strong> with factory direct pricing and fast insured cargo dispatch.
-          </p>
+              <p className="text-stone-300 text-sm sm:text-base leading-relaxed font-light">
+                Al Hayy International is an authentic direct loom manufacturer and wholesale supplier of pure combed cotton embroidered kurtis, handcrafted cotton kaftans, and designer women co-ord sets. Supplying leading boutique owners, retail showrooms, and online fashion entrepreneurs across <strong className="text-[#F7E7B6] font-semibold">{city.name}</strong> with factory direct pricing and fast insured cargo dispatch.
+              </p>
 
-          {/* Quick Action B2B CTAs */}
-          <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <a
-              href={whatsappInquiryUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="px-8 py-4 rounded-full bg-[#D4AF37] hover:bg-[#F7E7B6] text-[#070E1E] font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2.5 shadow-xl transition-all active:scale-95 group"
-            >
-              <MessageSquare className="w-4 h-4 text-[#070E1E]" />
-              <span>Get Wholesale Price List on WhatsApp</span>
-            </a>
+              {/* Quick Action B2B CTAs */}
+              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <a
+                  href={whatsappInquiryUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-7 py-4 rounded-full bg-[#D4AF37] hover:bg-[#F7E7B6] text-[#070E1E] font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2.5 shadow-xl transition-all active:scale-95 group"
+                >
+                  <MessageSquare className="w-4 h-4 text-[#070E1E]" />
+                  <span>Get Wholesale Price List on WhatsApp</span>
+                </a>
 
-            <Link
-              href="/shop"
-              className="px-7 py-4 rounded-full bg-white/10 hover:bg-white/20 border border-[#D4AF37]/40 text-[#FAF7F2] font-semibold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95"
-            >
-              <span>Explore Live Retail &amp; Sample Catalog</span>
-              <ArrowRight className="w-4 h-4 text-[#D4AF37]" />
-            </Link>
-          </div>
+                <Link
+                  href="/shop"
+                  className="px-6 py-4 rounded-full bg-white/10 hover:bg-white/20 border border-[#D4AF37]/40 text-[#FAF7F2] font-semibold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95"
+                >
+                  <span>Explore Live Catalog</span>
+                  <ArrowRight className="w-4 h-4 text-[#D4AF37]" />
+                </Link>
+              </div>
 
-          {/* Key Trust Badges */}
-          <div className="pt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 border-t border-white/10 text-xs text-stone-300">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-[#D4AF37] shrink-0" />
-              <span>Direct Loom Rates (No Middlemen)</span>
+              {/* Key Trust Badges */}
+              <div className="pt-4 grid grid-cols-2 sm:grid-cols-4 gap-4 border-t border-white/10 text-xs text-stone-300">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                  <span>Direct Loom Rates</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Truck className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                  <span>{city.deliveryTime} to {city.name}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Scissors className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                  <span>Low MOQ (20-50 Pcs)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                  <span>Pure 60s Combed Cotton</span>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Truck className="w-4 h-4 text-[#D4AF37] shrink-0" />
-              <span>{city.deliveryTime} Delivery to {city.name}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Scissors className="w-4 h-4 text-[#D4AF37] shrink-0" />
-              <span>Low MOQ (20-50 Pcs) for Boutiques</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-[#D4AF37] shrink-0" />
-              <span>100% Pure Combed 60s Cotton</span>
+
+            {/* Right Column: Visual Luxury Apparel Showcase */}
+            <div className="lg:col-span-5 relative">
+              <div className="relative mx-auto max-w-md lg:max-w-none">
+                {/* Main Hero Showcase Card */}
+                <div className="relative rounded-3xl overflow-hidden border-2 border-[#D4AF37]/50 shadow-2xl bg-[#0B162C]">
+                  <div className="relative aspect-[4/5] w-full">
+                    <Image
+                      src="/images/gallery-3.jpg"
+                      alt={`Women Co-ord Set & Pure Cotton Kurti Manufacturer in ${city.name} - Al Hayy International`}
+                      fill
+                      priority
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#070E1E] via-transparent to-transparent opacity-80" />
+                  </div>
+
+                  {/* Overlay Bottom Content */}
+                  <div className="absolute bottom-0 inset-x-0 p-5 space-y-2">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#070E1E]/90 border border-[#D4AF37]/60 text-[#F7E7B6] text-[11px] font-bold backdrop-blur-md">
+                      <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+                      <span>Srinagar Looms to {city.name} Dispatch</span>
+                    </div>
+                    <p className="text-xs text-[#FAF7F2] font-serif-luxury leading-snug">
+                      Direct factory wholesale supply of luxury Kashmiri Aari needlework &amp; designer silhouettes to <strong className="text-[#D4AF37]">{city.name}</strong>.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Floating Top-Left Card */}
+                <div className="absolute -top-4 -left-4 sm:-left-6 bg-[#070E1E]/95 border border-[#D4AF37]/40 backdrop-blur-md rounded-2xl p-3 shadow-2xl flex items-center gap-2.5 max-w-[200px]">
+                  <div className="w-9 h-9 rounded-xl bg-[#D4AF37] flex items-center justify-center text-[#070E1E] shrink-0 font-bold">
+                    <Truck className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-stone-400 block uppercase font-bold tracking-wider">Fast Cargo</span>
+                    <span className="text-xs font-bold text-[#F7E7B6] leading-tight block">{city.deliveryTime} Delivery</span>
+                  </div>
+                </div>
+
+                {/* Floating Bottom-Right Card */}
+                <div className="absolute -bottom-4 -right-4 sm:-right-6 bg-[#070E1E]/95 border border-[#D4AF37]/40 backdrop-blur-md rounded-2xl p-3 shadow-2xl flex items-center gap-2.5 max-w-[210px]">
+                  <div className="w-9 h-9 rounded-xl bg-[#102142] border border-[#D4AF37]/50 flex items-center justify-center text-[#D4AF37] shrink-0">
+                    <CheckCircle2 className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-stone-400 block uppercase font-bold tracking-wider">Zero Middlemen</span>
+                    <span className="text-xs font-bold text-white leading-tight block">Direct Factory Rates</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
