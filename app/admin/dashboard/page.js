@@ -35,7 +35,10 @@ import {
   MapPin,
   RefreshCw,
   Images,
-  Sparkles
+  Sparkles,
+  Users,
+  UserCheck,
+  Shield
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { 
@@ -46,6 +49,8 @@ import {
   getUserOrders, 
   updateOrderStatus,
   getInquiries,
+  getRegisteredUsers,
+  deleteUser,
   CATEGORIES as INITIAL_CATEGORIES,
   getLiveLookbookArchive,
   addLookbookEntry,
@@ -58,11 +63,13 @@ export default function AdminDashboardPage() {
   const router = useRouter();
   const { adminUser, isAdmin, adminLogout, loading: authLoading } = useAuth();
 
-  const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'products' | 'categories' | 'lookbook' | 'inquiries' | 'payments'
+  const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'products' | 'categories' | 'lookbook' | 'users' | 'inquiries' | 'payments'
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState(INITIAL_CATEGORIES);
   const [orders, setOrders] = useState([]);
   const [inquiries, setInquiries] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [userSearchQuery, setUserSearchQuery] = useState('');
   const [paymentConfig, setPaymentConfig] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -144,12 +151,14 @@ export default function AdminDashboardPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [prods, ords, inqs] = await Promise.all([
+      const [prods, ords, inqs, usrs] = await Promise.all([
         getProducts(),
         getUserOrders(),
-        getInquiries()
+        getInquiries(),
+        getRegisteredUsers()
       ]);
       setProducts(prods || []);
+      setUsers(usrs || []);
       
       // Merge remote DB orders with any locally placed orders
       let localOrders = [];
@@ -559,6 +568,21 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const handleDeleteUser = async (userId, userName) => {
+    if (!window.confirm(`Are you sure you want to remove customer account "${userName}"?`)) return;
+    try {
+      const res = await deleteUser(userId);
+      if (res && res.success) {
+        setFeedback({ text: `Customer account "${userName}" deleted successfully.`, isError: false });
+        loadData();
+      } else {
+        setFeedback({ text: res?.message || 'Failed to delete customer account.', isError: true });
+      }
+    } catch (err) {
+      setFeedback({ text: 'Error removing customer: ' + err.message, isError: true });
+    }
+  };
+
   if (authLoading || (!isAdmin && typeof window !== 'undefined')) {
     return (
       <div className="min-h-screen bg-stone-50 flex items-center justify-center p-4">
@@ -757,6 +781,18 @@ export default function AdminDashboardPage() {
           >
             <Images className="w-4 h-4 text-[#AA7E18]" />
             <span>Lookbook Archive ({lookbookItems.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('users')}
+            className={`pb-3 text-xs font-bold uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all whitespace-nowrap ${
+              activeTab === 'users'
+                ? 'border-[#070E1E] text-[#070E1E] font-bold'
+                : 'border-transparent text-stone-400 hover:text-stone-700'
+            }`}
+          >
+            <Users className="w-4 h-4 text-[#AA7E18]" />
+            <span>Customers ({users.length})</span>
           </button>
 
           <button
@@ -1363,6 +1399,117 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB: REGISTERED CUSTOMERS & PATRONS */}
+        {activeTab === 'users' && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-3xl border border-stone-200/80 shadow-xs">
+              <div className="relative flex-1 max-w-md">
+                <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-3" />
+                <input
+                  type="text"
+                  placeholder="Search customers by name, username or email..."
+                  value={userSearchQuery}
+                  onChange={(e) => setUserSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 rounded-xl bg-stone-50 border border-stone-200 text-xs text-stone-900 focus:outline-none focus:bg-white focus:border-stone-950 transition-all"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 text-xs text-stone-600">
+                <Users className="w-4 h-4 text-[#AA7E18]" />
+                <span>Total Registered Accounts: <strong>{users.length}</strong></span>
+              </div>
+            </div>
+
+            {/* Users Table */}
+            <div className="bg-white rounded-3xl border border-stone-200/80 shadow-xs overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs text-stone-600">
+                  <thead className="bg-stone-50/80 text-stone-400 uppercase text-[10px] tracking-wider font-bold border-b border-stone-100">
+                    <tr>
+                      <th className="py-4 px-6">Customer / Patron</th>
+                      <th className="py-4 px-6">Email Address</th>
+                      <th className="py-4 px-6">Account Role</th>
+                      <th className="py-4 px-6">Registered On</th>
+                      <th className="py-4 px-6 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-stone-100">
+                    {users
+                      .filter(u => {
+                        const q = userSearchQuery.toLowerCase().trim();
+                        if (!q) return true;
+                        return (
+                          (u.username || '').toLowerCase().includes(q) ||
+                          (u.email || '').toLowerCase().includes(q)
+                        );
+                      })
+                      .map((u) => {
+                        const isMaster = (u.username || '').toLowerCase() === 'admin' || 
+                                         (u.username || '').toLowerCase() === 'alhayy_admin' || 
+                                         (u.email || '').toLowerCase() === 'admin@alhayyinternational.com';
+                        return (
+                          <tr key={u.id} className="hover:bg-stone-50/50 transition-colors">
+                            <td className="py-4 px-6">
+                              <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-full bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/30 flex items-center justify-center font-bold text-xs shadow-xs">
+                                  {(u.username || u.email || 'U').charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                  <span className="font-bold text-stone-900 block text-xs">
+                                    {u.username || 'Valued Patron'}
+                                  </span>
+                                  <span className="text-[10px] text-stone-400 font-mono">
+                                    ID: #{u.id}
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="py-4 px-6">
+                              <span className="font-mono text-stone-800 font-medium">{u.email}</span>
+                            </td>
+                            <td className="py-4 px-6">
+                              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                                u.role === 'admin'
+                                  ? 'bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/40'
+                                  : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                              }`}>
+                                {u.role === 'admin' ? 'Atelier Admin' : 'Verified Patron'}
+                              </span>
+                            </td>
+                            <td className="py-4 px-6 text-stone-500 font-mono text-[11px]">
+                              {u.created_at ? new Date(u.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Live Database Record'}
+                            </td>
+                            <td className="py-4 px-6 text-right">
+                              {!isMaster ? (
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteUser(u.id, u.username || u.email)}
+                                  className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                                  title="Delete user"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              ) : (
+                                <span className="text-[10px] text-[#AA7E18] font-bold uppercase tracking-wider bg-[#D4AF37]/10 px-2 py-0.5 rounded-full border border-[#D4AF37]/30">Master Admin</span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
+              </div>
+
+              {users.length === 0 && (
+                <div className="p-12 text-center text-stone-400 space-y-2">
+                  <Users className="w-8 h-8 mx-auto text-stone-300" />
+                  <p className="text-xs">No registered customer accounts found.</p>
+                </div>
+              )}
             </div>
           </div>
         )}

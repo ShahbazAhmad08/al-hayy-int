@@ -223,30 +223,33 @@ export default function HomePage() {
       {/* 4. THE SIGNATURE ROYAL PACKAGING EXPERIENCE (Centerpiece Showcase) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal animation="fade-up" duration={800}>
-          <div className="rounded-3xl bg-[#070E1E] text-white p-8 sm:p-14 lg:p-16 relative overflow-hidden shadow-2xl border border-[#D4AF37]/30">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center relative z-10">
+          <div className="rounded-3xl bg-[#070E1E] text-white p-6 sm:p-14 lg:p-16 relative overflow-hidden shadow-2xl border border-[#D4AF37]/30">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center relative z-10">
               {/* Image Frame */}
               <div className="lg:col-span-7 relative group">
-                <div className="relative rounded-2xl overflow-hidden aspect-[16/10] border border-[#D4AF37]/40 shadow-2xl bg-[#0B162C]">
+                <div className="relative rounded-2xl overflow-hidden aspect-[4/3] sm:aspect-[16/10] border border-[#D4AF37]/40 shadow-2xl bg-[#0B162C]">
                   <img
                     src="/images/hero-packaging.jpg"
                     alt="Al Hayy Royal Midnight Navy Luxury Unboxing Packaging"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#070E1E]/90 via-black/20 to-transparent pointer-events-none" />
                   
                   {/* Floating Gold Monogram Badge */}
-                  <div className="absolute top-4 left-4 px-3.5 py-1.5 rounded-xl bg-[#070E1E]/90 backdrop-blur-md border border-[#D4AF37]/60 text-xs flex items-center gap-2 text-[#F7E7B6] shadow-lg">
+                  <div className="hidden sm:flex absolute top-4 left-4 px-3.5 py-1.5 rounded-xl bg-[#070E1E]/90 backdrop-blur-md border border-[#D4AF37]/60 text-xs items-center gap-2 text-[#F7E7B6] shadow-lg">
                     <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
-                    <span className="font-semibold text-[11px]">Signature Rigid Box & Gold Foil Calligraphy</span>
+                    <span className="font-semibold text-[11px]">Signature Rigid Box &amp; Gold Foil Calligraphy</span>
                   </div>
 
-                  <div className="absolute bottom-4 left-4 right-4 p-3.5 bg-[#070E1E]/90 backdrop-blur-md rounded-xl border border-[#D4AF37]/30 text-xs flex items-center justify-between text-[#FAF7F2]">
+                  <div className="absolute bottom-2.5 left-2.5 right-2.5 sm:bottom-4 sm:left-4 sm:right-4 p-2.5 sm:p-3.5 bg-[#070E1E]/95 backdrop-blur-md rounded-xl border border-[#D4AF37]/40 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-[#FAF7F2] shadow-xl">
                     <div>
-                      <span className="block font-serif-luxury font-bold text-sm text-[#F7E7B6]">The Al Hayy Presentation Box</span>
-                      <span className="text-[11px] text-stone-300">Silk Ribbon Bow • Authenticity Certificate • Gift Bag</span>
+                      <div className="flex items-center justify-between sm:justify-start gap-2">
+                        <span className="font-serif-luxury font-bold text-xs sm:text-sm text-[#F7E7B6]">The Al Hayy Presentation Box</span>
+                        <span className="sm:hidden font-mono text-[#D4AF37] font-bold text-[9px] bg-[#D4AF37]/15 px-1.5 py-0.5 rounded border border-[#D4AF37]/30">Included</span>
+                      </div>
+                      <span className="text-[10px] sm:text-[11px] text-stone-300 block mt-0.5">Silk Ribbon Bow • Authenticity Certificate • Gift Bag</span>
                     </div>
-                    <span className="font-mono text-[#D4AF37] font-bold text-xs">Included with Every Order</span>
+                    <span className="hidden sm:inline font-mono text-[#D4AF37] font-bold text-xs shrink-0">Included with Every Order</span>
                   </div>
                 </div>
               </div>
