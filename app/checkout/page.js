@@ -340,7 +340,7 @@ export default function CheckoutPage() {
                   type="tel"
                   name="phone"
                   required
-                  placeholder="962248076"
+                  placeholder="9622480276"
                   value={formData.phone}
                   onChange={handleInputChange}
                   className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"

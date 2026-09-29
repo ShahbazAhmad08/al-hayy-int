@@ -334,7 +334,7 @@ export default function HomePage() {
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                   <a
-                    href="https://wa.me/91962248076?text=Salam%20Al%20Hayy,%20I%20would%20like%20to%20know%20more%20about%20your%20luxury%20gift%20packaging."
+                    href="https://wa.me/919622480276?text=Salam%20Al%20Hayy,%20I%20would%20like%20to%20know%20more%20about%20your%20luxury%20gift%20packaging."
                     target="_blank"
                     rel="noreferrer"
                     className="text-xs text-[#F7E7B6] hover:underline font-medium"
@@ -610,13 +610,13 @@ export default function HomePage() {
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-3">
                 <a
-                  href="https://wa.me/91962248076?text=Salam%20Al%20Hayy%20International,%20I%20would%20like%20a%20bespoke%20bridal%20or%20gift%20consultation."
+                  href="https://wa.me/919622480276?text=Salam%20Al%20Hayy%20International,%20I%20would%20like%20a%20bespoke%20bridal%20or%20gift%20consultation."
                   target="_blank"
                   rel="noreferrer"
                   className="px-7 py-3.5 rounded-full bg-[#D4AF37] hover:bg-[#F7E7B6] text-[#070E1E] font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95"
                 >
                   <MessageSquare className="w-4 h-4" />
-                  <span>WhatsApp Atelier Concierge: +91 96224 8076</span>
+                  <span>WhatsApp Atelier Concierge: +91 96224 80276</span>
                 </a>
 
                 <Link
@@ -654,7 +654,7 @@ export default function HomePage() {
                 <MapPin className="w-4 h-4 text-[#D4AF37] mt-0.5 shrink-0" />
                 <div>
                   <strong className="block text-[#070E1E] font-semibold">Flagship Atelier & Loom:</strong>
-                  <span className="text-stone-500">Boulevard Road, Near Dal Lake, Srinagar, Jammu & Kashmir 190001</span>
+                  <span className="text-stone-500">Srinagar, Jammu and Kashmir - 190002, India</span>
                 </div>
               </div>
 
@@ -670,8 +670,8 @@ export default function HomePage() {
                 <Phone className="w-4 h-4 text-[#D4AF37] mt-0.5 shrink-0" />
                 <div>
                   <strong className="block text-[#070E1E] font-semibold">Direct Atelier Phone & WhatsApp:</strong>
-                  <a href="tel:+91962248076" className="text-[#AA7E18] font-mono font-bold hover:underline">
-                    +91 96224 8076
+                  <a href="tel:+919622480276" className="text-[#AA7E18] font-mono font-bold hover:underline">
+                    +91 96224 80276
                   </a>
                   <span className="block text-stone-400 text-[11px]">(Mon – Sat: 10:00 AM – 8:00 PM IST)</span>
                 </div>
@@ -714,7 +714,7 @@ export default function HomePage() {
                       <input
                         type="tel"
                         required
-                        placeholder="e.g. 962248076"
+                        placeholder="e.g. 9622480276"
                         value={contactForm.phone}
                         onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
                         className="w-full py-2.5 px-3.5 rounded-xl border border-[#E5D9C8] text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
@@ -975,12 +975,12 @@ export default function HomePage() {
           <p className="text-xs text-stone-500">
             Have a custom inquiry or special size requirement?{' '}
             <a
-              href="https://wa.me/91962248076"
+              href="https://wa.me/919622480276"
               target="_blank"
               rel="noreferrer"
               className="text-[#AA7E18] font-bold hover:underline"
             >
-              Chat directly with our Atelier Concierge on WhatsApp (+91 96224 8076)
+              Chat directly with our Atelier Concierge on WhatsApp (+91 96224 80276)
             </a>
           </p>
         </div>
@@ -989,7 +989,7 @@ export default function HomePage() {
       {/* Floating WhatsApp Concierge Button */}
       <div className="fixed bottom-6 right-6 z-40">
         <a
-          href="https://wa.me/91962248076?text=Salam%20Al%20Hayy%20Atelier,%20I%20need%20assistance."
+          href="https://wa.me/919622480276?text=Salam%20Al%20Hayy%20Atelier,%20I%20need%20assistance."
           target="_blank"
           rel="noreferrer"
           className="flex items-center gap-2 px-4 py-3 rounded-full bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37] shadow-2xl hover:bg-[#102142] hover:scale-105 transition-all group"

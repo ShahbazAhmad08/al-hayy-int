@@ -50,7 +50,7 @@ export default function Footer() {
           </div>
           <div className="space-y-1">
             <h4 className="font-semibold text-[#F7E7B6] uppercase tracking-wider text-[11px]">Direct Concierge</h4>
-            <p className="text-stone-400 text-[11px]">Assistance via WhatsApp & Phone at +91 96224 8076</p>
+            <p className="text-stone-400 text-[11px]">Assistance via WhatsApp & Phone at +91 96224 80276</p>
           </div>
         </div>
 
@@ -60,35 +60,35 @@ export default function Footer() {
           <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="inline-block">
               <div className="relative h-10 w-44">
-                <Image src="/logo.avif" alt="Al Hayy" fill className="object-contain object-left invert" />
+                <Image src="/logo.avif" alt="Al Hayy International - Luxury Handcrafted Kurtis, Kaftans & Co-ord Sets" fill className="object-contain object-left invert" />
               </div>
             </Link>
             <p className="text-xs text-stone-300 max-w-sm leading-relaxed">
-              Al Hayy is a luxury Kashmiri couture atelier celebrating fine textile artistry, handcrafted needle embroidery, and timeless royal silhouettes.
+              Al Hayy International is a luxury Kashmiri couture atelier celebrating fine textile artistry, handcrafted needle embroidery, cotton kaftans, and designer co-ord sets.
             </p>
             <div className="pt-2 flex flex-col space-y-2 text-xs text-[#F7E7B6]">
               <a 
-                href="https://wa.me/91962248076" 
+                href="https://wa.me/919622480276" 
                 target="_blank" 
                 rel="noreferrer" 
                 className="hover:underline flex items-center gap-1.5"
               >
-                <span>WhatsApp / Phone:</span>
-                <strong className="font-mono text-[#D4AF37]">+91 96224 8076</strong>
+                <span>WhatsApp / Direct Call:</span>
+                <strong className="font-mono text-[#D4AF37]">+91 96224 80276</strong>
               </a>
-              <span className="text-stone-400 text-[11px]">Srinagar, Jammu & Kashmir • Worldwide Insured Dispatch</span>
+              <span className="text-stone-400 text-[11px]">Srinagar, Jammu and Kashmir - 190002 • Worldwide Insured Dispatch</span>
             </div>
-            <div className="pt-2 flex items-center space-x-3 text-xs text-stone-400">
-              <a href="https://www.instagram.com/alhayykashmir" target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">
-                Instagram
+            <div className="pt-2 flex items-center flex-wrap gap-x-3 gap-y-1 text-xs text-stone-400">
+              <a href="https://www.instagram.com/Alhayyofficial/" target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">
+                Instagram (@Alhayyofficial)
               </a>
               <span>•</span>
-              <a href="https://www.facebook.com/alhayykashmir" target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">
-                Facebook
+              <a href="https://www.linkedin.com/company/alhayykashmir/" target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">
+                LinkedIn
               </a>
               <span>•</span>
-              <a href="https://wa.me/91962248076" target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">
-                WhatsApp
+              <a href="https://wa.me/919622480276" target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors">
+                WhatsApp B2B
               </a>
             </div>
           </div>
@@ -137,7 +137,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/contact" className="hover:text-[#D4AF37] transition-colors">
-                  Contact &amp; Concierge (+91 96224 8076)
+                  Contact &amp; Concierge (+91 96224 80276)
                 </Link>
               </li>
               <li>
@@ -213,6 +213,78 @@ export default function Footer() {
             <span>•</span>
             <Link href="/lookbook" className="hover:text-[#D4AF37] transition-colors">
               Srinagar Atelier Visual Lookbook
+            </Link>
+            <span>•</span>
+            <Link href="/wholesale" className="hover:text-[#D4AF37] transition-colors text-[#F7E7B6] font-medium">
+              B2B Wholesale &amp; Manufacturing
+            </Link>
+            <span>•</span>
+            <Link href="/export" className="hover:text-[#D4AF37] transition-colors text-[#F7E7B6] font-medium">
+              Global Export Desk
+            </Link>
+            <span>•</span>
+            <Link href="/export/uae" className="hover:text-[#D4AF37] transition-colors">
+              UAE 🇦🇪
+            </Link>
+            <span>•</span>
+            <Link href="/export/usa" className="hover:text-[#D4AF37] transition-colors">
+              USA 🇺🇸
+            </Link>
+            <span>•</span>
+            <Link href="/export/uk" className="hover:text-[#D4AF37] transition-colors">
+              UK 🇬🇧
+            </Link>
+            <span>•</span>
+            <Link href="/export/canada" className="hover:text-[#D4AF37] transition-colors">
+              Canada 🇨🇦
+            </Link>
+            <span>•</span>
+            <Link href="/export/australia" className="hover:text-[#D4AF37] transition-colors">
+              Australia 🇦🇺
+            </Link>
+            <span>•</span>
+            <Link href="/export/saudi-arabia" className="hover:text-[#D4AF37] transition-colors">
+              Saudi Arabia 🇸🇦
+            </Link>
+            <span>•</span>
+            <Link href="/export/qatar" className="hover:text-[#D4AF37] transition-colors">
+              Qatar 🇶🇦
+            </Link>
+            <span>•</span>
+            <Link href="/export/singapore" className="hover:text-[#D4AF37] transition-colors">
+              Singapore 🇸🇬
+            </Link>
+            <span>•</span>
+            <Link href="/wholesale/srinagar" className="hover:text-[#D4AF37] transition-colors">
+              Srinagar
+            </Link>
+            <span>•</span>
+            <Link href="/wholesale/jammu" className="hover:text-[#D4AF37] transition-colors">
+              Jammu
+            </Link>
+            <span>•</span>
+            <Link href="/wholesale/delhi" className="hover:text-[#D4AF37] transition-colors">
+              Delhi NCR
+            </Link>
+            <span>•</span>
+            <Link href="/wholesale/mumbai" className="hover:text-[#D4AF37] transition-colors">
+              Mumbai
+            </Link>
+            <span>•</span>
+            <Link href="/wholesale/jaipur" className="hover:text-[#D4AF37] transition-colors">
+              Jaipur
+            </Link>
+            <span>•</span>
+            <Link href="/wholesale/surat" className="hover:text-[#D4AF37] transition-colors">
+              Surat
+            </Link>
+            <span>•</span>
+            <Link href="/wholesale/bengaluru" className="hover:text-[#D4AF37] transition-colors">
+              Bengaluru
+            </Link>
+            <span>•</span>
+            <Link href="/wholesale/hyderabad" className="hover:text-[#D4AF37] transition-colors">
+              Hyderabad
             </Link>
             <span>•</span>
             <Link href="/contact" className="hover:text-[#D4AF37] transition-colors">

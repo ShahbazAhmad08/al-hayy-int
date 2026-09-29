@@ -9,21 +9,25 @@ import SEOStructuredData from '@/components/SEOStructuredData';
 export const metadata = {
   metadataBase: new URL('https://www.alhayyinternational.com'),
   title: {
-    default: 'Al Hayy International | Luxury Handcrafted Kurtis, Kaftans & Designer Atelier',
+    default: 'Al Hayy International | Luxury Handcrafted Kurtis, Kaftans & Co-ord Sets Manufacturer',
     template: '%s | Al Hayy International'
   },
-  description: 'Experience master craftsmanship at Al Hayy International. Discover pure cotton embroidered kurtis, luxury handcrafted kaftans, fine mulberry silk jackets, and heritage artisanal pieces.',
+  description: 'Al Hayy International is a master manufacturer and supplier of pure cotton embroidered kurtis, luxury handcrafted kaftans, designer co-ord sets, and Kashmiri Aari needlework couture. Direct factory wholesale & retail delivery across India and worldwide.',
   keywords: [
     'Al Hayy International',
-    'Al Hayy',
-    'Al Hayy Fashion',
-    'Designer Kurtis',
-    'Cotton Kaftans',
-    'Silk Jackets',
-    'Handcrafted Embroidery',
-    'Aari Needlework',
-    'Co-ord sets',
-    'Luxury Ethnic Wear India'
+    'Cotton Kurti Manufacturer',
+    'Women Co-ord Set Manufacturer',
+    'Cotton Kaftans Supplier',
+    'Pure Cotton Kurti Wholesale India',
+    'Kashmiri Aari Embroidery Kurti',
+    'Embroidered Cotton Kurti Manufacturer Jammu & Kashmir',
+    'Long Cotton Kurti Supplier Srinagar',
+    'Cotton Short Kurti Manufacturer',
+    'Designer Ethnic Co-ord Sets Wholesale',
+    'Handcrafted Kaftans Manufacturer',
+    'Silk Jackets Manufacturer Srinagar',
+    'Direct Factory Kurtis Wholesale India',
+    'Private Label Ethnic Wear Manufacturer'
   ],
   authors: [{ name: 'Al Hayy International' }],
   creator: 'Al Hayy International Atelier',

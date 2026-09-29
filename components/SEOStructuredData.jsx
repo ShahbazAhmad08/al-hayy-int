@@ -6,21 +6,33 @@ export default function SEOStructuredData({ type = 'Organization', data = {} }) 
   if (type === 'Organization') {
     schema = {
       '@context': 'https://schema.org',
-      '@type': 'Organization',
+      '@type': ['Organization', 'WholesaleStore', 'ClothingStore'],
       name: 'Al Hayy International',
+      alternateName: 'Al Hayy Kashmir Couture & Apparel Manufacturer',
       url: 'https://www.alhayyinternational.com',
       logo: 'https://www.alhayyinternational.com/logo.avif',
-      description: 'Luxury Handcrafted Designer Apparel, Embroidered Kurtis, Kaftans, and Silk Ensembles by Al Hayy International.',
+      image: 'https://www.alhayyinternational.com/images/gallery-4.jpg',
+      description: 'Luxury Handcrafted Designer Apparel, Pure Cotton Embroidered Kurtis, Kaftans, and Designer Co-ord Sets Manufacturer & Wholesale Supplier.',
+      telephone: '+91-9622480276',
+      priceRange: '₹₹',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'Srinagar',
+        addressLocality: 'Srinagar',
+        addressRegion: 'Jammu and Kashmir',
+        postalCode: '190002',
+        addressCountry: 'IN'
+      },
       sameAs: [
-        'https://www.facebook.com/alhayyinternational',
-        'https://www.instagram.com/alhayyinternational',
+        'https://www.instagram.com/Alhayyofficial/',
+        'https://www.linkedin.com/company/alhayykashmir/'
       ],
       contactPoint: {
         '@type': 'ContactPoint',
-        telephone: '+91-962248076',
+        telephone: '+91-9622480276',
         contactType: 'customer service',
-        areaServed: 'IN',
-        availableLanguage: ['English', 'Hindi', 'Urdu']
+        areaServed: ['IN', 'AE', 'US', 'GB', 'CA', 'AU'],
+        availableLanguage: ['English', 'Hindi', 'Urdu', 'Kashmiri']
       }
     };
   } else if (type === 'Product' && data) {

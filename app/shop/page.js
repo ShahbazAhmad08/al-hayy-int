@@ -368,7 +368,7 @@ function ShopContent() {
                 </p>
               </div>
               <a
-                href="https://wa.me/91962248076?text=Salam%20Al%20Hayy%20Concierge,%20I%20need%20help%20choosing%20the%20right%20size%20and%20silhouette."
+                href="https://wa.me/919622480276?text=Salam%20Al%20Hayy%20Concierge,%20I%20need%20help%20choosing%20the%20right%20size%20and%20silhouette."
                 target="_blank"
                 rel="noreferrer"
                 className="px-5 py-2.5 rounded-full bg-[#D4AF37] hover:bg-[#F7E7B6] text-[#070E1E] font-bold uppercase tracking-wider text-[11px] whitespace-nowrap transition-all shadow-md shrink-0"

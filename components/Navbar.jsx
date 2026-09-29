@@ -94,28 +94,28 @@ export default function Navbar() {
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between relative">
             {/* Mobile Menu Button */}
-            <div className="flex items-center lg:hidden">
+            <div className="flex items-center lg:hidden z-10">
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(true)}
-                className="p-2 text-[#F7E7B6] hover:text-white transition-colors"
+                className="p-2 -ml-2 text-[#F7E7B6] hover:text-white transition-colors"
                 aria-label="Open Mobile Menu"
               >
                 <Menu className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Brand Logo with Gold Accent & Glow */}
-            <div className="flex items-center">
+            {/* Brand Logo - Centered on Mobile / Small screens, Left-aligned on Desktop */}
+            <div className="flex items-center justify-center absolute left-1/2 -translate-x-1/2 lg:relative lg:left-0 lg:translate-x-0 lg:justify-start">
               <Link href="/" className="flex items-center gap-2 group">
-                <div className="relative h-10 w-36 sm:h-11 sm:w-44">
+                <div className="relative h-9 w-36 sm:h-10 sm:w-40 md:h-11 md:w-44">
                   <Image
                     src="/logo.avif"
-                    alt="Al Hayy"
+                    alt="Al Hayy International"
                     fill
-                    className="object-contain object-left group-hover:scale-105 transition-all duration-300"
+                    className="object-contain object-center lg:object-left group-hover:scale-105 transition-all duration-300"
                     style={{
                       filter: 'brightness(0) saturate(100%) invert(80%) sepia(45%) saturate(750%) hue-rotate(5deg) contrast(110%) drop-shadow(0 0 10px rgba(212,175,55,0.6))'
                     }}
@@ -146,7 +146,7 @@ export default function Navbar() {
             </div>
 
             {/* Right Action Icons (Search, Login/Account, Cart) */}
-            <div className="flex items-center space-x-3 sm:space-x-4">
+            <div className="flex items-center space-x-2.5 sm:space-x-4 z-10">
               <button
                 type="button"
                 onClick={() => setSearchOpen(!searchOpen)}
@@ -288,12 +288,12 @@ export default function Navbar() {
 
             <div className="pt-4 border-t border-[#D4AF37]/30 space-y-3">
               <a
-                href="https://wa.me/91962248076"
+                href="https://wa.me/919622480276"
                 target="_blank"
                 rel="noreferrer"
                 className="w-full py-3 rounded-xl bg-[#0B162C] text-[#F7E7B6] border border-[#D4AF37]/40 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:bg-[#102142]"
               >
-                <span>WhatsApp Concierge: +91 96224 8076</span>
+                <span>WhatsApp Concierge: +91 96224 80276</span>
               </a>
               <Link
                 href="/login"

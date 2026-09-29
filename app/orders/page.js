@@ -185,12 +185,12 @@ function OrdersContent() {
               </div>
               <div className="pt-2 flex justify-center gap-3">
                 <a
-                  href={`https://wa.me/91962248076?text=${encodeURIComponent(`Hi, I need assistance tracking my Al Hayy order for: ${searchQuery}`)}`}
+                  href={`https://wa.me/919622480276?text=${encodeURIComponent(`Hi, I need assistance tracking my Al Hayy order for: ${searchQuery}`)}`}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#070E1E] hover:bg-[#102142] text-[#F7E7B6] border border-[#D4AF37]/40 rounded-xl text-xs font-semibold shadow-sm transition-all"
                 >
-                  <MessageSquare className="w-4 h-4 text-[#D4AF37]" /> Message WhatsApp Concierge (+91 96224 8076)
+                  <MessageSquare className="w-4 h-4 text-[#D4AF37]" /> Message WhatsApp Concierge (+91 96224 80276)
                 </a>
               </div>
             </div>
@@ -334,12 +334,12 @@ function OrdersContent() {
                       Need urgent dispatch updates or address changes?
                     </span>
                     <a
-                      href={`https://wa.me/91962248076?text=${encodeURIComponent(`Salam Al Hayy, I need help with my Order #${displayId}`)}`}
+                      href={`https://wa.me/919622480276?text=${encodeURIComponent(`Salam Al Hayy, I need help with my Order #${displayId}`)}`}
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#070E1E] hover:bg-[#102142] text-[#F7E7B6] border border-[#D4AF37]/40 rounded-xl font-semibold shadow-xs transition-all"
                     >
-                      <MessageSquare className="w-3.5 h-3.5 text-[#D4AF37]" /> WhatsApp Concierge (+91 96224 8076)
+                      <MessageSquare className="w-3.5 h-3.5 text-[#D4AF37]" /> WhatsApp Concierge (+91 96224 80276)
                     </a>
                   </div>
                 </div>

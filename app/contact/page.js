@@ -49,8 +49,8 @@ export default function ContactPage() {
               <div className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-[#D4AF37] mt-0.5 flex-shrink-0" />
                 <div>
-                  <strong className="block text-[#070E1E] font-semibold">Flagship Boutique & Loom:</strong>
-                  <span>Boulevard Road, Near Dal Lake, Srinagar, Jammu & Kashmir 190001</span>
+                  <strong className="block text-[#070E1E] font-semibold">Flagship Atelier & Office:</strong>
+                  <span>Srinagar, Jammu and Kashmir - 190002, India</span>
                 </div>
               </div>
 
@@ -66,8 +66,8 @@ export default function ContactPage() {
                 <Phone className="w-4 h-4 text-[#D4AF37] mt-0.5 flex-shrink-0" />
                 <div>
                   <strong className="block text-[#070E1E] font-semibold">Customer Care & Orders:</strong>
-                  <a href="tel:+91962248076" className="text-[#AA7E18] font-mono font-bold hover:underline">
-                    +91 96224 8076
+                  <a href="tel:+919622480276" className="text-[#AA7E18] font-mono font-bold hover:underline">
+                    +91 96224 80276
                   </a>
                 </div>
               </div>
@@ -83,7 +83,7 @@ export default function ContactPage() {
 
             <div className="pt-2">
               <a
-                href="https://wa.me/91962248076?text=Salam%20Al%20Hayy%20International%20Atelier,%20I%20have%20an%20inquiry."
+                href="https://wa.me/919622480276?text=Salam%20Al%20Hayy%20International%20Atelier,%20I%20have%20an%20inquiry%20regarding%20wholesale%20orders%20and%20catalogs."
                 target="_blank"
                 rel="noreferrer"
                 className="w-full py-3.5 px-4 rounded-xl bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/50 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:bg-[#102142] transition-colors"
@@ -130,7 +130,7 @@ export default function ContactPage() {
                     <input
                       type="tel"
                       required
-                      placeholder="e.g. 962248076"
+                      placeholder="e.g. 9622480276"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       className="w-full py-2.5 px-3.5 rounded-xl border border-[#E5D9C8] text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"

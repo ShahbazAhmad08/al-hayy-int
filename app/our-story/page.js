@@ -207,12 +207,12 @@ export default function OurStoryPage() {
 
           <div>
             <a
-              href="https://wa.me/91962248076"
+              href="https://wa.me/919622480276"
               target="_blank"
               rel="noreferrer"
               className="text-xs text-[#AA7E18] font-bold hover:underline"
             >
-              Direct Concierge: +91 96224 8076
+              Direct Concierge: +91 96224 80276
             </a>
           </div>
         </div>
