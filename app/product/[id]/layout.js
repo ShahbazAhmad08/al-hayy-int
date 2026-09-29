@@ -1,8 +1,10 @@
 import { getProductById } from '@/lib/api';
 
 export async function generateMetadata({ params }) {
+  const resolvedParams = await params;
+  const id = resolvedParams?.id;
   try {
-    const product = await getProductById(params.id);
+    const product = await getProductById(id);
     if (product) {
       const title = `${product.title} | Luxury Handcrafted Couture - Al Hayy`;
       const description = `${product.description.slice(0, 160)}... Buy authentic handcrafted Kashmiri ethnic wear at Al Hayy International.`;
@@ -38,7 +40,7 @@ export async function generateMetadata({ params }) {
     title: 'Luxury Handcrafted Couture Piece | Al Hayy International',
     description: 'Explore master artisanal kurtis, handcrafted kaftans, and luxury ethnic ensembles at Al Hayy International.',
     alternates: {
-      canonical: `https://www.alhayyinternational.com/product/${params.id}`,
+      canonical: `https://www.alhayyinternational.com/product/${id}`,
     },
   };
 }

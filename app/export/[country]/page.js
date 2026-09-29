@@ -40,7 +40,8 @@ export async function generateStaticParams() {
 
 // Dynamic SEO metadata per international country
 export async function generateMetadata({ params }) {
-  const country = getCountryBySlug(params.country);
+  const resolvedParams = await params;
+  const country = getCountryBySlug(resolvedParams?.country);
   if (!country) {
     return {
       title: 'International Apparel Exporter & Cotton Kurti Manufacturer | Al Hayy',
@@ -87,8 +88,9 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function CountryExportPage({ params }) {
-  const country = getCountryBySlug(params.country);
+export default async function CountryExportPage({ params }) {
+  const resolvedParams = await params;
+  const country = getCountryBySlug(resolvedParams?.country);
 
   if (!country) {
     notFound();

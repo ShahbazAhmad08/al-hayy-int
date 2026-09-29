@@ -40,7 +40,8 @@ export async function generateStaticParams() {
 
 // Dynamic SEO metadata per city
 export async function generateMetadata({ params }) {
-  const city = getCityBySlug(params.city);
+  const resolvedParams = await params;
+  const city = getCityBySlug(resolvedParams?.city);
   if (!city) {
     return {
       title: 'Wholesale Cotton Kurtis & Co-ord Sets Manufacturer | Al Hayy International',
@@ -92,8 +93,9 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function CityWholesalePage({ params }) {
-  const city = getCityBySlug(params.city);
+export default async function CityWholesalePage({ params }) {
+  const resolvedParams = await params;
+  const city = getCityBySlug(resolvedParams?.city);
 
   if (!city) {
     notFound();

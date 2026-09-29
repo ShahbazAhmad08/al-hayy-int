@@ -16,7 +16,8 @@ export async function generateStaticParams() {
 
 // Generate dynamic metadata for either country or city
 export async function generateMetadata({ params }) {
-  const { slug } = params;
+  const resolvedParams = await params;
+  const slug = resolvedParams?.slug;
 
   // Check if it's a country
   const country = getCountryBySlug(slug);
@@ -35,8 +36,9 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function MarketAreaSlugPage({ params }) {
-  const { slug } = params;
+export default async function MarketAreaSlugPage({ params }) {
+  const resolvedParams = await params;
+  const slug = resolvedParams?.slug;
 
   // 1. Check if it's an international country
   const country = getCountryBySlug(slug);
