@@ -29,7 +29,7 @@ import HeroBanner from '@/components/HeroBanner';
 import ProductCard from '@/components/ProductCard';
 import QuickViewModal from '@/components/QuickViewModal';
 import ScrollReveal from '@/components/ScrollReveal';
-import { getProducts, CATEGORIES, GALLERY_LOOKBOOK, submitContact } from '@/lib/api';
+import { getProducts, CATEGORIES, getLiveLookbookArchive, submitContact } from '@/lib/api';
 
 export default function HomePage() {
   const [products, setProducts] = useState([]);
@@ -40,7 +40,7 @@ export default function HomePage() {
   // Gallery Lookbook State
   const [galleryFilter, setGalleryFilter] = useState('All');
   const [showAllGallery, setShowAllGallery] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [lightboxItem, setLightboxItem] = useState(null);
 
   // Home Contact Form State
   const [contactForm, setContactForm] = useState({
@@ -365,11 +365,47 @@ export default function HomePage() {
           })}
         </div>
 
-        {/* The Lookbook Photo Grid */}
+        {/* Dynamic Lookbook Items Derived from Database & Admin Archive */}
         {(() => {
+          // 1. Build live items from products
+          const dynamicItems = [];
+          (products || []).forEach(prod => {
+            const imgs = Array.isArray(prod.images) && prod.images.length > 0 ? prod.images : [prod.image];
+            imgs.forEach((src, idx) => {
+              if (src) {
+                dynamicItems.push({
+                  id: `prod-${prod.id}-${idx}`,
+                  src,
+                  title: prod.title,
+                  category: prod.category || 'Kurtis',
+                  tag: prod.category ? `${prod.category} • Handcrafted` : 'Atelier Pure',
+                  isProduct: true,
+                  productId: prod.id,
+                  slug: prod.slug
+                });
+              }
+            });
+          });
+
+          // 2. Add custom admin lookbook items
+          const liveAdminItems = getLiveLookbookArchive().map(item => ({
+            ...item,
+            isProduct: false
+          }));
+
+          const allGalleryCombined = [...dynamicItems, ...liveAdminItems];
+          const uniqueGallery = [];
+          const seen = new Set();
+          for (const it of allGalleryCombined) {
+            if (it.src && !seen.has(it.src)) {
+              seen.add(it.src);
+              uniqueGallery.push(it);
+            }
+          }
+
           const filteredGallery = galleryFilter === 'All'
-            ? GALLERY_LOOKBOOK
-            : GALLERY_LOOKBOOK.filter(item => item.category === galleryFilter);
+            ? uniqueGallery
+            : uniqueGallery.filter(item => item.category?.toLowerCase() === galleryFilter.toLowerCase());
 
           const displayedGallery = filteredGallery.slice(0, 8);
 
@@ -384,7 +420,16 @@ export default function HomePage() {
                     duration={500}
                   >
                     <div 
-                      onClick={() => setLightboxIndex(GALLERY_LOOKBOOK.findIndex(g => g.id === item.id))}
+                      onClick={() => {
+                        if (item.isProduct && item.productId) {
+                          const p = products.find(prod => prod.id === item.productId);
+                          if (p) {
+                            setQuickViewProduct(p);
+                            return;
+                          }
+                        }
+                        setLightboxItem(item);
+                      }}
                       className="group relative rounded-2xl overflow-hidden aspect-[3/4] bg-[#070E1E] border border-[#E5D9C8] shadow-xs hover:shadow-2xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer"
                     >
                       {/* Ambient Blurred Background */}
@@ -767,10 +812,10 @@ export default function HomePage() {
       </div>
 
       {/* Fullscreen Interactive Lightbox Modal */}
-      {lightboxIndex !== null && GALLERY_LOOKBOOK[lightboxIndex] && (
+      {lightboxItem && (
         <div 
           className="fixed inset-0 z-[9999] bg-[#070E1E]/95 backdrop-blur-xl flex items-center justify-center p-4 sm:p-6 select-none animate-in fade-in duration-200"
-          onClick={() => setLightboxIndex(null)}
+          onClick={() => setLightboxItem(null)}
         >
           <div 
             className="relative max-w-4xl w-full max-h-[92vh] flex flex-col items-center justify-center"
@@ -778,7 +823,7 @@ export default function HomePage() {
           >
             {/* Close Button */}
             <button
-              onClick={() => setLightboxIndex(null)}
+              onClick={() => setLightboxItem(null)}
               className="absolute -top-12 right-0 sm:-right-4 p-2.5 rounded-full bg-white/10 hover:bg-white/25 text-white border border-[#D4AF37]/50 transition-all cursor-pointer"
               aria-label="Close Lightbox"
             >
@@ -788,39 +833,20 @@ export default function HomePage() {
             {/* Main Image Frame */}
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-[#D4AF37]/50 bg-[#0B162C] max-h-[75vh] aspect-[3/4] sm:aspect-auto sm:max-w-xl sm:h-[75vh]">
               <img
-                src={GALLERY_LOOKBOOK[lightboxIndex].src}
-                alt={GALLERY_LOOKBOOK[lightboxIndex].title}
+                src={lightboxItem.src}
+                alt={lightboxItem.title}
                 className="w-full h-full object-contain"
               />
             </div>
 
-            {/* Navigation Arrows */}
-            <button
-              onClick={() => setLightboxIndex((prev) => (prev - 1 + GALLERY_LOOKBOOK.length) % GALLERY_LOOKBOOK.length)}
-              className="absolute left-2 sm:-left-14 top-1/2 -translate-y-1/2 p-3 rounded-full bg-[#070E1E]/80 hover:bg-[#D4AF37] hover:text-[#070E1E] text-white border border-[#D4AF37]/40 backdrop-blur-md transition-all cursor-pointer"
-              aria-label="Previous Photo"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-            <button
-              onClick={() => setLightboxIndex((prev) => (prev + 1) % GALLERY_LOOKBOOK.length)}
-              className="absolute right-2 sm:-right-14 top-1/2 -translate-y-1/2 p-3 rounded-full bg-[#070E1E]/80 hover:bg-[#D4AF37] hover:text-[#070E1E] text-white border border-[#D4AF37]/40 backdrop-blur-md transition-all cursor-pointer"
-              aria-label="Next Photo"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-
             {/* Photo Info Bar */}
             <div className="mt-4 px-6 py-2.5 bg-[#0B162C]/90 rounded-2xl border border-[#D4AF37]/40 backdrop-blur-md text-center flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
               <span className="text-[10px] font-mono text-[#F7E7B6] uppercase tracking-widest px-2.5 py-0.5 rounded bg-[#D4AF37]/20 border border-[#D4AF37]/30">
-                {GALLERY_LOOKBOOK[lightboxIndex].tag}
+                {lightboxItem.tag}
               </span>
               <h3 className="font-serif-luxury text-sm font-bold text-white">
-                {GALLERY_LOOKBOOK[lightboxIndex].title}
+                {lightboxItem.title}
               </h3>
-              <span className="text-xs text-stone-400 font-mono">
-                {lightboxIndex + 1} / {GALLERY_LOOKBOOK.length}
-              </span>
             </div>
           </div>
         </div>
