@@ -38,16 +38,33 @@ async function handleProxy(request, { params }) {
       cache: 'no-store'
     });
 
+    const contentTypeHeader = response.headers.get('content-type') || '';
+    const isBinary = contentTypeHeader.startsWith('image/') || 
+                     contentTypeHeader.startsWith('video/') || 
+                     contentTypeHeader.startsWith('audio/') || 
+                     contentTypeHeader.includes('octet-stream');
+
+    const resHeaders = {
+      'Content-Type': contentTypeHeader || 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    };
+
+    if (isBinary) {
+      resHeaders['Cache-Control'] = 'public, max-age=31536000, immutable';
+      const arrayBuffer = await response.arrayBuffer();
+      return new NextResponse(Buffer.from(arrayBuffer), {
+        status: response.status,
+        headers: resHeaders
+      });
+    }
+
     const data = await response.text();
     
     return new NextResponse(data, {
       status: response.status,
-      headers: {
-        'Content-Type': response.headers.get('content-type') || 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      }
+      headers: resHeaders
     });
   } catch (error) {
     console.error('API Proxy error:', error);

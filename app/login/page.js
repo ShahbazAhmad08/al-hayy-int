@@ -18,7 +18,9 @@ import {
   RotateCcw,
   Sparkles,
   ArrowLeft,
-  Key
+  Key,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { sendEmailOtp, verifyOtpAndRegister, resetPassword } from '@/lib/api';
@@ -36,11 +38,21 @@ function LoginContent() {
   // Login Form
   const [emailOrUsername, setEmailOrUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
 
-  // Register / Forgot Form
+  // Register Form
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [showRegisterConfirmPassword, setShowRegisterConfirmPassword] = useState(false);
+
+  // Forgot Password Form
   const [newPassword, setNewPassword] = useState('');
+  const [forgotConfirmPassword, setForgotConfirmPassword] = useState('');
+  const [showForgotNewPassword, setShowForgotNewPassword] = useState(false);
+  const [showForgotConfirmPassword, setShowForgotConfirmPassword] = useState(false);
+
   const [otp, setOtp] = useState('');
   const [step, setStep] = useState(1); // 1 = Input, 2 = Verify OTP
 
@@ -132,38 +144,49 @@ function LoginContent() {
     }
   };
 
+  const isValidEmail = (emailStr) => {
+    return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(String(emailStr).trim());
+  };
+
   // 2. Handle Send OTP (Registration or Forgot Password)
   const handleSendOtp = async (e) => {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
 
-    if (!email || !email.includes('@')) {
-      setErrorMsg('Please enter a valid email address.');
+    const cleanEmail = email.trim();
+    if (!cleanEmail || !isValidEmail(cleanEmail)) {
+      setErrorMsg('Please enter a valid email address (e.g. name@example.com).');
       return;
     }
 
-    if (authMode === 'register' && (!password || password.length < 6)) {
-      setErrorMsg('Password must be at least 6 characters long.');
-      return;
+    if (authMode === 'register') {
+      if (!username || username.trim().length < 2) {
+        setErrorMsg('Please enter your full name (at least 2 characters).');
+        return;
+      }
+      if (!password || password.length < 6) {
+        setErrorMsg('Password must be at least 6 characters long.');
+        return;
+      }
+      if (password !== confirmPassword) {
+        setErrorMsg('Passwords do not match. Please verify and re-enter.');
+        return;
+      }
     }
 
     setLoading(true);
 
     try {
       const purpose = authMode === 'forgot' ? 'forgot_password' : 'register';
-      const res = await sendEmailOtp(email.trim(), username.trim(), purpose);
+      const res = await sendEmailOtp(cleanEmail, username.trim(), purpose);
 
       if (res && res.success) {
         setStep(2);
+        setOtp('');
         setResendTimer(60);
         setCanResend(false);
-        if (res.dev_otp) {
-          setOtp(res.dev_otp);
-          setSuccessMsg(`A 6-digit code has been sent to ${email}. Code: ${res.dev_otp}`);
-        } else {
-          setSuccessMsg(`A 6-digit code has been sent to ${email}. Please check your inbox.`);
-        }
+        setSuccessMsg(`A 6-digit verification code has been sent to ${cleanEmail}. Please check your email inbox.`);
       } else {
         setErrorMsg(res?.message || 'Unable to send OTP. Please check your email.');
       }
@@ -212,6 +235,10 @@ function LoginContent() {
     }
     if (!newPassword || newPassword.length < 6) {
       setErrorMsg('New password must be at least 6 characters long.');
+      return;
+    }
+    if (newPassword !== forgotConfirmPassword) {
+      setErrorMsg('Passwords do not match. Please re-enter.');
       return;
     }
 
@@ -386,13 +413,21 @@ function LoginContent() {
               <div className="relative">
                 <Lock className="w-4 h-4 text-stone-400 absolute left-3.5 top-3" />
                 <input
-                  type="password"
+                  type={showLoginPassword ? "text" : "password"}
                   required
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950 transition-all bg-stone-50/50 focus:bg-white"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950 transition-all bg-stone-50/50 focus:bg-white"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowLoginPassword(!showLoginPassword)}
+                  className="absolute right-3 top-2.5 text-stone-400 hover:text-stone-700 transition-colors"
+                  aria-label={showLoginPassword ? "Hide password" : "Show password"}
+                >
+                  {showLoginPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 
@@ -457,13 +492,46 @@ function LoginContent() {
               <div className="relative">
                 <Lock className="w-4 h-4 text-stone-400 absolute left-3.5 top-3" />
                 <input
-                  type="password"
+                  type={showRegisterPassword ? "text" : "password"}
                   required
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950 transition-all bg-stone-50/50 focus:bg-white"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950 transition-all bg-stone-50/50 focus:bg-white"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowRegisterPassword(!showRegisterPassword)}
+                  className="absolute right-3 top-2.5 text-stone-400 hover:text-stone-700 transition-colors"
+                  aria-label={showRegisterPassword ? "Hide password" : "Show password"}
+                >
+                  {showRegisterPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-stone-700 mb-1.5">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-stone-400 absolute left-3.5 top-3" />
+                <input
+                  type={showRegisterConfirmPassword ? "text" : "password"}
+                  required
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950 transition-all bg-stone-50/50 focus:bg-white"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowRegisterConfirmPassword(!showRegisterConfirmPassword)}
+                  className="absolute right-3 top-2.5 text-stone-400 hover:text-stone-700 transition-colors"
+                  aria-label={showRegisterConfirmPassword ? "Hide password" : "Show password"}
+                >
+                  {showRegisterConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 
@@ -500,18 +568,11 @@ function LoginContent() {
                 type="text"
                 required
                 maxLength={6}
-                placeholder="123456"
+                placeholder="------"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
                 className="w-full py-3 text-center text-2xl tracking-[8px] font-mono font-bold rounded-xl border border-stone-300 text-stone-900 focus:outline-none focus:ring-2 focus:ring-stone-950 bg-stone-50/50 focus:bg-white"
               />
-              <button
-                type="button"
-                onClick={() => setOtp('123456')}
-                className="text-[11px] text-[#AA7E18] font-bold hover:underline block mx-auto pt-1.5 cursor-pointer"
-              >
-                Instant Test Code: 123456
-              </button>
             </div>
 
             <button
@@ -617,18 +678,11 @@ function LoginContent() {
                 type="text"
                 required
                 maxLength={6}
-                placeholder="123456"
+                placeholder="------"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
                 className="w-full py-2.5 text-center text-xl tracking-[6px] font-mono font-bold rounded-xl border border-stone-300 text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950 bg-stone-50/50 focus:bg-white"
               />
-              <button
-                type="button"
-                onClick={() => setOtp('123456')}
-                className="text-[11px] text-[#AA7E18] font-bold hover:underline block mx-auto pt-1.5 cursor-pointer"
-              >
-                Instant Test Code: 123456
-              </button>
             </div>
 
             <div>
@@ -638,13 +692,46 @@ function LoginContent() {
               <div className="relative">
                 <Lock className="w-4 h-4 text-stone-400 absolute left-3.5 top-3" />
                 <input
-                  type="password"
+                  type={showForgotNewPassword ? "text" : "password"}
                   required
                   placeholder="••••••••"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950 bg-stone-50/50 focus:bg-white"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950 bg-stone-50/50 focus:bg-white"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowForgotNewPassword(!showForgotNewPassword)}
+                  className="absolute right-3 top-2.5 text-stone-400 hover:text-stone-700 transition-colors"
+                  aria-label={showForgotNewPassword ? "Hide password" : "Show password"}
+                >
+                  {showForgotNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-stone-700 mb-1.5">
+                Confirm New Password
+              </label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-stone-400 absolute left-3.5 top-3" />
+                <input
+                  type={showForgotConfirmPassword ? "text" : "password"}
+                  required
+                  placeholder="••••••••"
+                  value={forgotConfirmPassword}
+                  onChange={(e) => setForgotConfirmPassword(e.target.value)}
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950 bg-stone-50/50 focus:bg-white"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowForgotConfirmPassword(!showForgotConfirmPassword)}
+                  className="absolute right-3 top-2.5 text-stone-400 hover:text-stone-700 transition-colors"
+                  aria-label={showForgotConfirmPassword ? "Hide password" : "Show password"}
+                >
+                  {showForgotConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 
