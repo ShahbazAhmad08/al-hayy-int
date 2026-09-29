@@ -63,6 +63,19 @@ export default function SEOStructuredData({ type = 'Organization', data = {} }) 
         item: `https://www.alhayyinternational.com${item.url}`
       }))
     };
+  } else if (type === 'FAQPage' && Array.isArray(data)) {
+    schema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: data.map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.answer
+        }
+      }))
+    };
   }
 
   return (

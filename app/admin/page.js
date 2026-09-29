@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Lock, User, ArrowRight, Loader2, ArrowLeft, ShieldCheck } from 'lucide-react';
+import { Lock, User, ArrowRight, Loader2, ArrowLeft, ShieldCheck, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 export default function AdminAuthPage() {
@@ -13,6 +13,7 @@ export default function AdminAuthPage() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -95,7 +96,7 @@ export default function AdminAuthPage() {
                 <input
                   type="text"
                   required
-                  placeholder="Admin@alhayyinternational.com"
+                  placeholder="admin@alhayyinternational.com"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950 transition-all bg-stone-50/50 focus:bg-white"
@@ -110,13 +111,21 @@ export default function AdminAuthPage() {
               <div className="relative">
                 <Lock className="w-4 h-4 text-stone-400 absolute left-3.5 top-3" />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950 transition-all bg-stone-50/50 focus:bg-white"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950 transition-all bg-stone-50/50 focus:bg-white"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-2.5 text-stone-400 hover:text-stone-700 transition-colors p-0.5 focus:outline-none"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 
@@ -135,17 +144,6 @@ export default function AdminAuthPage() {
               )}
             </button>
           </form>
-
-          {/* Secure Hint */}
-          <div className="p-3.5 bg-stone-50 rounded-2xl border border-stone-200/70 text-[11px] text-stone-600 space-y-1">
-            <div className="font-semibold text-stone-900 flex items-center gap-1.5">
-              <span>Default Admin Credentials:</span>
-            </div>
-            <div className="flex items-center justify-between text-stone-700 pt-0.5">
-              <span>Username: <strong className="text-stone-950 font-mono bg-stone-200/70 px-1.5 py-0.5 rounded">admin</strong></span>
-              <span>Password: <strong className="text-stone-950 font-mono bg-stone-200/70 px-1.5 py-0.5 rounded">admin123</strong></span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

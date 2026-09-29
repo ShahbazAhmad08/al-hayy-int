@@ -119,17 +119,17 @@ export function AuthProvider({ children }) {
     const cleanUser = (usernameOrEmail || '').trim().toLowerCase();
     const cleanPass = (password || '').trim();
 
-    const envAdminEmail = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'Admin@alhayyinternational.com').trim().toLowerCase();
-    const envAdminPassword = (process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'Admin@1122').trim();
+    const envAdminEmail = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'admin@alhayyinternational.com').trim().toLowerCase();
+    const envAdminPassword = (process.env.NEXT_PUBLIC_ADMIN_PASSWORD || '').trim();
 
-    // Master admin single account verification from .env
-    const isMatchingUser = cleanUser === envAdminEmail || cleanUser === 'admin' || cleanUser === 'alhayy_admin' || cleanUser === 'admin@alhayyinternational.com';
-    const isMatchingPass = cleanPass === envAdminPassword || cleanPass === 'admin123' || cleanPass === 'Admin@1122' || cleanPass === 'admin@123';
+    // Master admin verification strictly from .env
+    const isMatchingUser = (envAdminEmail && cleanUser === envAdminEmail) || cleanUser === 'admin' || cleanUser === 'alhayy_admin';
+    const isMatchingPass = Boolean(envAdminPassword && cleanPass === envAdminPassword);
 
     if (isMatchingUser && isMatchingPass) {
       const adminData = {
         username: 'Admin',
-        email: process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'Admin@alhayyinternational.com',
+        email: process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'admin@alhayyinternational.com',
         role: 'admin'
       };
       setAdminUser(adminData);
@@ -143,8 +143,8 @@ export function AuthProvider({ children }) {
 
     try {
       const res = await apiLoginUser(usernameOrEmail, password);
-      if (res && res.success && (res.role === 'admin' || res.user?.role === 'admin' || cleanUser.includes('admin'))) {
-        const adminData = res.user || { username: usernameOrEmail, email: 'Admin@alhayyinternational.com', role: 'admin' };
+      if (res && res.success && (res.role === 'admin' || res.user?.role === 'admin')) {
+        const adminData = res.user || { username: usernameOrEmail, email: 'admin@alhayyinternational.com', role: 'admin' };
         setAdminUser(adminData);
         setIsAdmin(true);
         try {

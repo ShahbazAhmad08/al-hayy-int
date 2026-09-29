@@ -475,6 +475,55 @@ export default function ProductDetailPage() {
         </div>
       )}
 
+      {/* Artisanal Provenance & Royal Packaging Guarantee */}
+      <section className="p-6 sm:p-10 rounded-3xl bg-white border border-[#E5D9C8] shadow-xs space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-stone-100">
+          <div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#AA7E18]">
+              Atelier Provenance &amp; Guarantee
+            </span>
+            <h3 className="font-serif-luxury text-xl sm:text-2xl font-bold text-[#070E1E] mt-0.5">
+              The Al Hayy International Craftsmanship Pledge
+            </h3>
+          </div>
+          <span className="px-3.5 py-1.5 rounded-full bg-[#070E1E] text-[#F7E7B6] font-mono font-bold text-[11px] border border-[#D4AF37]/40 w-fit">
+            Srinagar Master Guild
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-5 rounded-2xl bg-[#FAF7F2] border border-[#E5D9C8]/70 space-y-2">
+            <div className="flex items-center gap-2 text-stone-900 font-bold text-xs">
+              <Sparkles className="w-4 h-4 text-[#AA7E18]" />
+              <span>Iconic Unboxing Presentation</span>
+            </div>
+            <p className="text-[11px] text-stone-600 leading-relaxed font-light">
+              Every creation is wrapped in whisper-soft tissue, hand-tied with pure silk ribbon, and delivered in our custom matte Midnight Navy rigid keepsake box with heavy luxury carrier bags.
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl bg-[#FAF7F2] border border-[#E5D9C8]/70 space-y-2">
+            <div className="flex items-center gap-2 text-stone-900 font-bold text-xs">
+              <ShieldCheck className="w-4 h-4 text-[#AA7E18]" />
+              <span>Authentic Aari Needlework</span>
+            </div>
+            <p className="text-[11px] text-stone-600 leading-relaxed font-light">
+              100% genuine Kashmiri needlecraft with no synthetic print substitutions. Each stitch is shaped by master artisans upholding centuries of heritage.
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl bg-[#FAF7F2] border border-[#E5D9C8]/70 space-y-2">
+            <div className="flex items-center gap-2 text-stone-900 font-bold text-xs">
+              <Truck className="w-4 h-4 text-[#AA7E18]" />
+              <span>Free Express Insured Dispatch</span>
+            </div>
+            <p className="text-[11px] text-stone-600 leading-relaxed font-light">
+              Complimentary expedited shipping across India on all prepaid orders. Fully insured transit with real-time SMS tracking updates.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Related Creations */}
       {relatedProducts.length > 0 && (
         <section className="space-y-6 pt-12 border-t border-stone-200">

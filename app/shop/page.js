@@ -10,7 +10,12 @@ import {
   X, 
   Sparkles, 
   ChevronRight,
-  RotateCcw
+  RotateCcw,
+  Feather,
+  BookOpen,
+  ShieldCheck,
+  Truck,
+  ArrowRight
 } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import QuickViewModal from '@/components/QuickViewModal';
@@ -296,6 +301,84 @@ function ShopContent() {
           )}
         </div>
       </div>
+
+      {/* SEO Collection Guide & Buying Advice */}
+      <section className="pt-8 border-t border-stone-200">
+        <ScrollReveal animation="fade-up" duration={700}>
+          <div className="bg-white rounded-3xl p-6 sm:p-10 border border-[#E5D9C8] shadow-xs space-y-8">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FAF7F2] text-[#AA7E18] border border-[#E5D9C8] text-[10px] font-bold uppercase tracking-widest">
+                <BookOpen className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>Atelier Buying &amp; Styling Guide</span>
+              </div>
+              <h2 className="font-serif-luxury text-xl sm:text-2xl font-bold text-[#070E1E]">
+                Choosing Your Perfect Kashmiri Handcrafted Silhouette
+              </h2>
+              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-light max-w-4xl">
+                Whether you are curating a festive bridal trousseau, elevating your daily ethnic wardrobe, or seeking the perfect luxury gift, our collections are handcrafted using pure natural fibers, delicate needlework, and timeless Kashmiri craftsmanship.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E5D9C8]/70 space-y-2">
+                <h3 className="font-serif-luxury text-sm font-bold text-[#070E1E]">
+                  Embroidered Kurtis &amp; Tunics
+                </h3>
+                <p className="text-[11px] text-stone-600 leading-relaxed font-light">
+                  Tailored in premium 60s combed cotton with intricate Aari threadwork along necklines and cuffs. Pair with palazzo trousers or fitted pants for effortless formal grace.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E5D9C8]/70 space-y-2">
+                <h3 className="font-serif-luxury text-sm font-bold text-[#070E1E]">
+                  Luxury Flowing Kaftans
+                </h3>
+                <p className="text-[11px] text-stone-600 leading-relaxed font-light">
+                  Free-flowing silhouettes with adjustable waist drawstrings. Breathable fabrics ensure comfort for day-to-night festive occasions, resort evenings, and intimate gatherings.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E5D9C8]/70 space-y-2">
+                <h3 className="font-serif-luxury text-sm font-bold text-[#070E1E]">
+                  Contemporary Co-Ord Sets
+                </h3>
+                <p className="text-[11px] text-stone-600 leading-relaxed font-light">
+                  Matched two-piece ensembles combining modern crop and tunic cuts with traditional needlecraft. Flattering cuts tailored for effortless modern styling.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E5D9C8]/70 space-y-2">
+                <h3 className="font-serif-luxury text-sm font-bold text-[#070E1E]">
+                  Modal Silk Jackets &amp; Pashmina
+                </h3>
+                <p className="text-[11px] text-stone-600 leading-relaxed font-light">
+                  Structured layering pieces crafted from mulberry silk and authentic Kashmiri loom weaves. Embellished with metallic zari cords and fine thread embroidery.
+                </p>
+              </div>
+            </div>
+
+            {/* Sizing & Concierge Box */}
+            <div className="p-5 rounded-2xl bg-[#070E1E] text-white flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+              <div className="space-y-1 text-center sm:text-left">
+                <span className="font-serif-luxury font-bold text-sm text-[#F7E7B6] block">
+                  Need Help Finding the Ideal Size or Custom Fit?
+                </span>
+                <p className="text-stone-300 font-light text-[11px]">
+                  Our Srinagar atelier provides personalized sizing consultations, bridal alterations, and custom colorways.
+                </p>
+              </div>
+              <a
+                href="https://wa.me/91962248076?text=Salam%20Al%20Hayy%20Concierge,%20I%20need%20help%20choosing%20the%20right%20size%20and%20silhouette."
+                target="_blank"
+                rel="noreferrer"
+                className="px-5 py-2.5 rounded-full bg-[#D4AF37] hover:bg-[#F7E7B6] text-[#070E1E] font-bold uppercase tracking-wider text-[11px] whitespace-nowrap transition-all shadow-md shrink-0"
+              >
+                WhatsApp Stylist
+              </a>
+            </div>
+          </div>
+        </ScrollReveal>
+      </section>
 
       {/* MOBILE FILTER SLIDE-OUT DRAWER */}
       {mobileFilterOpen && (

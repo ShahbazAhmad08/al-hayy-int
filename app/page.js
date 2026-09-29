@@ -7,6 +7,7 @@ import {
   Star, 
   ChevronRight,
   ChevronLeft,
+  ChevronDown,
   Sparkles, 
   ShieldCheck, 
   Truck, 
@@ -23,13 +24,45 @@ import {
   Maximize2,
   X,
   Layers,
-  Images
+  Images,
+  HelpCircle,
+  BookOpen,
+  Feather,
+  Award
 } from 'lucide-react';
 import HeroBanner from '@/components/HeroBanner';
 import ProductCard from '@/components/ProductCard';
 import QuickViewModal from '@/components/QuickViewModal';
 import ScrollReveal from '@/components/ScrollReveal';
+import SEOStructuredData from '@/components/SEOStructuredData';
 import { getProducts, CATEGORIES, getLiveLookbookArchive, submitContact } from '@/lib/api';
+
+const HOME_FAQS = [
+  {
+    question: "What makes Al Hayy International handcrafted kurtis and kaftans unique?",
+    answer: "Every Al Hayy International creation is handcrafted in our Srinagar master atelier by generational artisans. We utilize pure natural fibers—including high-thread-count combed cotton, mulberry silk, and handwoven Changthangi pashmina—adorned with authentic Kashmiri Aari hook needlework and delicate Sozni embroidery rather than commercial machine prints."
+  },
+  {
+    question: "What is included in the signature Al Hayy luxury unboxing experience?",
+    answer: "Every order arrives in our signature matte Midnight Navy rigid keepsake box, wrapped in delicate tissue paper and bound with a hand-tied golden silk ribbon bearing the embossed Arabic الحَي seal. Orders also include our heavyweight luxury shopping bag and a certificate of authenticity."
+  },
+  {
+    question: "How do I ensure the perfect fit and sizing for Al Hayy ethnic wear?",
+    answer: "Our kurtis, kaftans, and co-ord sets are tailored in standard Indian/International sizing (S to XXL) with relaxed, flattering drape silhouettes. Detailed chest, waist, and length measurements are provided on every product page. We also offer bespoke size customizations and alterations through our direct WhatsApp concierge (+91 96224 8076)."
+  },
+  {
+    question: "Does Al Hayy International deliver across India and internationally?",
+    answer: "Yes, we ship nationwide across India with complimentary express shipping on all prepaid orders. We also deliver internationally to the United States, United Kingdom, UAE, Canada, Australia, and Singapore with tracked express courier partners."
+  },
+  {
+    question: "What are the recommended care instructions for handcrafted embroidered apparel?",
+    answer: "To preserve the luster of fine embroidery and pure natural fabrics, we recommend gentle hand washing in cold water with mild detergent or eco-friendly dry cleaning. Always iron on the reverse side on low-to-medium heat and avoid direct sunlight during drying."
+  },
+  {
+    question: "Can I request custom bridal orders, color palettes, or bulk festive gifting?",
+    answer: "Yes! Our master atelier accommodates bespoke bridal ensembles, custom wedding guest trousseaus, and curated corporate/festive luxury gift packaging. Contact our atelier team directly through our WhatsApp concierge or online contact form."
+  }
+];
 
 export default function HomePage() {
   const [products, setProducts] = useState([]);
@@ -52,6 +85,7 @@ export default function HomePage() {
   });
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [contactSuccess, setContactSuccess] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState(0);
 
   useEffect(() => {
     async function loadData() {
@@ -799,6 +833,156 @@ export default function HomePage() {
               </div>
             </ScrollReveal>
           ))}
+        </div>
+      </section>
+
+      {/* 10. Comprehensive SEO Editorial & Fabric Authority Guide */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ScrollReveal animation="fade-up" duration={750}>
+          <div className="bg-white rounded-3xl p-6 sm:p-12 border border-[#E5D9C8] shadow-xs space-y-10">
+            <div className="max-w-3xl space-y-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FAF7F2] text-[#AA7E18] border border-[#E5D9C8] text-[10px] font-bold uppercase tracking-widest">
+                <BookOpen className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>Textile Craftsmanship &amp; Heritage Guide</span>
+              </div>
+              <h2 className="font-serif-luxury text-2xl sm:text-3.5xl font-bold text-[#070E1E] tracking-tight">
+                The Heritage of Pure Indian Handcrafted Fashion &amp; Atelier Couture
+              </h2>
+              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-light">
+                At <strong className="text-[#070E1E] font-semibold">Al Hayy International</strong>, we preserve time-honored artisanal techniques dating back centuries in the Kashmir valley. Our design atelier seamlessly bridges royal heritage needlework with breezy, modern silhouettes suited for luxury celebrations, bridal trousseaus, and elevated everyday sophistication.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+              <div className="p-6 rounded-2xl bg-[#FAF7F2] border border-[#E5D9C8]/80 space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-[#070E1E] text-[#D4AF37] flex items-center justify-center shadow-xs">
+                  <Feather className="w-5 h-5" />
+                </div>
+                <h3 className="font-serif-luxury text-base font-bold text-[#070E1E]">
+                  Pure Combed Cotton Kurtis &amp; Tunics
+                </h3>
+                <p className="text-xs text-stone-600 leading-relaxed font-light">
+                  Tailored with ultra-breathable, high-thread-count combed cotton. Adorned with delicate Aari needlepoint borders, versatile side slits, and hand-finished neckline plackets designed for all-season comfort.
+                </p>
+                <Link href="/shop?category=Tops & Kurtis" className="inline-flex items-center gap-1 text-[11px] font-bold text-[#AA7E18] hover:underline uppercase tracking-wider">
+                  Shop Kurtis &amp; Tunics →
+                </Link>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-[#FAF7F2] border border-[#E5D9C8]/80 space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-[#070E1E] text-[#D4AF37] flex items-center justify-center shadow-xs">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <h3 className="font-serif-luxury text-base font-bold text-[#070E1E]">
+                  Handcrafted Designer Kaftans
+                </h3>
+                <p className="text-xs text-stone-600 leading-relaxed font-light">
+                  Effortless fluid drapes featuring adjustable internal drawstrings, handcrafted metallic tassels, and artisanal paisley motifs. Ideal for resort getaways, festive soirees, and evening gatherings.
+                </p>
+                <Link href="/shop?category=Kaftaans" className="inline-flex items-center gap-1 text-[11px] font-bold text-[#AA7E18] hover:underline uppercase tracking-wider">
+                  Explore Kaftan Line →
+                </Link>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-[#FAF7F2] border border-[#E5D9C8]/80 space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-[#070E1E] text-[#D4AF37] flex items-center justify-center shadow-xs">
+                  <Award className="w-5 h-5" />
+                </div>
+                <h3 className="font-serif-luxury text-base font-bold text-[#070E1E]">
+                  Mulberry Silk Jackets &amp; Pashmina
+                </h3>
+                <p className="text-xs text-stone-600 leading-relaxed font-light">
+                  Statement tailored outerwear lined in modal satin, accented with intricate Kashmiri Tilla zari work, alongside authentic hand-spun Changthangi pashmina shawls passed through generations.
+                </p>
+                <Link href="/shop?category=Silk jackets" className="inline-flex items-center gap-1 text-[11px] font-bold text-[#AA7E18] hover:underline uppercase tracking-wider">
+                  Discover Silk Outerwear →
+                </Link>
+              </div>
+            </div>
+
+            {/* Ethical Sourcing Banner */}
+            <div className="p-6 rounded-2xl bg-[#070E1E] text-white flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="space-y-1 text-center sm:text-left">
+                <h4 className="font-serif-luxury font-bold text-base text-[#F7E7B6]">
+                  Direct Artisan Patronage &amp; Zero Synthetic Shortcuts
+                </h4>
+                <p className="text-xs text-stone-300 max-w-xl font-light">
+                  Every garment purchased directly sustains over 80 generational weaver families across Srinagar and Anantnag with fair-trade livelihood security.
+                </p>
+              </div>
+              <Link
+                href="/our-story"
+                className="px-6 py-3 rounded-full bg-[#D4AF37] hover:bg-[#F7E7B6] text-[#070E1E] font-bold text-xs uppercase tracking-wider whitespace-nowrap transition-all shrink-0"
+              >
+                Read Our Story
+              </Link>
+            </div>
+          </div>
+        </ScrollReveal>
+      </section>
+
+      {/* 11. Frequently Asked Questions (Interactive Accordion & FAQ Schema) */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ScrollReveal animation="fade-down" className="text-center space-y-2 mb-10">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white text-[#AA7E18] border border-[#E5D9C8] text-[10px] font-bold uppercase tracking-widest shadow-xs">
+            <HelpCircle className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <span>Got Questions?</span>
+          </div>
+          <h2 className="font-serif-luxury text-2xl sm:text-3.5xl font-bold text-[#070E1E]">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-xs sm:text-sm text-stone-600 max-w-md mx-auto font-light">
+            Everything you need to know about our handcrafted fabrics, sizing, royal unboxing packaging, and express shipping.
+          </p>
+        </ScrollReveal>
+
+        <SEOStructuredData type="FAQPage" data={HOME_FAQS} />
+
+        <div className="space-y-3">
+          {HOME_FAQS.map((faq, idx) => {
+            const isOpen = openFaqIndex === idx;
+            return (
+              <ScrollReveal
+                key={idx}
+                animation="fade-up"
+                delay={idx * 60}
+                duration={500}
+              >
+                <div className="rounded-2xl bg-white border border-[#E5D9C8] overflow-hidden shadow-xs transition-all">
+                  <button
+                    onClick={() => setOpenFaqIndex(isOpen ? -1 : idx)}
+                    className="w-full p-5 text-left flex items-center justify-between gap-4 font-serif-luxury font-bold text-sm sm:text-base text-[#070E1E] hover:text-[#AA7E18] transition-colors"
+                  >
+                    <span>{faq.question}</span>
+                    <ChevronDown
+                      className={`w-4 h-4 text-[#D4AF37] transition-transform duration-300 shrink-0 ${
+                        isOpen ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+                  {isOpen && (
+                    <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-stone-600 leading-relaxed font-light border-t border-stone-100 animate-in fade-in duration-200">
+                      {faq.answer}
+                    </div>
+                  )}
+                </div>
+              </ScrollReveal>
+            );
+          })}
+        </div>
+
+        <div className="text-center pt-8">
+          <p className="text-xs text-stone-500">
+            Have a custom inquiry or special size requirement?{' '}
+            <a
+              href="https://wa.me/91962248076"
+              target="_blank"
+              rel="noreferrer"
+              className="text-[#AA7E18] font-bold hover:underline"
+            >
+              Chat directly with our Atelier Concierge on WhatsApp (+91 96224 8076)
+            </a>
+          </p>
         </div>
       </section>
 

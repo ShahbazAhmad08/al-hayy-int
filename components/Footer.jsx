@@ -181,8 +181,48 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* SEO Topical Keywords & Internal Category Directory */}
+        <div className="pt-8 border-t border-[#D4AF37]/15 space-y-3 text-[11px] text-stone-400">
+          <h5 className="font-semibold text-[#F7E7B6] uppercase tracking-wider text-[10px]">
+            Popular Atelier Searches &amp; Handcrafted Categories:
+          </h5>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 leading-relaxed text-stone-400">
+            <Link href="/shop?category=Tops & Kurtis" className="hover:text-[#D4AF37] transition-colors">
+              Pure Cotton Embroidered Kurtis
+            </Link>
+            <span>•</span>
+            <Link href="/shop?category=Kaftaans" className="hover:text-[#D4AF37] transition-colors">
+              Luxury Handcrafted Kaftans
+            </Link>
+            <span>•</span>
+            <Link href="/shop?category=co-ord sets" className="hover:text-[#D4AF37] transition-colors">
+              Designer Ethnic Co-ord Sets
+            </Link>
+            <span>•</span>
+            <Link href="/shop?category=Silk jackets" className="hover:text-[#D4AF37] transition-colors">
+              Modal Silk Embroidered Jackets
+            </Link>
+            <span>•</span>
+            <Link href="/shop?category=Pashmina & Shawls" className="hover:text-[#D4AF37] transition-colors">
+              Changthangi Pashmina Shawls
+            </Link>
+            <span>•</span>
+            <Link href="/our-story" className="hover:text-[#D4AF37] transition-colors">
+              Kashmiri Aari Needlework Artisans
+            </Link>
+            <span>•</span>
+            <Link href="/lookbook" className="hover:text-[#D4AF37] transition-colors">
+              Srinagar Atelier Visual Lookbook
+            </Link>
+            <span>•</span>
+            <Link href="/contact" className="hover:text-[#D4AF37] transition-colors">
+              Bespoke Bridal &amp; Festive Trousseau
+            </Link>
+          </div>
+        </div>
+
         {/* Bottom bar */}
-        <div className="pt-8 border-t border-[#D4AF37]/20 flex flex-col sm:flex-row items-center justify-between text-[11px] text-stone-400 gap-4">
+        <div className="pt-6 border-t border-[#D4AF37]/20 flex flex-col sm:flex-row items-center justify-between text-[11px] text-stone-400 gap-4">
           <div>
             © {new Date().getFullYear()} <strong className="text-[#F7E7B6]">Al Hayy International</strong>. All Rights Reserved.
           </div>

@@ -96,6 +96,52 @@ export default function OurStoryPage() {
           </div>
         </div>
 
+        {/* Chapter 3: The Anatomy of Aari Needlecraft */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+          <div className="space-y-4">
+            <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#AA7E18]">Chapter III</span>
+            <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#070E1E]">
+              The Anatomy of Aari Needlework &amp; Sozni Motifs
+            </h2>
+            <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-light">
+              Dating back to the 15th-century Mughal courts, Kashmiri <em>Aari needlework</em> is executed with a specialized wooden-handled awl needle. Our master craftsmen loop fine silk, cotton, and metallic zari threads in unbroken concentric chain stitches across the fabric.
+            </p>
+            <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-light">
+              Every curve represents classic motifs inspired by the Kashmir valley: the iconic <em>Badam</em> (almond paisley), <em>Chinar</em> leaves, floral blossoms, and geometric Persian lattices. A single kurti requires 48 to 72 hours of uninterrupted hand manipulation.
+            </p>
+          </div>
+          <div className="rounded-3xl overflow-hidden shadow-xl border border-[#E5D9C8] aspect-[4/3] bg-[#070E1E]">
+            <img
+              src="/images/gallery-37.jpg"
+              alt="Artisan Aari Needlework"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+
+        {/* Chapter 4: Pure Natural Fibers */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+          <div className="rounded-3xl overflow-hidden shadow-xl border border-[#D4AF37]/40 aspect-[4/3] bg-[#070E1E] md:order-1 order-2">
+            <img
+              src="/images/gallery-6.jpg"
+              alt="Pure Cotton and Silk Fabrics"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="space-y-4 md:order-2 order-1">
+            <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#AA7E18]">Chapter IV</span>
+            <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#070E1E]">
+              Ethical Sourcing &amp; Pure Natural Fibers
+            </h2>
+            <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-light">
+              We completely reject fast-fashion synthetic polyester shortcuts. Our garments are exclusively structured on high-thread-count 60s pure combed cotton, fine modal silk, and ethically procured Changthangi pashmina wool.
+            </p>
+            <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-light">
+              The result is a textile that feels weightless against the skin, breathes effortlessly in tropical warmth, and drapes with majestic fluid grace.
+            </p>
+          </div>
+        </div>
+
         {/* Core Pillars */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6">
           <div className="p-6 bg-white rounded-3xl border border-[#E5D9C8] shadow-xs space-y-3">

@@ -78,6 +78,9 @@ export const metadata = {
       'max-snippet': -1,
     },
   },
+  verification: {
+    google: '4_iLi9JW3mKqEIHytf3JBCoS7EWBJnq5_5unrTKvRZI',
+  },
 };
 
 import LuxuryPreloader from '@/components/LuxuryPreloader';
@@ -86,6 +89,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth overflow-x-hidden max-w-full">
       <head>
+        <meta name="google-site-verification" content="4_iLi9JW3mKqEIHytf3JBCoS7EWBJnq5_5unrTKvRZI" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <SEOStructuredData type="Organization" />
