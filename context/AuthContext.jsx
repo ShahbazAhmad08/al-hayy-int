@@ -168,6 +168,23 @@ export function AuthProvider({ children }) {
     } catch (e) {}
   };
 
+  // 6. Multi-Auth Direct User Login (Phone OTP / Google / Firebase)
+  const loginWithSyncedUser = (userData) => {
+    const customerData = {
+      id: userData.id || userData.user_id || userData.uid || 'user_' + Date.now(),
+      username: userData.username || userData.name || userData.displayName || (userData.email ? userData.email.split('@')[0] : userData.phone) || 'Patron',
+      email: userData.email || '',
+      phone: userData.phone || userData.phoneNumber || '',
+      role: 'customer',
+      auth_provider: userData.login_type || userData.auth_provider || 'phone'
+    };
+    setUser(customerData);
+    try {
+      localStorage.setItem('alhayy_customer_user', JSON.stringify(customerData));
+    } catch (e) {}
+    return customerData;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -180,6 +197,7 @@ export function AuthProvider({ children }) {
         sendEmailOtp,
         verifyOtpAndRegister,
         customerLogout,
+        loginWithSyncedUser,
         adminLogin,
         adminLogout,
         // Backwards compatibility aliases
@@ -190,6 +208,7 @@ export function AuthProvider({ children }) {
       {children}
     </AuthContext.Provider>
   );
+
 }
 
 export function useAuth() {
