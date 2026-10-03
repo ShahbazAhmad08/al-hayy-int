@@ -31,7 +31,7 @@ export async function POST(request) {
     if (!isValid) {
       try {
         const remoteRes = await fetch(
-          'http://alhayyinternational-com.stackstaging.com/v2/api/verify-otp-register.php',
+          'https://alhayyinternational-com.stackstaging.com/v2/api/verify-otp-register.php',
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -75,7 +75,7 @@ export async function POST(request) {
 
     try {
       const syncRes = await fetch(
-        'http://alhayyinternational-com.stackstaging.com/v2/api/verify-auth.php',
+        'https://alhayyinternational-com.stackstaging.com/v2/api/verify-auth.php',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

@@ -2,6 +2,7 @@ import { getProducts, CATEGORIES } from '@/lib/api';
 import { CITIES_DATA } from '@/lib/citiesData';
 import { COUNTRIES_DATA } from '@/lib/internationalCountriesData';
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
 
 export default async function sitemap() {

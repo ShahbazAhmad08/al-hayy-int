@@ -37,7 +37,7 @@ const nextConfig = {
     return [
       {
         source: '/backend-api/:path*',
-        destination: 'http://alhayyinternational-com.stackstaging.com/v2/api/:path*',
+        destination: 'https://alhayyinternational-com.stackstaging.com/v2/api/:path*',
       },
     ];
   },
