@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
   Star, 
@@ -17,6 +17,7 @@ import {
   Clock,
   Play,
   Video,
+  Zap,
   Image as ImageIcon
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
@@ -25,6 +26,7 @@ import ProductCard from '@/components/ProductCard';
 import SEOStructuredData from '@/components/SEOStructuredData';
 
 export default function ProductDetailPage() {
+  const router = useRouter();
   const params = useParams();
   const productId = params?.id;
   const { addToCart } = useCart();
@@ -100,6 +102,11 @@ export default function ProductDetailPage() {
     addToCart(product, selectedSize, selectedColor, quantity);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
+  };
+
+  const handleBuyNow = () => {
+    addToCart(product, selectedSize, selectedColor, quantity, false);
+    router.push('/checkout');
   };
 
   const handleShare = () => {
@@ -356,10 +363,10 @@ export default function ProductDetailPage() {
               {/* Add to Bag Button */}
               <button
                 onClick={handleAddToCart}
-                className={`flex-1 py-4 px-6 rounded-full text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg transition-all transform active:scale-95 ${
+                className={`flex-1 py-4 px-5 rounded-full text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 shadow-md transition-all transform active:scale-95 ${
                   added
                     ? 'bg-[#AA7E18] text-white shadow-xl'
-                    : 'bg-[#070E1E] text-[#F7E7B6] hover:bg-[#102142] border border-[#D4AF37]/40'
+                    : 'bg-stone-900 text-stone-100 hover:bg-black border border-stone-700'
                 }`}
               >
                 {added ? (
@@ -370,9 +377,18 @@ export default function ProductDetailPage() {
                 ) : (
                   <>
                     <ShoppingBag className="w-4 h-4 text-[#D4AF37]" />
-                    <span>Add to Bag • ₹{(discountPrice * quantity).toLocaleString('en-IN')}</span>
+                    <span>Add to Bag</span>
                   </>
                 )}
+              </button>
+
+              {/* Instant Buy Now Button */}
+              <button
+                onClick={handleBuyNow}
+                className="flex-1 py-4 px-5 rounded-full text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 bg-[#070E1E] text-[#F7E7B6] hover:bg-[#102142] border border-[#D4AF37]/60 shadow-xl transition-all transform active:scale-95 cursor-pointer"
+              >
+                <Zap className="w-4 h-4 text-[#D4AF37] fill-[#D4AF37]" />
+                <span>Buy Now • ₹{(discountPrice * quantity).toLocaleString('en-IN')}</span>
               </button>
             </div>
           </div>
@@ -550,31 +566,34 @@ export default function ProductDetailPage() {
       )}
 
       {/* STICKY BOTTOM MOBILE BUY BAR */}
-      <div className="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md p-3 sm:p-4 border-t border-stone-200 shadow-2xl lg:hidden z-30 flex items-center justify-between gap-3">
-        <div>
-          <span className="text-[10px] text-stone-400 block uppercase">Price</span>
-          <span className="text-base font-bold text-stone-950">₹{discountPrice.toLocaleString('en-IN')}</span>
-        </div>
-
+      <div className="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md p-2.5 sm:p-3.5 border-t border-stone-200 shadow-2xl lg:hidden z-30 flex items-center gap-2">
         <button
           onClick={handleAddToCart}
-          className={`flex-1 py-3 px-5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 ${
+          className={`flex-1 py-3 px-2.5 rounded-full text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-95 ${
             added
               ? 'bg-[#AA7E18] text-white'
-              : 'bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/40'
+              : 'bg-stone-900 text-stone-100'
           }`}
         >
           {added ? (
             <>
-              <Check className="w-4 h-4 text-white" />
-              <span>Added!</span>
+              <Check className="w-3.5 h-3.5 text-white" />
+              <span>Added</span>
             </>
           ) : (
             <>
-              <ShoppingBag className="w-4 h-4" />
-              <span>Add to Bag ({selectedSize})</span>
+              <ShoppingBag className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span>Add to Bag</span>
             </>
           )}
+        </button>
+
+        <button
+          onClick={handleBuyNow}
+          className="flex-1 py-3 px-2.5 rounded-full text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/50 shadow-md transition-all active:scale-95 cursor-pointer"
+        >
+          <Zap className="w-3.5 h-3.5 text-[#D4AF37] fill-[#D4AF37]" />
+          <span>Buy Now • ₹{discountPrice.toLocaleString('en-IN')}</span>
         </button>
       </div>
     </div>

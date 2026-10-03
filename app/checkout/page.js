@@ -54,18 +54,17 @@ export default function CheckoutPage() {
     pincode: '',
   });
 
-  // 1. Strict Auth Check: User must be signed in to checkout
+  // 1. Guest & Optional Auth Handling: If signed in, auto-fill details; if guest, allow seamless checkout
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.push('/login?redirect=/checkout');
-    } else if (user) {
+    if (user) {
       setFormData(prev => ({
         ...prev,
-        customer_name: user.username || '',
-        email: user.email || ''
+        customer_name: prev.customer_name || user.username || user.name || '',
+        email: prev.email || user.email || '',
+        phone: prev.phone || user.phone || ''
       }));
     }
-  }, [user, authLoading, router]);
+  }, [user]);
 
   // Load payment gateway settings dynamically from backend & localStorage
   useEffect(() => {
@@ -133,15 +132,42 @@ export default function CheckoutPage() {
 
       if (selectedGateway === 'cod') {
         // COD order placed immediately
-        setOrderSuccess({
+        const successObj = {
           orderId: returnedId,
           method: 'Cash on Delivery',
           customer_name: formData.customer_name,
           phone: formData.phone,
+          email: formData.email,
           address: payload.address,
           total: grandTotal,
-          items: [...cart]
-        });
+          items: [...cart],
+          date: new Date().toISOString()
+        };
+
+        try {
+          const stored = localStorage.getItem('alhayy_customer_orders');
+          const orderList = stored ? JSON.parse(stored) : [];
+          orderList.unshift({
+            id: String(returnedId),
+            customer_name: formData.customer_name,
+            phone: formData.phone,
+            email: formData.email,
+            address: payload.address,
+            total_amount: grandTotal,
+            payment_status: 'pending_cod',
+            order_status: 'placed',
+            created_at: new Date().toISOString(),
+            items: [...cart]
+          });
+          localStorage.setItem('alhayy_customer_orders', JSON.stringify(orderList));
+          localStorage.setItem('alhayy_last_order_phone', formData.phone);
+          localStorage.setItem('alhayy_last_order_id', String(returnedId));
+          if (formData.email) {
+            localStorage.setItem('alhayy_last_order_email', formData.email);
+          }
+        } catch (e) {}
+
+        setOrderSuccess(successObj);
         clearCart();
         triggerConfetti();
       } else {
@@ -164,6 +190,7 @@ export default function CheckoutPage() {
       method: `${gatewayName.toUpperCase()} (Paid)`,
       customer_name: formData.customer_name,
       phone: formData.phone,
+      email: formData.email,
       address: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.pincode}`,
       total: grandTotal,
       items: [...cart],
@@ -177,6 +204,7 @@ export default function CheckoutPage() {
         id: String(confirmedOrderId),
         customer_name: formData.customer_name,
         phone: formData.phone,
+        email: formData.email,
         address: successObj.address,
         total_amount: grandTotal,
         payment_status: 'paid',
@@ -187,6 +215,9 @@ export default function CheckoutPage() {
       localStorage.setItem('alhayy_customer_orders', JSON.stringify(orderList));
       localStorage.setItem('alhayy_last_order_phone', formData.phone);
       localStorage.setItem('alhayy_last_order_id', String(confirmedOrderId));
+      if (formData.email) {
+        localStorage.setItem('alhayy_last_order_email', formData.email);
+      }
     } catch (e) {}
 
     setOrderSuccess(successObj);
@@ -194,9 +225,6 @@ export default function CheckoutPage() {
     triggerConfetti();
   };
 
-  if (!user && !authLoading) {
-    return null; // Will redirect in useEffect
-  }
 
   // SUCCESS CONFIRMATION SCREEN
   if (orderSuccess) {
@@ -349,12 +377,14 @@ export default function CheckoutPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-stone-700 mb-1">Email Address *</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold text-stone-700">Email Address</label>
+                <span className="text-[10px] text-stone-400 font-medium">Optional (for invoice & tracking)</span>
+              </div>
               <input
                 type="email"
                 name="email"
-                required
-                placeholder="patron@example.com"
+                placeholder="patron@example.com (optional)"
                 value={formData.email}
                 onChange={handleInputChange}
                 className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950"

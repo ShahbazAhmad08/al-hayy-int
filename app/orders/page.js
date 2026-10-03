@@ -21,6 +21,7 @@ import {
   Check
 } from 'lucide-react';
 import { getUserOrders } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
 
 function normalizePhone(val) {
   if (!val) return '';
@@ -28,41 +29,53 @@ function normalizePhone(val) {
 }
 
 function OrdersContent() {
+  const { user } = useAuth();
   const searchParams = useSearchParams();
-  const initialQuery = searchParams.get('phone') || searchParams.get('id') || searchParams.get('order_id') || '';
+  const initialQuery = searchParams.get('phone') || searchParams.get('email') || searchParams.get('id') || searchParams.get('order_id') || '';
 
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
 
-  // Auto-fill from recent order if present in localStorage and no query in URL
+  // Auto-fill from logged in user or recent order if present in localStorage
   useEffect(() => {
     if (initialQuery) {
       handleSearch(initialQuery);
+    } else if (user?.phone || user?.email) {
+      const q = user.phone || user.email;
+      setSearchQuery(q);
+      handleSearch(q);
     } else if (typeof window !== 'undefined') {
       const lastPhone = localStorage.getItem('alhayy_last_order_phone');
       const lastOrderId = localStorage.getItem('alhayy_last_order_id');
+      const lastEmail = localStorage.getItem('alhayy_last_order_email');
       if (lastOrderId) {
         setSearchQuery(lastOrderId);
         handleSearch(lastOrderId);
       } else if (lastPhone) {
         setSearchQuery(lastPhone);
         handleSearch(lastPhone);
+      } else if (lastEmail) {
+        setSearchQuery(lastEmail);
+        handleSearch(lastEmail);
       }
     }
-  }, [initialQuery]);
+  }, [initialQuery, user]);
 
   const handleSearch = async (queryOverride) => {
     const rawQuery = (queryOverride !== undefined ? queryOverride : searchQuery).trim();
-    if (!rawQuery) return;
+    if (!rawQuery && !user) return;
 
     setLoading(true);
     setSearched(true);
 
     try {
-      const cleanInput = rawQuery.replace(/^#/, '').replace(/^ALH-/i, '').trim();
+      const cleanInput = rawQuery.replace(/^#/, '').replace(/^ALH-/i, '').trim().toLowerCase();
       const normInputPhone = normalizePhone(rawQuery);
+      const queryEmail = rawQuery.toLowerCase();
+      const userEmail = (user?.email || '').toLowerCase();
+      const userNormPhone = normalizePhone(user?.phone || '');
 
       // Fetch all backend orders
       const remoteOrders = await getUserOrders();
@@ -85,15 +98,20 @@ function OrdersContent() {
 
       const allOrders = Array.from(allOrdersMap.values());
 
-      // Filter by Order ID OR by Phone
+      // Filter by Order ID, Phone, Email, or Logged-in User Account
       const matched = allOrders.filter(ord => {
-        const ordId = String(ord.id || '').replace(/^ALH-/i, '');
+        const ordId = String(ord.id || '').replace(/^ALH-/i, '').toLowerCase();
         const ordPhone = normalizePhone(ord.phone || '');
+        const ordEmail = (ord.email || '').toLowerCase();
 
-        const matchesId = ordId === cleanInput || String(ord.id) === rawQuery || `ALH-${ord.id}`.toLowerCase() === rawQuery.toLowerCase();
+        const matchesId = cleanInput && (ordId === cleanInput || String(ord.id).toLowerCase() === cleanInput || `alh-${ord.id}`.toLowerCase() === rawQuery.toLowerCase());
         const matchesPhone = normInputPhone && ordPhone === normInputPhone;
+        const matchesEmail = queryEmail && queryEmail.includes('@') && ordEmail === queryEmail;
+        
+        // Match logged in user's profile automatically
+        const matchesUser = (userEmail && ordEmail && ordEmail === userEmail) || (userNormPhone && ordPhone && ordPhone === userNormPhone);
 
-        return matchesId || matchesPhone;
+        return matchesId || matchesPhone || matchesEmail || matchesUser;
       });
 
       setOrders(matched);

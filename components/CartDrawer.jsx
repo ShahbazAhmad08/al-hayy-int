@@ -54,7 +54,7 @@ export default function CartDrawer() {
     }
   };
 
-  const checkoutHref = user ? '/checkout' : '/login?redirect=/checkout';
+  const checkoutHref = '/checkout';
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden flex justify-end">
@@ -277,12 +277,12 @@ export default function CartDrawer() {
 
             {/* Checkout CTA */}
             <Link
-              href={checkoutHref}
+              href="/checkout"
               onClick={() => setIsDrawerOpen(false)}
-              className="w-full py-3.5 px-4 rounded-xl bg-stone-950 text-white font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2 shadow-md hover:bg-stone-800 transition-all"
+              className="w-full py-3.5 px-4 rounded-xl bg-[#070E1E] text-[#F7E7B6] font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-2 shadow-lg hover:bg-[#102142] border border-[#D4AF37]/30 transition-all"
             >
-              <span>{user ? 'Proceed to Checkout' : 'Sign In & Checkout'}</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Proceed to Checkout</span>
+              <ArrowRight className="w-4 h-4 text-[#D4AF37]" />
             </Link>
 
             {/* Trust badge */}

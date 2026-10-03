@@ -1247,8 +1247,8 @@ export default function AdminDashboardPage() {
                 <div className="p-6 rounded-2xl border border-stone-200 bg-stone-50/40 space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-200/70">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-[#022C22] text-white flex items-center justify-center">
-                        <CreditCard className="w-5 h-5" />
+                      <div className="w-10 h-10 rounded-xl bg-[#022C22] text-[#F7E7B6] flex items-center justify-center border border-[#D4AF37]/30 shadow-xs">
+                        <CreditCard className="w-5 h-5 text-[#D4AF37]" />
                       </div>
                       <div>
                         <h4 className="font-bold text-stone-900 text-sm">Razorpay India (Cards, UPI, NetBanking)</h4>
@@ -1259,10 +1259,10 @@ export default function AdminDashboardPage() {
                     <button
                       type="button"
                       onClick={() => handleTogglePayment('razorpay')}
-                      className={`px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+                      className={`px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
                         paymentConfig.razorpay?.enabled
                           ? 'bg-[#AA7E18] text-white shadow-sm'
-                          : 'bg-stone-200 text-stone-700'
+                          : 'bg-stone-200 text-stone-600 hover:bg-stone-300'
                       }`}
                     >
                       {paymentConfig.razorpay?.enabled ? 'Enabled (ON)' : 'Disabled (OFF)'}
@@ -1277,7 +1277,7 @@ export default function AdminDashboardPage() {
                         placeholder="rzp_live_..."
                         value={paymentConfig.razorpay?.keyId || ''}
                         onChange={(e) => handlePaymentFieldChange('razorpay', 'keyId', e.target.value)}
-                        className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 font-mono"
+                        className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 font-mono focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
                       />
                     </div>
 
@@ -1288,18 +1288,80 @@ export default function AdminDashboardPage() {
                         placeholder="••••••••••••••••"
                         value={paymentConfig.razorpay?.keySecret || ''}
                         onChange={(e) => handlePaymentFieldChange('razorpay', 'keySecret', e.target.value)}
-                        className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 font-mono"
+                        className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 font-mono focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
                       />
                     </div>
                   </div>
                 </div>
 
-                {/* 2. DIRECT UPI / QR CONFIGURATION */}
+                {/* 2. STRIPE INTERNATIONAL CONFIGURATION */}
                 <div className="p-6 rounded-2xl border border-stone-200 bg-stone-50/40 space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-200/70">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-purple-900 text-white flex items-center justify-center">
-                        <QrCode className="w-5 h-5" />
+                      <div className="w-10 h-10 rounded-xl bg-[#0A2540] text-white flex items-center justify-center border border-indigo-200/30 shadow-xs">
+                        <Globe className="w-5 h-5 text-indigo-300" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-stone-900 text-sm">Stripe (International Cards & Apple Pay)</h4>
+                        <p className="text-[11px] text-stone-500">Global Visa, Mastercard, American Express & Apple Pay checkout</p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleTogglePayment('stripe')}
+                      className={`px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                        paymentConfig.stripe?.enabled
+                          ? 'bg-[#AA7E18] text-white shadow-sm'
+                          : 'bg-stone-200 text-stone-600 hover:bg-stone-300'
+                      }`}
+                    >
+                      {paymentConfig.stripe?.enabled ? 'Enabled (ON)' : 'Disabled (OFF)'}
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                    <div>
+                      <label className="block font-bold text-stone-700 mb-1">Stripe Publishable Key</label>
+                      <input
+                        type="text"
+                        placeholder="pk_live_..."
+                        value={paymentConfig.stripe?.publishableKey || ''}
+                        onChange={(e) => handlePaymentFieldChange('stripe', 'publishableKey', e.target.value)}
+                        className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 font-mono focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-stone-700 mb-1">Stripe Secret Key</label>
+                      <input
+                        type="password"
+                        placeholder="sk_live_••••••••"
+                        value={paymentConfig.stripe?.secretKey || ''}
+                        onChange={(e) => handlePaymentFieldChange('stripe', 'secretKey', e.target.value)}
+                        className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 font-mono focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-stone-700 mb-1">Settlement Currency</label>
+                      <input
+                        type="text"
+                        placeholder="INR / USD"
+                        value={paymentConfig.stripe?.currency || 'INR'}
+                        onChange={(e) => handlePaymentFieldChange('stripe', 'currency', e.target.value)}
+                        className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 uppercase font-semibold focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. DIRECT UPI / QR CONFIGURATION */}
+                <div className="p-6 rounded-2xl border border-stone-200 bg-stone-50/40 space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-200/70">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-purple-900 text-white flex items-center justify-center border border-purple-300/30 shadow-xs">
+                        <QrCode className="w-5 h-5 text-purple-200" />
                       </div>
                       <div>
                         <h4 className="font-bold text-stone-900 text-sm">Direct UPI & Dynamic QR Code</h4>
@@ -1310,10 +1372,10 @@ export default function AdminDashboardPage() {
                     <button
                       type="button"
                       onClick={() => handleTogglePayment('upi')}
-                      className={`px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+                      className={`px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
                         paymentConfig.upi?.enabled
                           ? 'bg-[#AA7E18] text-white shadow-sm'
-                          : 'bg-stone-200 text-stone-700'
+                          : 'bg-stone-200 text-stone-600 hover:bg-stone-300'
                       }`}
                     >
                       {paymentConfig.upi?.enabled ? 'Enabled (ON)' : 'Disabled (OFF)'}
@@ -1328,7 +1390,7 @@ export default function AdminDashboardPage() {
                         placeholder="alhayy@okhdfcbank"
                         value={paymentConfig.upi?.upiId || ''}
                         onChange={(e) => handlePaymentFieldChange('upi', 'upiId', e.target.value)}
-                        className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 font-mono"
+                        className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 font-mono focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
                       />
                     </div>
 
@@ -1339,7 +1401,71 @@ export default function AdminDashboardPage() {
                         placeholder="Al Hayy International"
                         value={paymentConfig.upi?.merchantName || ''}
                         onChange={(e) => handlePaymentFieldChange('upi', 'merchantName', e.target.value)}
-                        className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900"
+                        className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. CASH ON DELIVERY (COD) CONFIGURATION */}
+                <div className="p-6 rounded-2xl border border-stone-200 bg-stone-50/40 space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-200/70">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-amber-900 text-white flex items-center justify-center border border-amber-300/30 shadow-xs">
+                        <Banknote className="w-5 h-5 text-amber-200" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-stone-900 text-sm">Cash on Delivery (COD)</h4>
+                        <p className="text-[11px] text-stone-500">Allow customers to pay upon package delivery at their doorstep</p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleTogglePayment('cod')}
+                      className={`px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                        paymentConfig.cod?.enabled
+                          ? 'bg-[#AA7E18] text-white shadow-sm'
+                          : 'bg-stone-200 text-stone-600 hover:bg-stone-300'
+                      }`}
+                    >
+                      {paymentConfig.cod?.enabled ? 'Enabled (ON)' : 'Disabled (OFF)'}
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                    <div>
+                      <label className="block font-bold text-stone-700 mb-1">Extra Handling Fee (₹)</label>
+                      <input
+                        type="number"
+                        placeholder="0"
+                        min="0"
+                        value={paymentConfig.cod?.extraFee ?? 0}
+                        onChange={(e) => handlePaymentFieldChange('cod', 'extraFee', Number(e.target.value))}
+                        className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-stone-700 mb-1">Minimum Order Amount (₹)</label>
+                      <input
+                        type="number"
+                        placeholder="0"
+                        min="0"
+                        value={paymentConfig.cod?.minOrderAmount ?? 0}
+                        onChange={(e) => handlePaymentFieldChange('cod', 'minOrderAmount', Number(e.target.value))}
+                        className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-stone-700 mb-1">Customer Note / Description</label>
+                      <input
+                        type="text"
+                        placeholder="Pay cash upon delivery to your doorstep"
+                        value={paymentConfig.cod?.description || ''}
+                        onChange={(e) => handlePaymentFieldChange('cod', 'description', e.target.value)}
+                        className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
                       />
                     </div>
                   </div>
