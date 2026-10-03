@@ -31,6 +31,7 @@ function ShopContent() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [selectedSeason, setSelectedSeason] = useState('All'); // 'All' | 'Summer Collection' | 'Winter Collection'
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [sortBy, setSortBy] = useState('featured'); // 'featured', 'price-low', 'price-high', 'rating'
   const [maxPrice, setMaxPrice] = useState(10000);
@@ -56,6 +57,9 @@ function ShopContent() {
     if (searchParams.get('category')) {
       setSelectedCategory(searchParams.get('category'));
     }
+    if (searchParams.get('season')) {
+      setSelectedSeason(searchParams.get('season'));
+    }
   }, [searchParams]);
 
   // Filtering & Sorting Logic
@@ -64,6 +68,15 @@ function ShopContent() {
     const matchesCategory =
       selectedCategory === 'All' ||
       p.category?.toLowerCase() === selectedCategory.toLowerCase();
+
+    // Season match
+    const isSummer = (p.category?.toLowerCase().includes('kurti') || p.category?.toLowerCase().includes('kaftaan') || p.category?.toLowerCase().includes('co-ord') || p.title?.toLowerCase().includes('kurti') || p.title?.toLowerCase().includes('kaftan') || p.title?.toLowerCase().includes('co-ord') || p.title?.toLowerCase().includes('cotton') || p.title?.toLowerCase().includes('summer'));
+    const isWinter = (p.category?.toLowerCase().includes('jacket') || p.category?.toLowerCase().includes('pashmina') || p.category?.toLowerCase().includes('shawl') || p.title?.toLowerCase().includes('jacket') || p.title?.toLowerCase().includes('pashmina') || p.title?.toLowerCase().includes('shawl') || p.title?.toLowerCase().includes('velvet') || p.title?.toLowerCase().includes('silk') || p.title?.toLowerCase().includes('shrug') || p.title?.toLowerCase().includes('winter'));
+
+    const matchesSeason =
+      selectedSeason === 'All' ||
+      (selectedSeason === 'Summer Collection' && isSummer) ||
+      (selectedSeason === 'Winter Collection' && isWinter);
 
     // Search query match
     const q = searchQuery.toLowerCase().trim();
@@ -77,7 +90,7 @@ function ShopContent() {
     const effectivePrice = Number(p.discount_price || p.price);
     const matchesPrice = effectivePrice <= maxPrice;
 
-    return matchesCategory && matchesSearch && matchesPrice;
+    return matchesCategory && matchesSeason && matchesSearch && matchesPrice;
   });
 
   // Sort
@@ -93,6 +106,7 @@ function ShopContent() {
 
   const resetFilters = () => {
     setSelectedCategory('All');
+    setSelectedSeason('All');
     setSearchQuery('');
     setMaxPrice(10000);
     setSortBy('featured');
@@ -220,7 +234,24 @@ function ShopContent() {
         </aside>
 
         {/* Main Product Showcase */}
-        <div className="lg:col-span-3 space-y-6">
+        <div className="lg:col-span-3 space-y-4 sm:space-y-6">
+          {/* Season Toggle Pills */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            {['All', 'Summer Collection', 'Winter Collection'].map((season) => (
+              <button
+                key={season}
+                onClick={() => setSelectedSeason(season)}
+                className={`px-4 sm:px-5 py-2 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 cursor-pointer whitespace-nowrap ${
+                  selectedSeason === season
+                    ? 'bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/50 shadow-md transform scale-[1.02]'
+                    : 'bg-white text-stone-600 border border-stone-200 hover:text-stone-950 hover:bg-stone-50 shadow-2xs'
+                }`}
+              >
+                {season}
+              </button>
+            ))}
+          </div>
+
           {/* Top Sort & Mobile Filter Bar */}
           <div className="p-3.5 sm:p-4 bg-white rounded-2xl sm:rounded-3xl border border-stone-200/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
             <div className="flex items-center gap-2 w-full sm:w-auto">
