@@ -1737,243 +1737,250 @@ export default function AdminDashboardPage() {
 
         {/* ADD / EDIT PRODUCT MODAL */}
         {showAddProductModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
-            <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-stone-200 p-6 sm:p-8 space-y-6 my-8">
-              <div className="flex items-center justify-between pb-4 border-b border-stone-100">
-                <h3 className="font-serif-luxury text-xl font-bold text-stone-950">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-xs">
+            <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-stone-200 flex flex-col max-h-[90vh] my-auto overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+              {/* Sticky Modal Header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100 bg-white shrink-0">
+                <h3 className="font-serif-luxury text-lg sm:text-xl font-bold text-stone-950">
                   {editingProduct ? 'Edit Royal Artifact' : 'Add New Couture Creation'}
                 </h3>
                 <button
+                  type="button"
                   onClick={() => setShowAddProductModal(false)}
-                  className="p-1 rounded-full text-stone-400 hover:text-stone-700"
+                  className="p-1.5 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <form onSubmit={handleSubmitProduct} className="space-y-4 text-xs">
-                <div>
-                  <label className="block text-stone-700 font-bold mb-1">Artifact Title *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Pure Kashmiri Heritage Pashmina Shawl"
-                    value={productFormData.title}
-                    onChange={(e) => setProductFormData({ ...productFormData, title: e.target.value })}
-                    className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {/* Scrollable Form Body */}
+              <div className="p-6 overflow-y-auto space-y-4 text-xs">
+                <form onSubmit={handleSubmitProduct} id="productForm" className="space-y-4">
                   <div>
-                    <label className="block text-stone-700 font-bold mb-1">Category</label>
-                    <select
-                      value={productFormData.category}
-                      onChange={(e) => {
-                        const newCat = e.target.value;
-                        const validId = resolveValidDbCategoryId(newCat);
-                        setProductFormData(prev => ({
-                          ...prev,
-                          category: newCat,
-                          category_id: validId
-                        }));
-                      }}
-                      className="w-full py-2.5 px-3 rounded-xl border border-stone-200 text-xs font-medium"
-                    >
-                      {categories.map(c => (
-                        <option key={c.id} value={c.name}>{c.name}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-stone-700 font-bold mb-1">Regular Price (₹) *</label>
+                    <label className="block text-stone-700 font-bold mb-1">Artifact Title *</label>
                     <input
-                      type="number"
+                      type="text"
                       required
-                      placeholder="999"
-                      value={productFormData.price}
-                      onChange={(e) => setProductFormData({ ...productFormData, price: e.target.value })}
-                      className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs"
+                      placeholder="e.g. Pure Kashmiri Heritage Pashmina Shawl"
+                      value={productFormData.title}
+                      onChange={(e) => setProductFormData({ ...productFormData, title: e.target.value })}
+                      className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-stone-700 font-bold mb-1">Sale Discount Price (₹)</label>
-                    <input
-                      type="number"
-                      placeholder="899"
-                      value={productFormData.discount_price}
-                      onChange={(e) => setProductFormData({ ...productFormData, discount_price: e.target.value })}
-                      className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-stone-700 font-bold mb-1">Description & Specifications</label>
-                  <textarea
-                    rows={3}
-                    placeholder="Description of fabric, needlework, and fit..."
-                    value={productFormData.description}
-                    onChange={(e) => setProductFormData({ ...productFormData, description: e.target.value })}
-                    className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs"
-                  />
-                </div>
-
-                {/* Primary & Multiple Image Uploads */}
-                <div className="p-3.5 bg-stone-50 rounded-2xl border border-stone-200 space-y-3">
-                  <div>
-                    <label className="block text-stone-700 font-bold mb-1">
-                      Primary Cover Image *
-                    </label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setProductFormData({ ...productFormData, imageFile: e.target.files[0] })}
-                      className="w-full text-xs text-stone-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-stone-200 file:text-stone-800 hover:file:bg-stone-300 cursor-pointer"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-stone-700 font-bold mb-1">
-                      Additional Images (Multiple)
-                    </label>
-                    <input
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={(e) => {
-                        const newFiles = Array.from(e.target.files || []);
-                        setProductFormData(prev => ({
-                          ...prev,
-                          additionalImageFiles: [...(prev.additionalImageFiles || []), ...newFiles]
-                        }));
-                      }}
-                      className="w-full text-xs text-stone-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-900 hover:file:bg-amber-200 cursor-pointer"
-                    />
-                  </div>
-
-                  {/* Existing & New Images Preview Grid */}
-                  {((productFormData.imageUrls && productFormData.imageUrls.length > 0) || (productFormData.additionalImageFiles && productFormData.additionalImageFiles.length > 0)) && (
-                    <div className="pt-2 border-t border-stone-200">
-                      <span className="text-[11px] font-bold text-stone-600 block mb-1.5">Image Gallery Previews:</span>
-                      <div className="flex flex-wrap gap-2">
-                        {productFormData.imageUrls?.map((url, i) => (
-                          <div key={`existing-${i}`} className="relative w-14 h-18 rounded-xl overflow-hidden border border-stone-300 group">
-                            <img src={url} alt="" className="w-full h-full object-cover" />
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveExistingImage(i)}
-                              className="absolute top-1 right-1 w-4 h-4 bg-red-600 text-white rounded-full flex items-center justify-center text-[9px] shadow-sm hover:bg-red-700 cursor-pointer"
-                              title="Remove image"
-                            >
-                              ✕
-                            </button>
-                          </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-stone-700 font-bold mb-1">Category</label>
+                      <select
+                        value={productFormData.category}
+                        onChange={(e) => {
+                          const newCat = e.target.value;
+                          const validId = resolveValidDbCategoryId(newCat);
+                          setProductFormData(prev => ({
+                            ...prev,
+                            category: newCat,
+                            category_id: validId
+                          }));
+                        }}
+                        className="w-full py-2.5 px-3 rounded-xl border border-stone-200 text-xs font-medium"
+                      >
+                        {categories.map(c => (
+                          <option key={c.id} value={c.name}>{c.name}</option>
                         ))}
-                        {productFormData.additionalImageFiles?.map((f, i) => (
-                          <div key={`file-${i}`} className="relative w-14 h-18 rounded-xl overflow-hidden border border-amber-400 bg-amber-50 group flex items-center justify-center">
-                            <span className="text-[9px] text-amber-800 text-center px-1 font-mono truncate">{f.name}</span>
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveAdditionalFile(i)}
-                              className="absolute top-1 right-1 w-4 h-4 bg-red-600 text-white rounded-full flex items-center justify-center text-[9px] shadow-sm hover:bg-red-700 cursor-pointer"
-                              title="Remove file"
-                            >
-                              ✕
-                            </button>
-                          </div>
-                        ))}
-                      </div>
+                      </select>
                     </div>
-                  )}
-                </div>
 
-                {/* Product Video Section */}
-                <div className="p-3.5 bg-[#070E1E]/5 rounded-2xl border border-[#D4AF37]/30 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <label className="block text-[#070E1E] font-bold text-xs">
-                      🎥 Product Video Walkthrough (Optional)
-                    </label>
-                    <span className="text-[10px] text-stone-500 font-mono">MP4 / WebM / CDN link</span>
-                  </div>
-                  <input
-                    type="url"
-                    placeholder="e.g. https://domain.com/videos/product-showcase.mp4"
-                    value={productFormData.video_url || ''}
-                    onChange={(e) => setProductFormData({ ...productFormData, video_url: e.target.value })}
-                    className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white"
-                  />
-                  {productFormData.video_url && (
-                    <div className="mt-2 rounded-xl overflow-hidden border border-stone-300 max-h-36 bg-black flex items-center justify-center">
-                      <video
-                        src={productFormData.video_url}
-                        controls
-                        muted
-                        className="max-h-36 w-auto"
+                    <div>
+                      <label className="block text-stone-700 font-bold mb-1">Regular Price (₹) *</label>
+                      <input
+                        type="number"
+                        required
+                        placeholder="999"
+                        value={productFormData.price}
+                        onChange={(e) => setProductFormData({ ...productFormData, price: e.target.value })}
+                        className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs"
                       />
                     </div>
-                  )}
-                </div>
 
-                <div className="pt-2 border-t border-stone-100 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-stone-800">Variants (Size & Stock)</span>
-                    <button
-                      type="button"
-                      onClick={handleAddVariant}
-                      className="text-stone-900 hover:underline font-bold text-[11px]"
-                    >
-                      + Add Size
-                    </button>
+                    <div>
+                      <label className="block text-stone-700 font-bold mb-1">Sale Discount Price (₹)</label>
+                      <input
+                        type="number"
+                        placeholder="899"
+                        value={productFormData.discount_price}
+                        onChange={(e) => setProductFormData({ ...productFormData, discount_price: e.target.value })}
+                        className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs"
+                      />
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    {productFormData.variants.map((v, i) => (
-                      <div key={i} className="flex items-center gap-1.5 p-2 bg-stone-50 rounded-xl border border-stone-200">
-                        <input
-                          type="text"
-                          value={v.size}
-                          onChange={(e) => handleVariantChange(i, 'size', e.target.value)}
-                          className="w-12 text-center py-1 rounded border border-stone-200 text-xs font-bold"
-                        />
-                        <input
-                          type="number"
-                          placeholder="Qty"
-                          value={v.stock}
-                          onChange={(e) => handleVariantChange(i, 'stock', Number(e.target.value))}
-                          className="w-14 text-center py-1 rounded border border-stone-200 text-xs"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveVariant(i)}
-                          className="text-stone-400 hover:text-red-600 px-1"
-                        >
-                          ✕
-                        </button>
+                  <div>
+                    <label className="block text-stone-700 font-bold mb-1">Description & Specifications</label>
+                    <textarea
+                      rows={3}
+                      placeholder="Description of fabric, needlework, and fit..."
+                      value={productFormData.description}
+                      onChange={(e) => setProductFormData({ ...productFormData, description: e.target.value })}
+                      className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs"
+                    />
+                  </div>
+
+                  {/* Primary & Multiple Image Uploads */}
+                  <div className="p-3.5 bg-stone-50 rounded-2xl border border-stone-200 space-y-3">
+                    <div>
+                      <label className="block text-stone-700 font-bold mb-1">
+                        Primary Cover Image *
+                      </label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setProductFormData({ ...productFormData, imageFile: e.target.files[0] })}
+                        className="w-full text-xs text-stone-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-stone-200 file:text-stone-800 hover:file:bg-stone-300 cursor-pointer"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-stone-700 font-bold mb-1">
+                        Additional Images (Multiple)
+                      </label>
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={(e) => {
+                          const newFiles = Array.from(e.target.files || []);
+                          setProductFormData(prev => ({
+                            ...prev,
+                            additionalImageFiles: [...(prev.additionalImageFiles || []), ...newFiles]
+                          }));
+                        }}
+                        className="w-full text-xs text-stone-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-900 hover:file:bg-amber-200 cursor-pointer"
+                      />
+                    </div>
+
+                    {/* Existing & New Images Preview Grid */}
+                    {((productFormData.imageUrls && productFormData.imageUrls.length > 0) || (productFormData.additionalImageFiles && productFormData.additionalImageFiles.length > 0)) && (
+                      <div className="pt-2 border-t border-stone-200">
+                        <span className="text-[11px] font-bold text-stone-600 block mb-1.5">Image Gallery Previews:</span>
+                        <div className="flex flex-wrap gap-2">
+                          {productFormData.imageUrls?.map((url, i) => (
+                            <div key={`existing-${i}`} className="relative w-14 h-18 rounded-xl overflow-hidden border border-stone-300 group">
+                              <img src={url} alt="" className="w-full h-full object-cover" />
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveExistingImage(i)}
+                                className="absolute top-1 right-1 w-4 h-4 bg-red-600 text-white rounded-full flex items-center justify-center text-[9px] shadow-sm hover:bg-red-700 cursor-pointer"
+                                title="Remove image"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                          {productFormData.additionalImageFiles?.map((f, i) => (
+                            <div key={`file-${i}`} className="relative w-14 h-18 rounded-xl overflow-hidden border border-amber-400 bg-amber-50 group flex items-center justify-center">
+                              <span className="text-[9px] text-amber-800 text-center px-1 font-mono truncate">{f.name}</span>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveAdditionalFile(i)}
+                                className="absolute top-1 right-1 w-4 h-4 bg-red-600 text-white rounded-full flex items-center justify-center text-[9px] shadow-sm hover:bg-red-700 cursor-pointer"
+                                title="Remove file"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    ))}
+                    )}
                   </div>
-                </div>
 
-                <div className="pt-4 flex justify-end gap-3 border-t border-stone-100">
-                  <button
-                    type="button"
-                    onClick={() => setShowAddProductModal(false)}
-                    className="px-4 py-2 rounded-xl text-stone-600 hover:bg-stone-100 text-xs font-semibold"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="px-6 py-2.5 rounded-xl bg-stone-950 text-white text-xs font-bold uppercase tracking-wider hover:bg-stone-800 transition-all disabled:opacity-50"
-                  >
-                    {submitting ? 'Saving...' : 'Save Product'}
-                  </button>
-                </div>
-              </form>
+                  {/* Product Video Section */}
+                  <div className="p-3.5 bg-[#070E1E]/5 rounded-2xl border border-[#D4AF37]/30 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="block text-[#070E1E] font-bold text-xs">
+                        🎥 Product Video Walkthrough (Optional)
+                      </label>
+                      <span className="text-[10px] text-stone-500 font-mono">MP4 / WebM / CDN link</span>
+                    </div>
+                    <input
+                      type="url"
+                      placeholder="e.g. https://domain.com/videos/product-showcase.mp4"
+                      value={productFormData.video_url || ''}
+                      onChange={(e) => setProductFormData({ ...productFormData, video_url: e.target.value })}
+                      className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white"
+                    />
+                    {productFormData.video_url && (
+                      <div className="mt-2 rounded-xl overflow-hidden border border-stone-300 max-h-36 bg-black flex items-center justify-center">
+                        <video
+                          src={productFormData.video_url}
+                          controls
+                          muted
+                          className="max-h-36 w-auto"
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="pt-2 border-t border-stone-100 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-stone-800">Variants (Size & Stock)</span>
+                      <button
+                        type="button"
+                        onClick={handleAddVariant}
+                        className="text-stone-900 hover:underline font-bold text-[11px] cursor-pointer"
+                      >
+                        + Add Size
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      {productFormData.variants.map((v, i) => (
+                        <div key={i} className="flex items-center gap-1.5 p-2 bg-stone-50 rounded-xl border border-stone-200">
+                          <input
+                            type="text"
+                            value={v.size}
+                            onChange={(e) => handleVariantChange(i, 'size', e.target.value)}
+                            className="w-12 text-center py-1 rounded border border-stone-200 text-xs font-bold"
+                          />
+                          <input
+                            type="number"
+                            placeholder="Qty"
+                            value={v.stock}
+                            onChange={(e) => handleVariantChange(i, 'stock', Number(e.target.value))}
+                            className="w-14 text-center py-1 rounded border border-stone-200 text-xs"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveVariant(i)}
+                            className="text-stone-400 hover:text-red-600 px-1 cursor-pointer"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              {/* Sticky Modal Footer */}
+              <div className="px-6 py-3.5 bg-stone-50 border-t border-stone-100 flex justify-end gap-3 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setShowAddProductModal(false)}
+                  className="px-4 py-2 rounded-xl text-stone-600 hover:bg-stone-200 text-xs font-semibold cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  form="productForm"
+                  disabled={submitting}
+                  className="px-6 py-2.5 rounded-xl bg-stone-950 text-white text-xs font-bold uppercase tracking-wider hover:bg-stone-800 transition-all disabled:opacity-50 cursor-pointer shadow-md"
+                >
+                  {submitting ? 'Saving...' : 'Save Product'}
+                </button>
+              </div>
             </div>
           </div>
         )}

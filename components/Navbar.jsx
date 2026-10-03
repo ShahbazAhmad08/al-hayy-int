@@ -99,37 +99,35 @@ export default function Navbar() {
             <span className="text-stone-700">•</span>
             <span className="text-stone-400">Insured Worldwide Dispatch</span>
           </div>
-          <div className="flex items-center gap-4 text-xs">
+          <div className="flex items-center gap-3.5 text-xs">
             <a
               href="https://www.instagram.com/Alhayyofficial/"
               target="_blank"
               rel="noreferrer"
-              className="text-stone-400 hover:text-[#D4AF37] transition-colors flex items-center gap-1.5"
+              className="text-[#D4AF37] hover:text-[#F7E7B6] hover:scale-110 transition-all p-1"
               aria-label="Instagram @Alhayyofficial"
+              title="Instagram"
             >
-              <InstagramIcon className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span className="hidden md:inline">@Alhayyofficial</span>
+              <InstagramIcon className="w-4 h-4" />
             </a>
-            <span className="text-stone-700">•</span>
             <a
               href="https://www.linkedin.com/company/alhayykashmir/"
               target="_blank"
               rel="noreferrer"
-              className="text-stone-400 hover:text-[#D4AF37] transition-colors flex items-center gap-1.5"
+              className="text-[#D4AF37] hover:text-[#F7E7B6] hover:scale-110 transition-all p-1"
               aria-label="LinkedIn"
+              title="LinkedIn"
             >
-              <LinkedinIcon className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span className="hidden md:inline">LinkedIn</span>
+              <LinkedinIcon className="w-4 h-4" />
             </a>
-            <span className="text-stone-700">•</span>
             <a
               href="https://wa.me/919622480276"
               target="_blank"
               rel="noreferrer"
-              className="text-[#F7E7B6] hover:text-[#D4AF37] font-mono font-semibold transition-colors flex items-center gap-1.5"
+              className="text-[#F7E7B6] hover:text-[#D4AF37] font-mono font-semibold transition-colors flex items-center gap-1.5 ml-1"
               aria-label="WhatsApp Atelier Helpline"
             >
-              <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366]" />
+              <WhatsAppIcon className="w-4 h-4 text-[#25D366]" />
               <span>+91 96224 80276</span>
             </a>
           </div>

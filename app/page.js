@@ -1026,10 +1026,9 @@ export default function HomePage() {
           href="https://wa.me/919622480276?text=Salam%20Al%20Hayy%20Atelier,%20I%20need%20assistance."
           target="_blank"
           rel="noreferrer"
-          className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-[#070E1E] text-white border border-[#D4AF37]/80 shadow-2xl hover:bg-[#102142] hover:scale-105 transition-all group"
+          className="flex items-center gap-2 px-4 py-3 rounded-full bg-[#070E1E] text-white border border-[#D4AF37]/80 shadow-2xl hover:bg-[#102142] hover:scale-105 transition-all group cursor-pointer"
           aria-label="Direct WhatsApp Concierge"
         >
-          <div className="w-2.5 h-2.5 rounded-full bg-[#25D366] animate-pulse" />
           <WhatsAppIcon className="w-5 h-5 text-[#25D366] group-hover:scale-110 transition-transform" />
           <span className="text-xs font-bold uppercase tracking-wider text-[#F7E7B6] hidden sm:inline">WhatsApp Concierge</span>
         </a>

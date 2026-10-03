@@ -160,16 +160,16 @@ export default function HeroBanner() {
                 </span>
               </h1>
 
-              {/* Subtitle - hidden on small mobile so image stays fully visible */}
-              <p className="hidden sm:block text-xs sm:text-sm lg:text-base text-[#FAF7F2]/90 leading-relaxed font-light max-w-xl">
+              {/* Subtitle - Visible on all screens with compact luxury 2-line clamp on mobile */}
+              <p className="text-[11px] sm:text-sm lg:text-base text-[#FAF7F2]/90 leading-snug sm:leading-relaxed font-light max-w-xl line-clamp-2 sm:line-clamp-none drop-shadow-sm pt-0.5">
                 {slide.subtitle}
               </p>
 
-              {/* Action Buttons (1 row, 50-50 half half on mobile) */}
-              <div className="flex flex-row items-center gap-2 sm:gap-3 pt-2 w-full">
+              {/* Action Buttons (Lower positioned with comfortable spacing) */}
+              <div className="flex flex-row items-center gap-2.5 sm:gap-4 pt-3.5 sm:pt-4 w-full">
                 <Link
                   href={slide.ctaPrimaryLink}
-                  className="flex-1 w-1/2 py-2.5 sm:py-4 px-2 sm:px-8 rounded-full bg-[#D4AF37] hover:bg-[#F7E7B6] text-[#070E1E] font-bold text-[11px] sm:text-xs uppercase tracking-wider sm:tracking-widest flex items-center justify-center gap-1.5 shadow-xl hover:shadow-2xl transition-all transform active:scale-95 animate-gold-pulse cursor-pointer truncate text-center"
+                  className="flex-1 w-1/2 py-2.5 sm:py-4 px-2.5 sm:px-8 rounded-full bg-[#D4AF37] hover:bg-[#F7E7B6] text-[#070E1E] font-bold text-[11px] sm:text-xs uppercase tracking-wider sm:tracking-widest flex items-center justify-center gap-1.5 shadow-xl hover:shadow-2xl transition-all transform active:scale-95 animate-gold-pulse cursor-pointer truncate text-center"
                 >
                   <span className="truncate">{slide.ctaPrimary}</span>
                   <ArrowRight className="w-3.5 h-3.5 shrink-0 hidden sm:inline" />
@@ -177,7 +177,7 @@ export default function HeroBanner() {
 
                 <Link
                   href={slide.ctaSecondaryLink}
-                  className="flex-1 w-1/2 py-2.5 sm:py-4 px-2 sm:px-7 rounded-full bg-black/50 hover:bg-black/70 sm:bg-white/10 sm:hover:bg-white/20 backdrop-blur-md border border-[#D4AF37]/50 sm:border-[#D4AF37]/40 text-white font-semibold text-[11px] sm:text-xs uppercase tracking-wider sm:tracking-widest flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer truncate text-center"
+                  className="flex-1 w-1/2 py-2.5 sm:py-4 px-2.5 sm:px-7 rounded-full bg-black/60 hover:bg-black/80 sm:bg-white/10 sm:hover:bg-white/20 backdrop-blur-md border border-[#D4AF37]/60 sm:border-[#D4AF37]/40 text-white font-semibold text-[11px] sm:text-xs uppercase tracking-wider sm:tracking-widest flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer truncate text-center"
                 >
                   <span className="truncate">{slide.ctaSecondary}</span>
                 </Link>
