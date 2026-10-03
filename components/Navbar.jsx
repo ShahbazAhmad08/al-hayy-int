@@ -17,26 +17,7 @@ import {
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { getProducts } from '@/lib/api';
-
-function InstagramIcon({ className = "w-3.5 h-3.5" }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-    </svg>
-  );
-}
-
-function LinkedinIcon({ className = "w-3.5 h-3.5" }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-      <rect width="4" height="12" x="2" y="9" />
-      <circle cx="4" cy="4" r="2" />
-    </svg>
-  );
-}
+import { WhatsAppIcon, InstagramIcon, LinkedInIcon, LinkedinIcon } from '@/components/BrandIcons';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -145,9 +126,10 @@ export default function Navbar() {
               href="https://wa.me/919622480276"
               target="_blank"
               rel="noreferrer"
-              className="text-[#F7E7B6] hover:text-[#D4AF37] font-mono font-semibold transition-colors flex items-center gap-1"
+              className="text-[#F7E7B6] hover:text-[#D4AF37] font-mono font-semibold transition-colors flex items-center gap-1.5"
+              aria-label="WhatsApp Atelier Helpline"
             >
-              <Phone className="w-3 h-3 text-[#D4AF37]" />
+              <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366]" />
               <span>+91 96224 80276</span>
             </a>
           </div>
@@ -362,7 +344,7 @@ export default function Navbar() {
                 rel="noreferrer"
                 className="w-full py-3 rounded-xl bg-[#0B162C] text-[#F7E7B6] border border-[#D4AF37]/40 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:bg-[#102142]"
               >
-                <Phone className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <WhatsAppIcon className="w-4 h-4 text-[#25D366]" />
                 <span>WhatsApp: +91 96224 80276</span>
               </a>
 

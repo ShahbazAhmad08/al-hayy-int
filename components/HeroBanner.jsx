@@ -122,14 +122,14 @@ export default function HeroBanner() {
               className="w-full h-full object-cover blur-2xl scale-125 opacity-25"
               aria-hidden="true"
             />
-            {/* Mobile Background Image (Clean full cover on mobile) */}
+            {/* Mobile Background Image (Gentle bottom scrim so image remains crystal clear and visible) */}
             <div className="lg:hidden absolute inset-0">
               <img
                 src={s.image}
                 alt=""
                 className={`w-full h-full object-cover ${s.objectPosition}`}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#070E1E] via-[#070E1E]/80 to-[#070E1E]/40" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#070E1E] via-[#070E1E]/40 to-transparent" />
             </div>
 
             {/* Desktop Ambient Vignette */}
@@ -139,13 +139,13 @@ export default function HeroBanner() {
         ))}
 
         {/* Dual-Column Main Content Container */}
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 z-10 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16 sm:py-16 z-10 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-center">
             
             {/* Left Column: Editorial Narrative & CTAs (7 cols) */}
-            <div className="lg:col-span-7 space-y-5 sm:space-y-6">
-              {/* Tag Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0B162C]/90 backdrop-blur-md border border-[#D4AF37]/50 text-[#F7E7B6] shadow-lg">
+            <div className="lg:col-span-7 space-y-3 sm:space-y-6">
+              {/* Tag Badge - hidden on small mobile to maximize image visibility */}
+              <div className="hidden sm:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0B162C]/90 backdrop-blur-md border border-[#D4AF37]/50 text-[#F7E7B6] shadow-lg">
                 <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
                 <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.25em]">
                   {slide.tag}
@@ -153,38 +153,38 @@ export default function HeroBanner() {
               </div>
 
               {/* Main Headline */}
-              <h1 className="font-serif-luxury text-3xl sm:text-4.5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.12]">
+              <h1 className="font-serif-luxury text-2xl sm:text-4.5xl lg:text-6xl font-bold tracking-tight text-white leading-tight drop-shadow-md">
                 {slide.title}{' '}
                 <span className="font-normal italic font-serif text-[#F7E7B6] block sm:inline">
                   {slide.titleItalic}
                 </span>
               </h1>
 
-              {/* Subtitle */}
-              <p className="text-xs sm:text-sm lg:text-base text-[#FAF7F2]/90 leading-relaxed font-light max-w-xl">
+              {/* Subtitle - hidden on small mobile so image stays fully visible */}
+              <p className="hidden sm:block text-xs sm:text-sm lg:text-base text-[#FAF7F2]/90 leading-relaxed font-light max-w-xl">
                 {slide.subtitle}
               </p>
 
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+              {/* Action Buttons (1 row, 50-50 half half on mobile) */}
+              <div className="flex flex-row items-center gap-2 sm:gap-3 pt-2 w-full">
                 <Link
                   href={slide.ctaPrimaryLink}
-                  className="px-8 py-4 rounded-full bg-[#D4AF37] hover:bg-[#F7E7B6] text-[#070E1E] font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl transition-all transform active:scale-95 animate-gold-pulse cursor-pointer"
+                  className="flex-1 w-1/2 py-2.5 sm:py-4 px-2 sm:px-8 rounded-full bg-[#D4AF37] hover:bg-[#F7E7B6] text-[#070E1E] font-bold text-[11px] sm:text-xs uppercase tracking-wider sm:tracking-widest flex items-center justify-center gap-1.5 shadow-xl hover:shadow-2xl transition-all transform active:scale-95 animate-gold-pulse cursor-pointer truncate text-center"
                 >
-                  <span>{slide.ctaPrimary}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <span className="truncate">{slide.ctaPrimary}</span>
+                  <ArrowRight className="w-3.5 h-3.5 shrink-0 hidden sm:inline" />
                 </Link>
 
                 <Link
                   href={slide.ctaSecondaryLink}
-                  className="px-7 py-4 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-[#D4AF37]/40 text-white font-semibold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
+                  className="flex-1 w-1/2 py-2.5 sm:py-4 px-2 sm:px-7 rounded-full bg-black/50 hover:bg-black/70 sm:bg-white/10 sm:hover:bg-white/20 backdrop-blur-md border border-[#D4AF37]/50 sm:border-[#D4AF37]/40 text-white font-semibold text-[11px] sm:text-xs uppercase tracking-wider sm:tracking-widest flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer truncate text-center"
                 >
-                  <span>{slide.ctaSecondary}</span>
+                  <span className="truncate">{slide.ctaSecondary}</span>
                 </Link>
               </div>
 
-              {/* Floating Artisan Note Pill */}
-              <div className="pt-2">
+              {/* Floating Artisan Note Pill - hidden on mobile */}
+              <div className="hidden sm:block pt-2">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#0B162C]/90 backdrop-blur-md border border-[#D4AF37]/30 text-[11px] text-[#F7E7B6]">
                   <div className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse shrink-0" />
                   <span>{slide.artisanNote}</span>

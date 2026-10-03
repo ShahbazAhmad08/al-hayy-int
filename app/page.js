@@ -36,6 +36,7 @@ import QuickViewModal from '@/components/QuickViewModal';
 import ScrollReveal from '@/components/ScrollReveal';
 import SEOStructuredData from '@/components/SEOStructuredData';
 import { getProducts, CATEGORIES, getLiveLookbookArchive, submitContact } from '@/lib/api';
+import { WhatsAppIcon } from '@/components/BrandIcons';
 
 const HOME_FAQS = [
   {
@@ -68,6 +69,7 @@ export default function HomePage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState('All');
+  const [selectedSeason, setSelectedSeason] = useState('All'); // 'All' | 'Summer Collection' | 'Winter Collection'
   const [quickViewProduct, setQuickViewProduct] = useState(null);
 
   // Gallery Lookbook State
@@ -129,6 +131,19 @@ export default function HomePage() {
   // Show exactly 6 cards (3 in a row on desktop)
   const displayedProducts = filteredProducts.slice(0, 6);
 
+  // Filter categories by Season (All, Summer, Winter)
+  const seasonCategories = CATEGORIES.filter(cat => {
+    if (selectedSeason === 'All') return true;
+    const name = cat.name.toLowerCase();
+    if (selectedSeason === 'Summer Collection') {
+      return name.includes('kurti') || name.includes('kaftaan') || name.includes('co-ord') || name.includes('top') || name.includes('cotton') || name.includes('summer');
+    }
+    if (selectedSeason === 'Winter Collection') {
+      return name.includes('jacket') || name.includes('pashmina') || name.includes('shawl') || name.includes('silk') || name.includes('wool') || name.includes('velvet') || name.includes('winter');
+    }
+    return true;
+  });
+
   return (
     <div className="space-y-16 sm:space-y-24 pb-20 overflow-x-hidden bg-[#FAF7F2]">
       {/* 1. Full-Width Cinematic Royal Midnight Navy Hero Banner */}
@@ -136,6 +151,25 @@ export default function HomePage() {
 
       {/* 2. Curated Categories / Silhouettes */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Season Toggle Pills above Royal Collections */}
+        <ScrollReveal animation="fade-down" className="mb-4">
+          <div className="inline-flex items-center gap-2 p-1.5 rounded-full bg-[#070E1E]/5 border border-[#E5D9C8] backdrop-blur-xs">
+            {['All', 'Summer Collection', 'Winter Collection'].map((season) => (
+              <button
+                key={season}
+                onClick={() => setSelectedSeason(season)}
+                className={`px-4 sm:px-5 py-2 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 cursor-pointer whitespace-nowrap ${
+                  selectedSeason === season
+                    ? 'bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/50 shadow-md transform scale-[1.02]'
+                    : 'text-stone-600 hover:text-[#070E1E] hover:bg-white/70'
+                }`}
+              >
+                {season}
+              </button>
+            ))}
+          </div>
+        </ScrollReveal>
+
         <ScrollReveal animation="fade-down" className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-2">
           <div>
             <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#AA7E18]">
@@ -152,7 +186,7 @@ export default function HomePage() {
         </ScrollReveal>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {CATEGORIES.slice(0, 4).map((cat, idx) => {
+          {seasonCategories.slice(0, 4).map((cat, idx) => {
             const liveCount = products.filter(p => p.category?.toLowerCase() === cat.name.toLowerCase()).length;
             return (
               <ScrollReveal
@@ -992,12 +1026,12 @@ export default function HomePage() {
           href="https://wa.me/919622480276?text=Salam%20Al%20Hayy%20Atelier,%20I%20need%20assistance."
           target="_blank"
           rel="noreferrer"
-          className="flex items-center gap-2 px-4 py-3 rounded-full bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37] shadow-2xl hover:bg-[#102142] hover:scale-105 transition-all group"
+          className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-[#070E1E] text-white border border-[#D4AF37]/80 shadow-2xl hover:bg-[#102142] hover:scale-105 transition-all group"
           aria-label="Direct WhatsApp Concierge"
         >
-          <div className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] animate-pulse" />
-          <MessageSquare className="w-4 h-4 text-[#D4AF37]" />
-          <span className="text-xs font-bold uppercase tracking-wider hidden sm:inline">WhatsApp Concierge</span>
+          <div className="w-2.5 h-2.5 rounded-full bg-[#25D366] animate-pulse" />
+          <WhatsAppIcon className="w-5 h-5 text-[#25D366] group-hover:scale-110 transition-transform" />
+          <span className="text-xs font-bold uppercase tracking-wider text-[#F7E7B6] hidden sm:inline">WhatsApp Concierge</span>
         </a>
       </div>
 

@@ -38,7 +38,9 @@ import {
   Sparkles,
   Users,
   UserCheck,
-  Shield
+  Shield,
+  Upload,
+  Loader2
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { 
@@ -98,7 +100,8 @@ export default function AdminDashboardPage() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
-  const [categoryFormData, setCategoryFormData] = useState({ name: '', image: '' });
+  const [categoryFormData, setCategoryFormData] = useState({ name: '', image: '', imageFile: null, previewUrl: '' });
+  const [categorySubmitting, setCategorySubmitting] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [feedback, setFeedback] = useState({ text: '', isError: false });
 
@@ -267,16 +270,32 @@ export default function AdminDashboardPage() {
     );
   });
 
+  // Database-Safe Category ID Resolver (Ensures MySQL Foreign Key constraints 1..5 never fail)
+  const resolveValidDbCategoryId = (catName, existingId) => {
+    const numId = parseInt(existingId, 10);
+    if (!isNaN(numId) && numId >= 1 && numId <= 5) return String(numId);
+
+    const name = String(catName || '').toLowerCase();
+    if (name.includes('kurti') || name.includes('top')) return '1';
+    if (name.includes('kaftaan') || name.includes('kaftan')) return '2';
+    if (name.includes('co-ord') || name.includes('set')) return '3';
+    if (name.includes('jacket') || name.includes('silk')) return '4';
+    if (name.includes('pashmina') || name.includes('shawl')) return '5';
+    return '1';
+  };
+
   // Product Handlers
   const handleOpenAddProduct = () => {
     setEditingProduct(null);
+    const defaultCat = categories[0]?.name || 'Tops & Kurtis';
+    const defaultCatId = resolveValidDbCategoryId(defaultCat, categories[0]?.id);
     setProductFormData({
       title: '',
       description: '',
       price: '',
       discount_price: '',
-      category: categories[0]?.name || 'Tops & Kurtis',
-      category_id: String(categories[0]?.id || '1'),
+      category: defaultCat,
+      category_id: defaultCatId,
       is_featured: false,
       imageFile: null,
       additionalImageFiles: [],
@@ -295,13 +314,14 @@ export default function AdminDashboardPage() {
   const handleOpenEditProduct = (p) => {
     setEditingProduct(p);
     const existingImages = Array.isArray(p.images) ? p.images : (p.image ? [p.image] : []);
+    const safeCatId = resolveValidDbCategoryId(p.category, p.category_id);
     setProductFormData({
       title: p.title || '',
       description: p.description || '',
       price: p.price || '',
       discount_price: p.discount_price || '',
       category: p.category || 'Tops & Kurtis',
-      category_id: String(p.category_id || '1'),
+      category_id: safeCatId,
       is_featured: Boolean(p.is_featured),
       imageFile: null,
       additionalImageFiles: [],
@@ -366,8 +386,9 @@ export default function AdminDashboardPage() {
       data.append('description', finalDescription);
       data.append('price', productFormData.price);
       data.append('discount_price', productFormData.discount_price || productFormData.price);
-      data.append('category_id', productFormData.category_id);
-      data.append('category_name', productFormData.category);
+      const validCatId = resolveValidDbCategoryId(productFormData.category, productFormData.category_id);
+      data.append('category_id', validCatId);
+      data.append('category_name', productFormData.category || 'Tops & Kurtis');
       data.append('is_featured', productFormData.is_featured ? '1' : '0');
       data.append('video_url', productFormData.video_url || '');
       data.append('variants', JSON.stringify(productFormData.variants));
@@ -399,9 +420,7 @@ export default function AdminDashboardPage() {
         setShowAddProductModal(false);
         loadData();
       } else {
-        setFeedback({ text: res?.message || 'Action completed with local sync.', isError: false });
-        setShowAddProductModal(false);
-        loadData();
+        setFeedback({ text: res?.message || 'Failed to save product in database.', isError: true });
       }
     } catch (err) {
       console.error(err);
@@ -425,38 +444,73 @@ export default function AdminDashboardPage() {
   // Category Handlers
   const handleOpenAddCategory = () => {
     setEditingCategory(null);
-    setCategoryFormData({ name: '', image: '' });
+    setCategoryFormData({ name: '', image: '', imageFile: null, previewUrl: '' });
     setShowCategoryModal(true);
   };
 
   const handleOpenEditCategory = (c) => {
     setEditingCategory(c);
-    setCategoryFormData({ name: c.name, image: c.image || '' });
+    setCategoryFormData({ name: c.name, image: c.image || '', imageFile: null, previewUrl: c.image || '' });
     setShowCategoryModal(true);
   };
 
-  const handleSaveCategory = (e) => {
+  const handleSaveCategory = async (e) => {
     e.preventDefault();
     if (!categoryFormData.name.trim()) return;
+    setCategorySubmitting(true);
 
-    if (editingCategory) {
-      const updated = categories.map(c => 
-        c.id === editingCategory.id ? { ...c, name: categoryFormData.name, image: categoryFormData.image } : c
-      );
-      saveCategories(updated);
-      setFeedback({ text: 'Category updated successfully.', isError: false });
-    } else {
-      const newCat = {
-        id: Date.now(),
-        name: categoryFormData.name,
-        slug: categoryFormData.name.toLowerCase().replace(/\s+/g, '-'),
-        image: categoryFormData.image || 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=900&auto=format&fit=crop',
-        itemCount: 0
-      };
-      saveCategories([...categories, newCat]);
-      setFeedback({ text: 'New category added.', isError: false });
+    try {
+      let finalImageUrl = categoryFormData.image || '';
+
+      if (categoryFormData.imageFile) {
+        try {
+          const formData = new FormData();
+          formData.append('image', categoryFormData.imageFile);
+          const json = await uploadImage(formData);
+          if (json && json.success && json.url) {
+            finalImageUrl = json.url;
+          } else if (json && json.url) {
+            finalImageUrl = json.url;
+          }
+        } catch (uploadErr) {
+          console.warn('Backend image upload fallback:', uploadErr);
+          if (categoryFormData.previewUrl) {
+            finalImageUrl = categoryFormData.previewUrl;
+          }
+        }
+      }
+
+      if (!finalImageUrl && categoryFormData.previewUrl) {
+        finalImageUrl = categoryFormData.previewUrl;
+      }
+      if (!finalImageUrl) {
+        finalImageUrl = 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=900&auto=format&fit=crop';
+      }
+
+      if (editingCategory) {
+        const updated = categories.map(c => 
+          c.id === editingCategory.id ? { ...c, name: categoryFormData.name, image: finalImageUrl } : c
+        );
+        saveCategories(updated);
+        setFeedback({ text: 'Category updated successfully.', isError: false });
+      } else {
+        const newCat = {
+          id: Date.now(),
+          name: categoryFormData.name,
+          slug: categoryFormData.name.toLowerCase().replace(/\s+/g, '-'),
+          image: finalImageUrl,
+          itemCount: 0
+        };
+        saveCategories([...categories, newCat]);
+        setFeedback({ text: 'New category created with uploaded image.', isError: false });
+      }
+      setShowCategoryModal(false);
+    } catch (err) {
+      console.error(err);
+      setFeedback({ text: 'Failed to save category: ' + err.message, isError: true });
+    } finally {
+      setCategorySubmitting(false);
     }
-    setShowCategoryModal(false);
   };
 
   const handleDeleteCategory = (catId) => {
@@ -1710,7 +1764,15 @@ export default function AdminDashboardPage() {
                     <label className="block text-stone-700 font-bold mb-1">Category</label>
                     <select
                       value={productFormData.category}
-                      onChange={(e) => setProductFormData({ ...productFormData, category: e.target.value })}
+                      onChange={(e) => {
+                        const newCat = e.target.value;
+                        const validId = resolveValidDbCategoryId(newCat);
+                        setProductFormData(prev => ({
+                          ...prev,
+                          category: newCat,
+                          category_id: validId
+                        }));
+                      }}
                       className="w-full py-2.5 px-3 rounded-xl border border-stone-200 text-xs font-medium"
                     >
                       {categories.map(c => (
@@ -1921,7 +1983,7 @@ export default function AdminDashboardPage() {
                 </h3>
                 <button
                   onClick={() => setShowCategoryModal(false)}
-                  className="p-1 rounded-full text-stone-400 hover:text-stone-700"
+                  className="p-1 rounded-full text-stone-400 hover:text-stone-700 cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -1940,30 +2002,89 @@ export default function AdminDashboardPage() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-stone-700 font-bold mb-1">Cover Image URL</label>
-                  <input
-                    type="url"
-                    placeholder="https://images.unsplash.com/photo-..."
-                    value={categoryFormData.image}
-                    onChange={(e) => setCategoryFormData({ ...categoryFormData, image: e.target.value })}
-                    className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950"
-                  />
+                {/* Direct Image File Upload Zone */}
+                <div className="p-3.5 bg-stone-50 rounded-2xl border border-stone-200 space-y-2.5">
+                  <label className="block text-stone-800 font-bold text-xs">
+                    Category Cover Image *
+                  </label>
+                  
+                  {categoryFormData.previewUrl ? (
+                    <div className="relative w-full h-44 rounded-xl overflow-hidden border border-stone-300 group bg-stone-100 shadow-inner">
+                      <img
+                        src={categoryFormData.previewUrl}
+                        alt="Category Preview"
+                        className="w-full h-full object-cover object-center"
+                      />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2.5 p-2">
+                        <label className="px-3.5 py-1.5 rounded-xl bg-white text-stone-900 text-xs font-bold cursor-pointer shadow-md hover:bg-stone-100 transition-all">
+                          Change Image
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files[0];
+                              if (file) {
+                                setCategoryFormData({
+                                  ...categoryFormData,
+                                  imageFile: file,
+                                  previewUrl: URL.createObjectURL(file)
+                                });
+                              }
+                            }}
+                          />
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => setCategoryFormData({ ...categoryFormData, imageFile: null, previewUrl: '', image: '' })}
+                          className="px-3.5 py-1.5 rounded-xl bg-red-600 text-white text-xs font-bold shadow-md hover:bg-red-700 transition-all cursor-pointer"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <label className="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-[#D4AF37]/50 hover:border-[#AA7E18] rounded-2xl cursor-pointer bg-white hover:bg-amber-50/40 transition-all p-4 text-center group">
+                      <div className="w-10 h-10 rounded-full bg-amber-50 group-hover:bg-amber-100 flex items-center justify-center mb-1.5 transition-colors">
+                        <Upload className="w-5 h-5 text-[#AA7E18]" />
+                      </div>
+                      <span className="text-xs font-bold text-stone-800">Upload Image from Computer</span>
+                      <span className="text-[10px] text-stone-400 mt-0.5">Click to browse (JPG, PNG, WEBP)</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setCategoryFormData({
+                              ...categoryFormData,
+                              imageFile: file,
+                              previewUrl: URL.createObjectURL(file)
+                            });
+                          }
+                        }}
+                      />
+                    </label>
+                  )}
                 </div>
 
                 <div className="pt-3 flex justify-end gap-2 border-t border-stone-100">
                   <button
                     type="button"
                     onClick={() => setShowCategoryModal(false)}
-                    className="px-4 py-2 rounded-xl text-stone-600 hover:bg-stone-100 text-xs font-semibold"
+                    disabled={categorySubmitting}
+                    className="px-4 py-2 rounded-xl text-stone-600 hover:bg-stone-100 text-xs font-semibold cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-xl bg-stone-950 text-white text-xs font-bold uppercase tracking-wider hover:bg-stone-800"
+                    disabled={categorySubmitting}
+                    className="px-5 py-2 rounded-xl bg-stone-950 text-white text-xs font-bold uppercase tracking-wider hover:bg-stone-800 disabled:opacity-50 flex items-center gap-1.5 cursor-pointer shadow-md"
                   >
-                    Save Category
+                    {categorySubmitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                    <span>{categorySubmitting ? 'Uploading...' : (editingCategory ? 'Update Category' : 'Save Category')}</span>
                   </button>
                 </div>
               </form>
