@@ -55,6 +55,7 @@ import {
   getInquiries,
   getRegisteredUsers,
   deleteUser,
+  getCategories,
   CATEGORIES as INITIAL_CATEGORIES,
   getLiveLookbookArchive,
   addLookbookEntry,
@@ -156,14 +157,18 @@ export default function AdminDashboardPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [prods, ords, inqs, usrs] = await Promise.all([
+      const [prods, ords, inqs, usrs, cats] = await Promise.all([
         getProducts(),
         getUserOrders(),
         getInquiries(),
-        getRegisteredUsers()
+        getRegisteredUsers(),
+        getCategories()
       ]);
       setProducts(prods || []);
       setUsers(usrs || []);
+      if (cats && Array.isArray(cats) && cats.length > 0) {
+        setCategories(cats);
+      }
       
       const isCleared = typeof window !== 'undefined' && localStorage.getItem('alhayy_orders_cleared') === 'true';
       if (isCleared) {
