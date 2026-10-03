@@ -13,10 +13,12 @@ async function handleProxy(request, { params }) {
 
     const headers = new Headers();
     const contentType = request.headers.get('content-type');
-    if (contentType) {
+    if (contentType && !contentType.includes('multipart/form-data')) {
       headers.set('content-type', contentType);
     }
     headers.set('Accept', 'application/json, */*');
+    const userAgent = request.headers.get('user-agent') || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+    headers.set('User-Agent', userAgent);
 
     const method = request.method;
     let body = undefined;
@@ -33,7 +35,7 @@ async function handleProxy(request, { params }) {
 
     const response = await fetch(targetUrl, {
       method,
-      headers: contentType && contentType.includes('multipart/form-data') ? undefined : headers,
+      headers,
       body,
       cache: 'no-store'
     });
