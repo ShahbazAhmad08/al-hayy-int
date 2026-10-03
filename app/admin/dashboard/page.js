@@ -964,7 +964,8 @@ export default function AdminDashboardPage() {
                 {filteredOrders.map((ord, idx) => {
                   const displayId = ord.id ? (String(ord.id).startsWith('ALH-') ? ord.id : `ALH-${ord.id}`) : `ALH-${1000 + idx}`;
                   const isExpanded = expandedOrderId === String(ord.id);
-                  const currentStatus = String(ord.order_status || 'processing').toLowerCase();
+                  const rawStatus = String(ord.order_status || 'processing').toLowerCase();
+                  const currentStatus = (rawStatus === 'dispatched' || rawStatus === 'transit' || rawStatus === 'on_the_way') ? 'shipped' : rawStatus;
 
                   return (
                     <div
@@ -976,7 +977,7 @@ export default function AdminDashboardPage() {
                         <div className="flex items-start sm:items-center gap-3">
                           <button
                             onClick={() => setExpandedOrderId(isExpanded ? null : String(ord.id))}
-                            className="p-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 transition-colors"
+                            className="p-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 transition-colors cursor-pointer"
                             title="Toggle line items"
                           >
                             {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -1015,9 +1016,8 @@ export default function AdminDashboardPage() {
                             onChange={(e) => handleStatusChange(ord.id, e.target.value)}
                             className="text-xs font-semibold py-1.5 px-3 rounded-xl border border-stone-200 bg-stone-50 text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900 cursor-pointer"
                           >
-                            <option value="pending">Pending</option>
                             <option value="processing">Processing (Atelier)</option>
-                            <option value="dispatched">Dispatched</option>
+                            <option value="shipped">Dispatched (On the Way)</option>
                             <option value="delivered">Delivered</option>
                             <option value="cancelled">Cancelled</option>
                           </select>
