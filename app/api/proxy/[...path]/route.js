@@ -16,9 +16,10 @@ async function handleProxy(request, { params }) {
     if (contentType && !contentType.includes('multipart/form-data')) {
       headers.set('content-type', contentType);
     }
-    headers.set('Accept', 'application/json, */*');
+    headers.set('Accept', 'application/json, text/plain, */*');
     const userAgent = request.headers.get('user-agent') || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
     headers.set('User-Agent', userAgent);
+    headers.set('Host', 'alhayyinternational-com.stackstaging.com');
 
     const method = request.method;
     let body = undefined;
