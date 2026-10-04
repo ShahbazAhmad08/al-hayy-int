@@ -2240,27 +2240,27 @@ export default function AdminDashboardPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
                         <label className="block text-stone-700 font-bold mb-1">
-                          Fabric &amp; Material
+                          Fabric &amp; Material (Multi-line supported)
                         </label>
-                        <input
-                          type="text"
-                          placeholder="e.g. 100% Pure Mulberry Silk / Handloom Cotton"
+                        <textarea
+                          rows={2}
+                          placeholder="e.g. 100% Pure Mulberry Silk&#10;Handloom Combed Cotton&#10;Natural Breathable Weave"
                           value={productFormData.fabric || ''}
                           onChange={(e) => setProductFormData({ ...productFormData, fabric: e.target.value })}
-                          className="w-full py-2.5 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900"
+                          className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 resize-y"
                         />
                       </div>
 
                       <div>
                         <label className="block text-stone-700 font-bold mb-1">
-                          Craft &amp; Artisan Work
+                          Craft &amp; Artisan Work (Multi-line supported)
                         </label>
-                        <input
-                          type="text"
-                          placeholder="e.g. Authentic Kashmiri Aari Needle Embroidery"
+                        <textarea
+                          rows={2}
+                          placeholder="e.g. Authentic Kashmiri Aari Needle Embroidery&#10;72 hours of artisan craftsmanship in Srinagar"
                           value={productFormData.craft_details || ''}
                           onChange={(e) => setProductFormData({ ...productFormData, craft_details: e.target.value })}
-                          className="w-full py-2.5 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900"
+                          className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 resize-y"
                         />
                       </div>
                     </div>
@@ -2268,14 +2268,14 @@ export default function AdminDashboardPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
                         <label className="block text-stone-700 font-bold mb-1">
-                          Care Instructions
+                          Care Instructions (Multi-line supported)
                         </label>
-                        <input
-                          type="text"
-                          placeholder="e.g. Dry clean only / Gentle hand wash in cold water"
+                        <textarea
+                          rows={2}
+                          placeholder="e.g. Dry clean only or gentle hand wash in cold water&#10;Warm iron on reverse side&#10;Do not wring or bleach"
                           value={productFormData.care || ''}
                           onChange={(e) => setProductFormData({ ...productFormData, care: e.target.value })}
-                          className="w-full py-2.5 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900"
+                          className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 resize-y"
                         />
                       </div>
 

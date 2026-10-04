@@ -596,23 +596,29 @@ export default function ProductDetailPage() {
             <div className="text-xs text-stone-600 leading-relaxed">
               {activeTab === 'details' && (
                 <div className="space-y-2.5">
-                  <div className="p-3 rounded-xl bg-stone-50 border border-stone-200/70 space-y-0.5">
+                  <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200/70 space-y-1">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">Fabric Composition</span>
-                    <p className="text-xs font-semibold text-stone-900">{product.fabric || '100% Pure Kashmiri Handloom / Cotton / Silk'}</p>
+                    <p className="text-xs font-semibold text-stone-900 whitespace-pre-line leading-relaxed">
+                      {product.fabric || '100% Pure Kashmiri Handloom / Cotton / Silk'}
+                    </p>
                   </div>
-                  <div className="p-3 rounded-xl bg-stone-50 border border-stone-200/70 space-y-0.5">
+                  <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200/70 space-y-1">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">Artisan &amp; Needlework</span>
-                    <p className="text-xs font-semibold text-stone-900">{product.craft_details || 'Authentic Kashmiri Aari Needlework & Handcraft'}</p>
+                    <p className="text-xs font-semibold text-stone-900 whitespace-pre-line leading-relaxed">
+                      {product.craft_details || 'Authentic Kashmiri Aari Needlework & Handcraft'}
+                    </p>
                   </div>
-                  <div className="p-3 rounded-xl bg-stone-50 border border-stone-200/70 space-y-0.5">
+                  <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200/70 space-y-1">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">Provenance &amp; Heritage</span>
                     <p className="text-xs font-semibold text-stone-900">Crafted by Master Artisans in Srinagar, Jammu &amp; Kashmir</p>
                   </div>
                 </div>
               )}
               {activeTab === 'care' && (
-                <div className="p-4 rounded-xl bg-stone-50 border border-stone-200/70 space-y-2 text-xs text-stone-700">
-                  <p className="font-semibold text-stone-900">{product.care || 'Gentle hand wash in cold water or mild dry clean.'}</p>
+                <div className="p-4 rounded-xl bg-stone-50 border border-stone-200/70 space-y-2.5 text-xs text-stone-700">
+                  <p className="font-semibold text-stone-900 whitespace-pre-line leading-relaxed">
+                    {product.care || 'Gentle hand wash in cold water or mild dry clean.'}
+                  </p>
                   <div className="pt-2 border-t border-stone-200/70 space-y-1 text-stone-600 text-[11px]">
                     <p>• Do not bleach, squeeze or wring the handcrafted fabric.</p>
                     <p>• Warm iron on the reverse side of delicate needlework.</p>
