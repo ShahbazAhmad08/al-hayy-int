@@ -152,8 +152,14 @@ function ShopContent() {
     let matchesSubcategory = true;
     if (selectedSubcategory !== 'all') {
       const qSub = selectedSubcategory.toLowerCase();
-      const text = `${p.title} ${p.description} ${p.fabric || ''} ${p.craft_details || ''}`.toLowerCase();
-      matchesSubcategory = text.includes(qSub);
+      if (p.subcategory && p.subcategory.toLowerCase() === qSub) {
+        matchesSubcategory = true;
+      } else if (p.subcategory && p.subcategory.toLowerCase().includes(qSub)) {
+        matchesSubcategory = true;
+      } else {
+        const text = `${p.subcategory || ''} ${p.title} ${p.description} ${p.fabric || ''} ${p.craft_details || ''}`.toLowerCase();
+        matchesSubcategory = text.includes(qSub);
+      }
     }
 
     // 3. Search query match

@@ -25,7 +25,7 @@ import {
   Image as ImageIcon
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
-import { getProductById, getProducts } from '@/lib/api';
+import { getProductById, getProducts, getLookbookReels } from '@/lib/api';
 import ProductCard from '@/components/ProductCard';
 import SEOStructuredData from '@/components/SEOStructuredData';
 
@@ -49,20 +49,34 @@ export default function ProductDetailPage() {
   const [activeTab, setActiveTab] = useState('details'); // 'details' | 'care' | 'shipping'
   const [copiedLink, setCopiedLink] = useState(false);
 
-  // Mini Video Screen & Fullscreen Reel Viewer
+  // Mini Floating Video Screen & Fullscreen Reel Viewer
   const [showFullscreenReel, setShowFullscreenReel] = useState(false);
   const [activeReelIdx, setActiveReelIdx] = useState(0);
   const [isReelMuted, setIsReelMuted] = useState(true);
+  const [isFloatingReelDismissed, setIsFloatingReelDismissed] = useState(false);
 
   useEffect(() => {
     async function load() {
       if (!productId) return;
       setLoading(true);
       try {
-        const [item, all] = await Promise.all([
+        const [item, all, lookbook] = await Promise.all([
           getProductById(productId),
-          getProducts()
+          getProducts(),
+          getLookbookReels()
         ]);
+
+        // Link lookbook video reel if item doesn't have video_url
+        if (item && !item.video_url && Array.isArray(lookbook)) {
+          const linkedReel = lookbook.find(r => 
+            (r.productId && String(r.productId) === String(item.id)) ||
+            (r.product_id && String(r.product_id) === String(item.id)) ||
+            (r.title && item.title && r.title.toLowerCase().trim() === item.title.toLowerCase().trim())
+          );
+          if (linkedReel && (linkedReel.videoUrl || linkedReel.video_url || linkedReel.video)) {
+            item.video_url = linkedReel.videoUrl || linkedReel.video_url || linkedReel.video;
+          }
+        }
 
         setProduct(item);
         setAllProducts(all || []);
@@ -689,6 +703,63 @@ export default function ProductDetailPage() {
           )}
         </button>
       </div>
+
+      {/* FLOATING MINI REEL (Kashmir Box style) - Bottom Right Floating Reel Widget */}
+      {videoProducts.length > 0 && !isFloatingReelDismissed && (
+        <div className="fixed bottom-20 lg:bottom-8 right-4 sm:right-8 z-40 animate-in slide-in-from-bottom-5 duration-300">
+          <div 
+            onClick={() => {
+              const curIdx = videoProducts.findIndex(p => String(p.id) === String(productId));
+              setActiveReelIdx(curIdx >= 0 ? curIdx : 0);
+              setShowFullscreenReel(true);
+            }}
+            className="relative group cursor-pointer w-24 sm:w-28 aspect-[9/16] rounded-2xl overflow-hidden border-2 border-[#D4AF37] shadow-2xl bg-black hover:scale-105 transition-all duration-300 ring-4 ring-[#D4AF37]/20"
+            title="Watch Product Reel"
+          >
+            {/* Mini Looping Video */}
+            <video
+              src={product?.video_url || videoProducts[0]?.video_url}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover pointer-events-none"
+            />
+
+            {/* Top Banner Tag & Dismiss Button */}
+            <div className="absolute top-1.5 inset-x-1.5 flex items-center justify-between z-10">
+              <span className="flex items-center gap-1 bg-[#070E1E]/80 backdrop-blur-sm px-1.5 py-0.5 rounded-full text-[9px] font-bold text-[#F7E7B6] border border-[#D4AF37]/40 tracking-wider">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                Reel
+              </span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsFloatingReelDismissed(true);
+                }}
+                className="p-1 rounded-full bg-black/70 hover:bg-black text-white border border-white/20 transition-all cursor-pointer"
+                title="Dismiss mini reel"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+
+            {/* Center Hover Play Icon */}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors">
+              <div className="w-9 h-9 rounded-full bg-[#070E1E]/80 border border-[#D4AF37] flex items-center justify-center text-[#F7E7B6] shadow-lg group-hover:scale-110 transition-transform">
+                <Play className="w-4 h-4 fill-[#F7E7B6] ml-0.5" />
+              </div>
+            </div>
+
+            {/* Bottom Text Tag */}
+            <div className="absolute inset-x-0 bottom-0 p-1.5 bg-gradient-to-t from-black/90 via-black/50 to-transparent text-center">
+              <span className="text-[10px] font-bold text-white line-clamp-1">
+                Watch Video
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* FULLSCREEN REEL SHOWCASE MODAL WITH ARROW NAVIGATION */}
       {showFullscreenReel && videoProducts.length > 0 && videoProducts[activeReelIdx] && (
