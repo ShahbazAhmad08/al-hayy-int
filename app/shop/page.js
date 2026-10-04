@@ -23,6 +23,38 @@ import SEOStructuredData from '@/components/SEOStructuredData';
 import ScrollReveal from '@/components/ScrollReveal';
 import { getProducts, getCategories, getLiveCategoriesArchive, CATEGORIES as INITIAL_CATEGORIES } from '@/lib/api';
 
+const SUBCATEGORIES_MAP = {
+  'Tops & Kurtis': [
+    { label: 'All Kurtis & Suits', query: 'all' },
+    { label: 'Cotton Kurtis', query: 'cotton' },
+    { label: 'Georgette Suits', query: 'georgette' },
+    { label: 'Silk Suits', query: 'silk' },
+    { label: 'Velvet Kurtis', query: 'velvet' },
+    { label: 'Aari Needlework', query: 'aari' }
+  ],
+  'Pashmina & Shawls': [
+    { label: 'All Shawls & Stoles', query: 'all' },
+    { label: 'Pure Pashmina', query: 'pashmina' },
+    { label: 'Kani Weave', query: 'kani' },
+    { label: 'Sozni Needlecraft', query: 'sozni' },
+    { label: 'Cashmere Stoles', query: 'cashmere' }
+  ],
+  'Silk jackets': [
+    { label: 'All Jackets & Coats', query: 'all' },
+    { label: 'Mulberry Silk', query: 'silk' },
+    { label: 'Velvet Shrugs', query: 'velvet' },
+    { label: 'Nehru Cut', query: 'nehru' },
+    { label: 'Long Stole Coats', query: 'long' }
+  ],
+  'co-ord sets': [
+    { label: 'All Co-ords', query: 'all' },
+    { label: 'Linen Sets', query: 'linen' },
+    { label: 'Silk Co-ords', query: 'silk' },
+    { label: 'Embroidered Trousers', query: 'trouser' }
+  ],
+  'Kaftaans': [] // Kaftaans has no subcategories
+};
+
 function ShopContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get('category') || 'All';
@@ -32,7 +64,7 @@ function ShopContent() {
   const [categories, setCategories] = useState(INITIAL_CATEGORIES);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
-  const [selectedSeason, setSelectedSeason] = useState('All'); // 'All' | 'Summer Collection' | 'Winter Collection'
+  const [selectedSubcategory, setSelectedSubcategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [sortBy, setSortBy] = useState('featured'); // 'featured', 'price-low', 'price-high', 'rating'
   const [maxPrice, setMaxPrice] = useState(10000);
@@ -76,29 +108,29 @@ function ShopContent() {
   useEffect(() => {
     if (searchParams.get('category')) {
       setSelectedCategory(searchParams.get('category'));
-    }
-    if (searchParams.get('season')) {
-      setSelectedSeason(searchParams.get('season'));
+      setSelectedSubcategory('all');
     }
   }, [searchParams]);
 
+  // Find subcategories for active category
+  const currentSubcategories = SUBCATEGORIES_MAP[selectedCategory] || [];
+
   // Filtering & Sorting Logic
   const filteredProducts = products.filter((p) => {
-    // Category match
+    // 1. Category match
     const matchesCategory =
       selectedCategory === 'All' ||
       p.category?.toLowerCase() === selectedCategory.toLowerCase();
 
-    // Season match
-    const isSummer = (p.season === 'summer' || (!p.season && (p.category?.toLowerCase().includes('kurti') || p.category?.toLowerCase().includes('kaftaan') || p.category?.toLowerCase().includes('co-ord') || p.title?.toLowerCase().includes('kurti') || p.title?.toLowerCase().includes('kaftan') || p.title?.toLowerCase().includes('co-ord') || p.title?.toLowerCase().includes('cotton') || p.title?.toLowerCase().includes('summer'))));
-    const isWinter = (p.season === 'winter' || (!p.season && (p.category?.toLowerCase().includes('jacket') || p.category?.toLowerCase().includes('pashmina') || p.category?.toLowerCase().includes('shawl') || p.title?.toLowerCase().includes('jacket') || p.title?.toLowerCase().includes('pashmina') || p.title?.toLowerCase().includes('shawl') || p.title?.toLowerCase().includes('velvet') || p.title?.toLowerCase().includes('silk') || p.title?.toLowerCase().includes('shrug') || p.title?.toLowerCase().includes('winter'))));
+    // 2. Subcategory / Fabric match
+    let matchesSubcategory = true;
+    if (selectedSubcategory !== 'all') {
+      const qSub = selectedSubcategory.toLowerCase();
+      const text = `${p.title} ${p.description} ${p.fabric || ''} ${p.craft_details || ''}`.toLowerCase();
+      matchesSubcategory = text.includes(qSub);
+    }
 
-    const matchesSeason =
-      selectedSeason === 'All' ||
-      (selectedSeason === 'Summer Collection' && (p.season === 'summer' || isSummer || p.season === 'all')) ||
-      (selectedSeason === 'Winter Collection' && (p.season === 'winter' || isWinter || p.season === 'all'));
-
-    // Search query match
+    // 3. Search query match
     const q = searchQuery.toLowerCase().trim();
     const matchesSearch =
       !q ||
@@ -106,11 +138,11 @@ function ShopContent() {
       p.category?.toLowerCase().includes(q) ||
       p.description?.toLowerCase().includes(q);
 
-    // Price match
+    // 4. Price match
     const effectivePrice = Number(p.discount_price || p.price);
     const matchesPrice = effectivePrice <= maxPrice;
 
-    return matchesCategory && matchesSeason && matchesSearch && matchesPrice;
+    return matchesCategory && matchesSubcategory && matchesSearch && matchesPrice;
   });
 
   // Sort
@@ -126,7 +158,7 @@ function ShopContent() {
 
   const resetFilters = () => {
     setSelectedCategory('All');
-    setSelectedSeason('All');
+    setSelectedSubcategory('all');
     setSearchQuery('');
     setMaxPrice(10000);
     setSortBy('featured');
@@ -200,7 +232,7 @@ function ShopContent() {
               </span>
               <div className="space-y-1">
                 <button
-                  onClick={() => setSelectedCategory('All')}
+                  onClick={() => { setSelectedCategory('All'); setSelectedSubcategory('all'); }}
                   className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors ${
                     selectedCategory === 'All'
                       ? 'bg-stone-950 text-white shadow-xs'
@@ -219,7 +251,7 @@ function ShopContent() {
                 {categories.map((cat) => (
                   <button
                     key={cat.id}
-                    onClick={() => setSelectedCategory(cat.name)}
+                    onClick={() => { setSelectedCategory(cat.name); setSelectedSubcategory('all'); }}
                     className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors ${
                       selectedCategory.toLowerCase() === cat.name.toLowerCase()
                         ? 'bg-stone-950 text-white shadow-xs'
@@ -273,22 +305,27 @@ function ShopContent() {
 
         {/* Main Product Showcase */}
         <div className="lg:col-span-3 space-y-4 sm:space-y-6">
-          {/* Season Toggle Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-            {['All', 'Summer Collection', 'Winter Collection'].map((season) => (
-              <button
-                key={season}
-                onClick={() => setSelectedSeason(season)}
-                className={`px-4 sm:px-5 py-2 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 cursor-pointer whitespace-nowrap ${
-                  selectedSeason === season
-                    ? 'bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/50 shadow-md transform scale-[1.02]'
-                    : 'bg-white text-stone-600 border border-stone-200 hover:text-stone-950 hover:bg-stone-50 shadow-2xs'
-                }`}
-              >
-                {season}
-              </button>
-            ))}
-          </div>
+          {/* Dynamic Subcategory Filter Pills (Only shown if selected category has subcategories) */}
+          {currentSubcategories.length > 0 && (
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+              {currentSubcategories.map((sub) => {
+                const isSelected = selectedSubcategory === sub.query;
+                return (
+                  <button
+                    key={sub.query}
+                    onClick={() => setSelectedSubcategory(sub.query)}
+                    className={`px-4 py-2 rounded-full text-xs font-bold tracking-wider transition-all duration-200 cursor-pointer whitespace-nowrap ${
+                      isSelected
+                        ? 'bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/50 shadow-md transform scale-[1.02]'
+                        : 'bg-white text-stone-600 border border-stone-200 hover:text-stone-950 hover:bg-stone-50 shadow-2xs'
+                    }`}
+                  >
+                    {sub.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
           {/* Top Sort & Mobile Filter Bar */}
           <div className="p-3.5 sm:p-4 bg-white rounded-2xl sm:rounded-3xl border border-stone-200/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">

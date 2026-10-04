@@ -114,15 +114,28 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Client Care */}
+          {/* Client Care & Policies */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-widest text-[#F7E7B6] mb-4">
-              Client Care
+              Policies &amp; Care
             </h4>
-            <ul className="space-y-2.5 text-xs text-stone-300">
+            <ul className="space-y-2 text-xs text-stone-300">
               <li>
-                <Link href="/lookbook" className="hover:text-[#D4AF37] transition-colors">
-                  Atelier Lookbook &amp; Archive
+                <Link href="/shipping-policy" className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5">
+                  <Truck className="w-3 h-3 text-[#D4AF37]" />
+                  <span>Shipping &amp; Delivery Policy</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy-policy" className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5">
+                  <ShieldCheck className="w-3 h-3 text-[#D4AF37]" />
+                  <span>Privacy &amp; Data Policy</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5">
+                  <RotateCcw className="w-3 h-3 text-[#D4AF37]" />
+                  <span>Terms &amp; Conditions</span>
                 </Link>
               </li>
               <li>
@@ -131,18 +144,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/our-story" className="hover:text-[#D4AF37] transition-colors">
-                  Our Story &amp; Packaging
-                </Link>
-              </li>
-              <li>
-                <Link href="/market-areas" className="hover:text-[#D4AF37] transition-colors text-[#F7E7B6] font-medium">
-                  Market Areas &amp; Global Supply
+                <Link href="/lookbook" className="hover:text-[#D4AF37] transition-colors">
+                  Atelier Lookbook Reels
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="hover:text-[#D4AF37] transition-colors">
-                  Contact &amp; Concierge (+91 96224 80276)
+                  Contact &amp; Concierge
                 </Link>
               </li>
             </ul>
@@ -172,7 +180,7 @@ export default function Footer() {
                     placeholder="Enter your email"
                     className="w-full py-2.5 px-3.5 pr-10 rounded-xl bg-[#102142]/80 border border-[#D4AF37]/30 text-xs text-white placeholder-stone-400 focus:outline-none focus:border-[#D4AF37]"
                   />
-                  <button type="submit" className="absolute right-1.5 top-1.5 p-1.5 text-[#D4AF37] hover:text-white">
+                  <button type="submit" className="absolute right-1.5 top-1.5 p-1.5 text-[#D4AF37] hover:text-white cursor-pointer">
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -182,18 +190,27 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-6 border-t border-[#D4AF37]/20 flex flex-col sm:flex-row items-center justify-between text-[11px] text-stone-400 gap-4">
+        <div className="pt-6 border-t border-[#D4AF37]/20 flex flex-col md:flex-row items-center justify-between text-[11px] text-stone-400 gap-4">
           <div>
             © {new Date().getFullYear()} <strong className="text-[#F7E7B6]">Al Hayy International</strong>. All Rights Reserved.
           </div>
-          <div className="flex items-center gap-3 text-stone-400">
-            <span>UPI</span>
+
+          <div className="flex items-center flex-wrap justify-center gap-x-4 gap-y-1 text-stone-300">
+            <Link href="/shipping-policy" className="hover:text-[#D4AF37] transition-colors">Shipping Policy</Link>
             <span>•</span>
+            <Link href="/privacy-policy" className="hover:text-[#D4AF37] transition-colors">Privacy Policy</Link>
+            <span>•</span>
+            <Link href="/terms" className="hover:text-[#D4AF37] transition-colors">Terms of Service</Link>
+            <span>•</span>
+            <Link href="/contact" className="hover:text-[#D4AF37] transition-colors">Support</Link>
+          </div>
+
+          <div className="flex items-center gap-2 text-stone-400 text-[10px] font-mono">
             <span>Razorpay</span>
             <span>•</span>
-            <span>Visa</span>
+            <span>UPI</span>
             <span>•</span>
-            <span>Mastercard</span>
+            <span>Cards</span>
             <span>•</span>
             <span>COD Available</span>
           </div>

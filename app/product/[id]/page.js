@@ -11,13 +11,17 @@ import {
   Sparkles, 
   RotateCcw, 
   ChevronRight, 
+  ChevronLeft,
   Share2, 
   Check, 
-  Ruler, 
   Clock,
   Play,
   Video,
   Zap,
+  Volume2,
+  VolumeX,
+  Maximize2,
+  X,
   Image as ImageIcon
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
@@ -32,6 +36,8 @@ export default function ProductDetailPage() {
   const { addToCart } = useCart();
 
   const [product, setProduct] = useState(null);
+  const [allProducts, setAllProducts] = useState([]);
+  const [videoProducts, setVideoProducts] = useState([]);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState('');
@@ -41,29 +47,50 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [activeTab, setActiveTab] = useState('details'); // 'details' | 'care' | 'shipping'
-  const [showSizeModal, setShowSizeModal] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+
+  // Mini Video Screen & Fullscreen Reel Viewer
+  const [showFullscreenReel, setShowFullscreenReel] = useState(false);
+  const [activeReelIdx, setActiveReelIdx] = useState(0);
+  const [isReelMuted, setIsReelMuted] = useState(true);
 
   useEffect(() => {
     async function load() {
       if (!productId) return;
       setLoading(true);
       try {
-        const item = await getProductById(productId);
+        const [item, all] = await Promise.all([
+          getProductById(productId),
+          getProducts()
+        ]);
+
         setProduct(item);
+        setAllProducts(all || []);
+
         if (item) {
           setSelectedImage(item.image);
           setMediaType('image');
+          if (item.colors && item.colors[0]) {
+            setSelectedColor(item.colors[0]);
+          }
           if (item.variants && item.variants[0]) {
             setSelectedSize(item.variants[0].size);
-            if (item.variants[0].colors && item.variants[0].colors[0]) {
-              setSelectedColor(item.variants[0].colors[0]);
-            }
           }
         }
+
+        // Build list of all products with video reels for arrow navigation
+        const vProds = (all || []).filter(p => p.video_url);
+        if (item?.video_url && !vProds.some(p => p.id === item.id)) {
+          vProds.unshift(item);
+        }
+        setVideoProducts(vProds);
+
+        // Find initial index
+        const currIdx = vProds.findIndex(p => String(p.id) === String(productId));
+        setActiveReelIdx(currIdx >= 0 ? currIdx : 0);
+
         // Load related items
-        const all = await getProducts();
-        setRelatedProducts(all.filter(p => String(p.id) !== String(productId)).slice(0, 4));
+        setRelatedProducts((all || []).filter(p => String(p.id) !== String(productId)).slice(0, 4));
       } catch (e) {
         console.error('Failed to load product detail', e);
       } finally {
@@ -72,6 +99,22 @@ export default function ProductDetailPage() {
     }
     load();
   }, [productId]);
+
+  // Keyboard navigation for fullscreen reel
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!showFullscreenReel || videoProducts.length === 0) return;
+      if (e.key === 'ArrowRight') {
+        setActiveReelIdx((prev) => (prev + 1) % videoProducts.length);
+      } else if (e.key === 'ArrowLeft') {
+        setActiveReelIdx((prev) => (prev - 1 + videoProducts.length) % videoProducts.length);
+      } else if (e.key === 'Escape') {
+        setShowFullscreenReel(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showFullscreenReel, videoProducts]);
 
   if (loading) {
     return (
@@ -244,6 +287,53 @@ export default function ProductDetailPage() {
               )}
             </div>
           )}
+          {/* Mini Live Video Screen / PiP Reel Box */}
+          {product.video_url && (
+            <div 
+              onClick={() => {
+                const idx = videoProducts.findIndex(p => String(p.id) === String(product.id));
+                setActiveReelIdx(idx >= 0 ? idx : 0);
+                setShowFullscreenReel(true);
+              }}
+              className="group relative rounded-2xl overflow-hidden border-2 border-[#D4AF37]/50 bg-gradient-to-r from-[#070E1E] to-[#0B162C] text-white shadow-lg p-3 flex items-center justify-between gap-3 transition-all hover:scale-[1.01] hover:border-[#D4AF37] cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                {/* Mini Playing Screen */}
+                <div className="relative w-14 h-18 rounded-xl overflow-hidden bg-black shrink-0 border border-[#D4AF37]/60 shadow-md">
+                  <video
+                    src={product.video_url}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/25 group-hover:bg-transparent transition-colors flex items-center justify-center">
+                    <Play className="w-4 h-4 text-[#D4AF37] fill-[#D4AF37] drop-shadow-md" />
+                  </div>
+                </div>
+
+                <div className="text-left space-y-0.5">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-[#F7E7B6] font-bold">
+                      Live Atelier Reel
+                    </span>
+                  </div>
+                  <h4 className="font-serif-luxury text-xs sm:text-sm font-bold text-white group-hover:text-[#D4AF37] transition-colors">
+                    Watch Flow &amp; Handcraft Video
+                  </h4>
+                  <span className="text-[10px] text-stone-300 block">
+                    Tap to expand &amp; swipe products with ← → arrows
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-2 rounded-full bg-[#D4AF37] text-[#070E1E] group-hover:scale-110 transition-transform shrink-0 shadow-md">
+                <Maximize2 className="w-4 h-4" />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right: Details & Actions Column */}
@@ -300,18 +390,64 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          {/* Variant: Size Selector */}
+          {/* Variant: Color Selector */}
+          {product.colors && product.colors.length > 0 && (
+            <div className="space-y-2.5 pt-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-bold text-stone-900">
+                  Select Color: <span className="text-[#AA7E18] font-semibold">{selectedColor}</span>
+                </span>
+                <span className="text-[10px] text-stone-400 uppercase tracking-wider font-mono">
+                  {product.colors.length} Available
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {product.colors.map((clr) => {
+                  const isSelected = selectedColor === clr;
+                  return (
+                    <button
+                      key={clr}
+                      type="button"
+                      onClick={() => setSelectedColor(clr)}
+                      className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+                        isSelected
+                          ? 'bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/60 shadow-md ring-1 ring-[#D4AF37]/40 scale-102'
+                          : 'bg-stone-50 border border-stone-200 text-stone-700 hover:bg-stone-100 hover:border-stone-300'
+                      }`}
+                    >
+                      <span
+                        className="w-3 h-3 rounded-full border border-black/15 shadow-2xs shrink-0"
+                        style={{
+                          backgroundColor:
+                            clr.toLowerCase().includes('green') ? '#1B4D3E' :
+                            clr.toLowerCase().includes('navy') || clr.toLowerCase().includes('blue') ? '#0A192F' :
+                            clr.toLowerCase().includes('maroon') || clr.toLowerCase().includes('wine') || clr.toLowerCase().includes('burgundy') ? '#581845' :
+                            clr.toLowerCase().includes('red') ? '#8B0000' :
+                            clr.toLowerCase().includes('mustard') || clr.toLowerCase().includes('gold') || clr.toLowerCase().includes('yellow') ? '#C59B27' :
+                            clr.toLowerCase().includes('black') ? '#111111' :
+                            clr.toLowerCase().includes('white') || clr.toLowerCase().includes('ivory') || clr.toLowerCase().includes('cream') ? '#FDFBF7' :
+                            clr.toLowerCase().includes('pink') || clr.toLowerCase().includes('peach') || clr.toLowerCase().includes('rose') ? '#E892A2' :
+                            clr.toLowerCase().includes('purple') || clr.toLowerCase().includes('lavender') || clr.toLowerCase().includes('lilac') ? '#8E7CC3' :
+                            clr.toLowerCase().includes('rust') || clr.toLowerCase().includes('orange') ? '#B7410E' :
+                            clr.toLowerCase().includes('grey') || clr.toLowerCase().includes('gray') ? '#708090' :
+                            '#D4AF37'
+                        }}
+                      />
+                      <span>{clr}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Variant: Size Selector (Without Size Chart) */}
           {product.variants && product.variants.length > 0 && (
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-bold text-stone-800">Choose Size:</span>
-                <button
-                  type="button"
-                  onClick={() => setShowSizeModal(true)}
-                  className="text-stone-600 hover:text-stone-950 font-semibold flex items-center gap-1 text-xs"
-                >
-                  <Ruler className="w-3.5 h-3.5" /> Size Guide
-                </button>
+                <span className="text-[10px] text-stone-400">Regular Fit</span>
               </div>
 
               <div className="flex flex-wrap gap-2.5">
@@ -455,41 +591,6 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      {/* Size Guide Modal */}
-      {showSizeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 space-y-4 shadow-2xl border border-stone-200">
-            <div className="flex items-center justify-between pb-3 border-b border-stone-100">
-              <h3 className="font-serif-luxury text-lg font-bold text-stone-950">
-                Al Hayy Size Guide (Inches)
-              </h3>
-              <button onClick={() => setShowSizeModal(false)} className="text-stone-400 hover:text-stone-950">
-                ✕
-              </button>
-            </div>
-            <table className="w-full text-xs text-left">
-              <thead className="bg-stone-50 text-stone-700 uppercase font-semibold">
-                <tr>
-                  <th className="p-2.5">Size</th>
-                  <th className="p-2.5">Bust</th>
-                  <th className="p-2.5">Waist</th>
-                  <th className="p-2.5">Hip</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-stone-100">
-                <tr><td className="p-2.5 font-bold">S</td><td className="p-2.5">36"</td><td className="p-2.5">32"</td><td className="p-2.5">38"</td></tr>
-                <tr><td className="p-2.5 font-bold">M</td><td className="p-2.5">38"</td><td className="p-2.5">34"</td><td className="p-2.5">40"</td></tr>
-                <tr><td className="p-2.5 font-bold">L</td><td className="p-2.5">40"</td><td className="p-2.5">36"</td><td className="p-2.5">42"</td></tr>
-                <tr><td className="p-2.5 font-bold">XL</td><td className="p-2.5">42"</td><td className="p-2.5">38"</td><td className="p-2.5">44"</td></tr>
-                <tr><td className="p-2.5 font-bold">XXL</td><td className="p-2.5">44"</td><td className="p-2.5">40"</td><td className="p-2.5">46"</td></tr>
-              </tbody>
-            </table>
-            <p className="text-[11px] text-stone-500 italic">
-              Custom bridal & size alterations available via WhatsApp Concierge.
-            </p>
-          </div>
-        </div>
-      )}
 
       {/* Artisanal Provenance & Royal Packaging Guarantee */}
       <section className="p-6 sm:p-10 rounded-3xl bg-white border border-[#E5D9C8] shadow-xs space-y-6">
@@ -587,15 +688,124 @@ export default function ProductDetailPage() {
             </>
           )}
         </button>
-
-        <button
-          onClick={handleBuyNow}
-          className="flex-1 py-3 px-2.5 rounded-full text-[11px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/50 shadow-md transition-all active:scale-95 cursor-pointer"
-        >
-          <Zap className="w-3.5 h-3.5 text-[#D4AF37] fill-[#D4AF37]" />
-          <span>Buy Now • ₹{discountPrice.toLocaleString('en-IN')}</span>
-        </button>
       </div>
+
+      {/* FULLSCREEN REEL SHOWCASE MODAL WITH ARROW NAVIGATION */}
+      {showFullscreenReel && videoProducts.length > 0 && videoProducts[activeReelIdx] && (
+        <div 
+          className="fixed inset-0 z-[9999] bg-[#070E1E]/95 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 select-none animate-in fade-in duration-200"
+          onClick={() => setShowFullscreenReel(false)}
+        >
+          <div 
+            className="relative max-w-lg w-full max-h-[92vh] h-[85vh] flex flex-col items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Top Bar Controls */}
+            <div className="absolute -top-12 inset-x-0 flex items-center justify-between text-white z-50">
+              <span className="text-xs font-mono text-[#F7E7B6] font-bold">
+                Product Video {activeReelIdx + 1} of {videoProducts.length} • Use ← → Arrow Keys
+              </span>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsReelMuted(!isReelMuted)}
+                  className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-[#D4AF37]/40 transition-all cursor-pointer"
+                  title={isReelMuted ? 'Unmute' : 'Mute'}
+                >
+                  {isReelMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                </button>
+
+                <button
+                  onClick={() => setShowFullscreenReel(false)}
+                  className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-[#D4AF37]/40 transition-all cursor-pointer"
+                  title="Close Showcase"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Left & Right Arrow Navigation */}
+            <button
+              onClick={() => setActiveReelIdx((prev) => (prev - 1 + videoProducts.length) % videoProducts.length)}
+              className="absolute left-2 sm:-left-16 top-1/2 -translate-y-1/2 p-3 rounded-full bg-[#070E1E]/80 hover:bg-[#D4AF37] hover:text-[#070E1E] text-white border border-[#D4AF37]/50 backdrop-blur-md transition-all cursor-pointer z-50 shadow-xl"
+              title="Previous Product (←)"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+
+            <button
+              onClick={() => setActiveReelIdx((prev) => (prev + 1) % videoProducts.length)}
+              className="absolute right-2 sm:-right-16 top-1/2 -translate-y-1/2 p-3 rounded-full bg-[#070E1E]/80 hover:bg-[#D4AF37] hover:text-[#070E1E] text-white border border-[#D4AF37]/50 backdrop-blur-md transition-all cursor-pointer z-50 shadow-xl"
+              title="Next Product (→)"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+
+            {/* Main Video Screen Container */}
+            <div className="relative w-full h-full rounded-3xl overflow-hidden border-2 border-[#D4AF37]/60 shadow-2xl bg-black flex items-center justify-center">
+              <video
+                key={videoProducts[activeReelIdx].video_url}
+                src={videoProducts[activeReelIdx].video_url}
+                autoPlay
+                loop
+                playsInline
+                muted={isReelMuted}
+                className="w-full h-full object-cover"
+              />
+
+              {/* Dark Vignette Bottom Gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#070E1E]/95 via-transparent to-transparent pointer-events-none" />
+
+              {/* Connected Product Floating Box */}
+              <div className="absolute inset-x-0 bottom-0 p-5 space-y-3 z-30">
+                <div className="space-y-1">
+                  <span className="text-[10px] font-mono text-[#F7E7B6] bg-[#070E1E]/80 px-2.5 py-0.5 rounded-full border border-[#D4AF37]/40 uppercase tracking-widest font-bold inline-block">
+                    {videoProducts[activeReelIdx].category || 'Atelier Masterpiece'}
+                  </span>
+                  <h3 className="font-serif-luxury text-base sm:text-lg font-bold text-white drop-shadow-md">
+                    {videoProducts[activeReelIdx].title}
+                  </h3>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-[#0B162C]/90 backdrop-blur-md border border-[#D4AF37]/50 flex items-center justify-between gap-3 shadow-xl">
+                  <div className="flex items-center gap-3 truncate">
+                    <img
+                      src={videoProducts[activeReelIdx].image}
+                      alt=""
+                      className="w-12 h-12 rounded-xl object-cover border border-[#D4AF37]/40 shrink-0"
+                    />
+                    <div className="truncate text-left">
+                      <h4 className="font-serif-luxury text-xs font-bold text-white truncate">
+                        {videoProducts[activeReelIdx].title}
+                      </h4>
+                      <div className="flex items-baseline gap-1.5 mt-0.5">
+                        <span className="text-xs font-bold text-[#F7E7B6]">
+                          ₹{(videoProducts[activeReelIdx].discount_price || videoProducts[activeReelIdx].price).toLocaleString('en-IN')}
+                        </span>
+                        {videoProducts[activeReelIdx].discount_price && (
+                          <span className="text-[10px] text-stone-400 line-through">
+                            ₹{videoProducts[activeReelIdx].price.toLocaleString('en-IN')}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <Link
+                    href={`/product/${videoProducts[activeReelIdx].id}`}
+                    onClick={() => setShowFullscreenReel(false)}
+                    className="px-4 py-2.5 rounded-xl bg-[#D4AF37] hover:bg-[#F7E7B6] text-[#070E1E] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md shrink-0 transition-all cursor-pointer"
+                  >
+                    <Zap className="w-3.5 h-3.5 fill-[#070E1E]" />
+                    <span>View Product</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

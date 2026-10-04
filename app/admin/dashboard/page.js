@@ -62,9 +62,9 @@ import {
   getLiveCategoriesArchive,
   saveLiveCategoriesArchive,
   CATEGORIES as INITIAL_CATEGORIES,
-  getLiveLookbookArchive,
-  addLookbookEntry,
-  deleteLookbookEntry,
+  getLookbookReels,
+  addLookbookReel,
+  deleteLookbookReel,
   uploadImage
 } from '@/lib/api';
 import { getPaymentConfig, savePaymentConfig } from '@/lib/paymentConfig';
@@ -89,10 +89,13 @@ export default function AdminDashboardPage() {
   const [showLookbookModal, setShowLookbookModal] = useState(false);
   const [lookbookFormData, setLookbookFormData] = useState({
     title: '',
-    tag: 'Atelier Lookbook',
-    category: 'Kurtis',
+    tag: 'Atelier Reel',
+    category: 'Tops & Kurtis',
+    videoUrl: '',
+    videoFile: null,
     imageUrl: '',
-    imageFile: null
+    imageFile: null,
+    productId: ''
   });
   const [lookbookSubmitting, setLookbookSubmitting] = useState(false);
   
@@ -125,6 +128,8 @@ export default function AdminDashboardPage() {
     additionalImageFiles: [],
     imageUrls: [],
     video_url: '',
+    colors: ['Ivory White', 'Bottle Green', 'Royal Maroon'],
+    customColorInput: '',
     variants: [
       { size: 'S', stock: 10 },
       { size: 'M', stock: 15 },
@@ -162,15 +167,19 @@ export default function AdminDashboardPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [prods, ords, inqs, usrs, cats] = await Promise.all([
+      const [prods, ords, inqs, usrs, cats, lReels] = await Promise.all([
         getProducts(),
         getUserOrders(),
         getInquiries(),
         getRegisteredUsers(),
-        getCategories()
+        getCategories(),
+        getLookbookReels()
       ]);
       setProducts(prods || []);
       setUsers(usrs || []);
+      if (Array.isArray(lReels)) {
+        setLookbookItems(lReels);
+      }
       
       // Prioritize saved custom categories from localStorage so updates/refresh persist
       let activeCats = cats;
@@ -325,6 +334,8 @@ export default function AdminDashboardPage() {
       additionalImageFiles: [],
       imageUrls: [],
       video_url: '',
+      colors: ['Bottle Green', 'Royal Maroon', 'Ivory White'],
+      customColorInput: '',
       variants: [
         { size: 'S', stock: 10 },
         { size: 'M', stock: 15 },
@@ -352,6 +363,8 @@ export default function AdminDashboardPage() {
       additionalImageFiles: [],
       imageUrls: existingImages,
       video_url: p.video_url || '',
+      colors: p.colors && p.colors.length > 0 ? p.colors : ['Bottle Green', 'Royal Maroon', 'Ivory White'],
+      customColorInput: '',
       variants: p.variants && p.variants.length > 0 ? p.variants : [
         { size: 'S', stock: 10 },
         { size: 'M', stock: 15 },
@@ -359,6 +372,31 @@ export default function AdminDashboardPage() {
       ]
     });
     setShowAddProductModal(true);
+  };
+
+  const handleToggleColor = (colorName) => {
+    setProductFormData(prev => {
+      const exists = prev.colors.includes(colorName);
+      if (exists) {
+        return { ...prev, colors: prev.colors.filter(c => c !== colorName) };
+      } else {
+        return { ...prev, colors: [...prev.colors, colorName] };
+      }
+    });
+  };
+
+  const handleAddCustomColor = () => {
+    const val = (productFormData.customColorInput || '').trim();
+    if (!val) return;
+    if (!productFormData.colors.includes(val)) {
+      setProductFormData(prev => ({
+        ...prev,
+        colors: [...prev.colors, val],
+        customColorInput: ''
+      }));
+    } else {
+      setProductFormData(prev => ({ ...prev, customColorInput: '' }));
+    }
   };
 
   const handleVariantChange = (index, field, value) => {
@@ -435,6 +473,7 @@ export default function AdminDashboardPage() {
         .replace(/\[SEASON:\s*[\s\S]+?\]/g, '')
         .replace(/\[IMAGES:\s*[\s\S]+?\]/g, '')
         .replace(/\[GALLERY:\s*[\s\S]+?\]/g, '')
+        .replace(/\[COLORS:\s*[\s\S]+?\]/g, '')
         .trim();
 
       if (productFormData.video_url) {
@@ -443,6 +482,10 @@ export default function AdminDashboardPage() {
 
       if (productFormData.season && productFormData.season !== 'all') {
         finalDescription = `${finalDescription}\n\n[SEASON: ${productFormData.season}]`;
+      }
+
+      if (productFormData.colors && productFormData.colors.length > 0) {
+        finalDescription = `${finalDescription}\n\n[COLORS: ${productFormData.colors.join(', ')}]`;
       }
 
       if (allGalleryUrls.length > 0) {
@@ -457,7 +500,12 @@ export default function AdminDashboardPage() {
       data.append('category_name', productFormData.category || 'Tops & Kurtis');
       data.append('is_featured', productFormData.is_featured ? '1' : '0');
       data.append('video_url', productFormData.video_url || '');
-      data.append('variants', JSON.stringify(productFormData.variants));
+      
+      const variantsPayload = productFormData.variants.map(v => ({
+        ...v,
+        color: (productFormData.colors || []).join(', ')
+      }));
+      data.append('variants', JSON.stringify(variantsPayload));
 
       if (productFormData.imageFile) {
         data.append('image', productFormData.imageFile);
@@ -652,10 +700,13 @@ export default function AdminDashboardPage() {
   const handleOpenAddLookbook = () => {
     setLookbookFormData({
       title: '',
-      tag: 'Atelier Lookbook',
-      category: 'Kurtis',
+      tag: 'Atelier Reel',
+      category: 'Tops & Kurtis',
+      videoUrl: '',
+      videoFile: null,
       imageUrl: '',
-      imageFile: null
+      imageFile: null,
+      productId: ''
     });
     setShowLookbookModal(true);
   };
@@ -664,44 +715,57 @@ export default function AdminDashboardPage() {
     e.preventDefault();
     setLookbookSubmitting(true);
     try {
-      let finalUrl = lookbookFormData.imageUrl;
+      const fd = new FormData();
+      fd.append('title', lookbookFormData.title || 'Atelier Masterpiece Reel');
+      fd.append('tag', lookbookFormData.tag || 'Atelier Reel');
+      fd.append('category', lookbookFormData.category || 'Tops & Kurtis');
+      if (lookbookFormData.productId) {
+        fd.append('product_id', lookbookFormData.productId);
+      }
+
+      if (lookbookFormData.videoFile) {
+        fd.append('video', lookbookFormData.videoFile);
+      } else if (lookbookFormData.videoUrl) {
+        fd.append('video_url', lookbookFormData.videoUrl);
+      }
+
       if (lookbookFormData.imageFile) {
-        // Upload image to backend via proxy-safe helper
-        const formData = new FormData();
-        formData.append('image', lookbookFormData.imageFile);
-        const json = await uploadImage(formData);
-        if (json && json.success && json.url) {
-          finalUrl = json.url;
-        }
+        fd.append('image', lookbookFormData.imageFile);
+      } else if (lookbookFormData.imageUrl) {
+        fd.append('image_url', lookbookFormData.imageUrl);
       }
-      if (!finalUrl) {
-        setFeedback({ text: 'Please select an image file or provide a valid image URL', isError: true });
-        setLookbookSubmitting(false);
-        return;
+
+      const res = await addLookbookReel(fd);
+      if (res && res.success) {
+        setFeedback({ text: 'New Lookbook Video Reel saved successfully to live database!', isError: false });
+        setShowLookbookModal(false);
+        const updatedReels = await getLookbookReels();
+        setLookbookItems(updatedReels || []);
+      } else {
+        setFeedback({ text: res?.message || 'Failed to save lookbook reel in database', isError: true });
       }
-      addLookbookEntry({
-        title: lookbookFormData.title || 'Atelier Masterpiece',
-        tag: lookbookFormData.tag || 'Handcrafted Haute',
-        category: lookbookFormData.category || 'Kurtis',
-        src: finalUrl
-      });
-      setLookbookItems(getLiveLookbookArchive());
-      setShowLookbookModal(false);
-      setFeedback({ text: 'New Lookbook photograph added successfully to live archive!', isError: false });
     } catch (err) {
       console.error(err);
-      setFeedback({ text: 'Failed to add lookbook photograph: ' + err.message, isError: true });
+      setFeedback({ text: 'Failed to add lookbook reel: ' + err.message, isError: true });
     } finally {
       setLookbookSubmitting(false);
     }
   };
 
-  const handleDeleteLookbook = (id, title) => {
-    if (!window.confirm(`Are you sure you want to delete "${title || 'this photo'}" from the Lookbook archive?`)) return;
-    const success = deleteLookbookEntry(id);
-    if (success) {
-      setLookbookItems(getLiveLookbookArchive());
-      setFeedback({ text: `Photograph "${title || id}" deleted from Lookbook archive.`, isError: false });
+  const handleDeleteLookbook = async (id, title) => {
+    if (!window.confirm(`Are you sure you want to delete "${title || 'this reel'}" from the Lookbook database?`)) return;
+    try {
+      const res = await deleteLookbookReel(id);
+      if (res && res.success) {
+        const updatedReels = await getLookbookReels();
+        setLookbookItems(updatedReels || []);
+        setFeedback({ text: `Reel "${title || id}" deleted successfully.`, isError: false });
+      } else {
+        setFeedback({ text: res?.message || 'Failed to delete reel', isError: true });
+      }
+    } catch (err) {
+      console.error(err);
+      setFeedback({ text: 'Delete error: ' + err.message, isError: true });
     }
   };
 
@@ -2052,6 +2116,101 @@ export default function AdminDashboardPage() {
                     )}
                   </div>
 
+                  {/* Color Variants Palette */}
+                  <div className="p-3.5 bg-stone-50 rounded-2xl border border-stone-200 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="font-bold text-stone-900 text-xs">🎨 Available Color Variants</span>
+                        <p className="text-[10px] text-stone-500">Select colors available for this product</p>
+                      </div>
+                      <span className="text-[10px] text-[#AA7E18] font-bold font-mono">
+                        {productFormData.colors?.length || 0} Selected
+                      </span>
+                    </div>
+
+                    {/* Preset Color Chips */}
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        { name: 'Bottle Green', hex: '#1B4D3E' },
+                        { name: 'Royal Maroon', hex: '#581845' },
+                        { name: 'Midnight Navy', hex: '#0A192F' },
+                        { name: 'Mustard Gold', hex: '#C59B27' },
+                        { name: 'Peach Pink', hex: '#E892A2' },
+                        { name: 'Ivory White', hex: '#FDFBF7' },
+                        { name: 'Jet Black', hex: '#111111' },
+                        { name: 'Lavender Lilac', hex: '#8E7CC3' },
+                        { name: 'Rust Orange', hex: '#B7410E' },
+                        { name: 'Emerald Green', hex: '#50C878' }
+                      ].map((preset) => {
+                        const isSelected = productFormData.colors?.includes(preset.name);
+                        return (
+                          <button
+                            key={preset.name}
+                            type="button"
+                            onClick={() => handleToggleColor(preset.name)}
+                            className={`px-2.5 py-1.5 rounded-xl text-[11px] font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                              isSelected
+                                ? 'bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/50 shadow-xs'
+                                : 'bg-white border border-stone-200 text-stone-700 hover:bg-stone-100'
+                            }`}
+                          >
+                            <span
+                              className="w-2.5 h-2.5 rounded-full border border-black/20 shrink-0"
+                              style={{ backgroundColor: preset.hex }}
+                            />
+                            <span>{preset.name}</span>
+                            {isSelected && <span className="text-[9px] text-[#D4AF37]">✓</span>}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Custom Color Input */}
+                    <div className="flex items-center gap-2 pt-1 border-t border-stone-200/70">
+                      <input
+                        type="text"
+                        placeholder="Or enter custom color (e.g. Sage Green, Wine Red)..."
+                        value={productFormData.customColorInput}
+                        onChange={(e) => setProductFormData({ ...productFormData, customColorInput: e.target.value })}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            handleAddCustomColor();
+                          }
+                        }}
+                        className="flex-1 py-1.5 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddCustomColor}
+                        className="px-3 py-1.5 rounded-xl bg-stone-900 text-white hover:bg-black font-bold text-[11px] cursor-pointer"
+                      >
+                        + Add Color
+                      </button>
+                    </div>
+
+                    {/* Active Selected Colors Tag Strip */}
+                    {productFormData.colors && productFormData.colors.length > 0 && (
+                      <div className="flex flex-wrap gap-1 pt-1">
+                        {productFormData.colors.map((c) => (
+                          <span
+                            key={c}
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-white border border-stone-300 text-[10px] font-bold text-stone-800 shadow-2xs"
+                          >
+                            <span>{c}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleToggleColor(c)}
+                              className="text-stone-400 hover:text-red-600 cursor-pointer ml-0.5"
+                            >
+                              ✕
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
                   <div className="pt-2 border-t border-stone-100 space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-stone-800">Variants (Size & Stock)</span>
@@ -2235,20 +2394,20 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* ADD LOOKBOOK PHOTOGRAPH MODAL */}
+        {/* ADD LOOKBOOK VIDEO REEL MODAL */}
         {showLookbookModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs overflow-y-auto">
-            <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-[#D4AF37]/30 p-6 sm:p-8 space-y-6 my-8 animate-in fade-in zoom-in-95 duration-200">
-              <div className="flex items-center justify-between pb-4 border-b border-stone-100">
+            <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-[#D4AF37]/30 p-6 sm:p-8 space-y-5 my-8 animate-in fade-in zoom-in-95 duration-200">
+              <div className="flex items-center justify-between pb-3 border-b border-stone-100">
                 <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 rounded-xl bg-[#070E1E] text-[#D4AF37] flex items-center justify-center">
                     <Images className="w-5 h-5" />
                   </div>
                   <div>
                     <h3 className="font-serif-luxury text-lg font-bold text-[#070E1E]">
-                      Add Lookbook Photograph
+                      Add Lookbook Video Reel
                     </h3>
-                    <p className="text-[11px] text-stone-500">Live archive for lookbook &amp; atelier photography</p>
+                    <p className="text-[11px] text-stone-500">Upload video shorts &amp; link to database products</p>
                   </div>
                 </div>
                 <button
@@ -2261,11 +2420,11 @@ export default function AdminDashboardPage() {
 
               <form onSubmit={handleSaveLookbook} className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-stone-800 font-bold mb-1">Photograph Title *</label>
+                  <label className="block text-stone-800 font-bold mb-1">Reel Title *</label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Imperial Silk Velvet Embroidered Kaftan"
+                    placeholder="e.g. Imperial Silk Velvet Embroidered Kaftan Flow"
                     value={lookbookFormData.title}
                     onChange={(e) => setLookbookFormData({ ...lookbookFormData, title: e.target.value })}
                     className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#070E1E]"
@@ -2280,13 +2439,10 @@ export default function AdminDashboardPage() {
                       onChange={(e) => setLookbookFormData({ ...lookbookFormData, category: e.target.value })}
                       className="w-full py-2.5 px-3 rounded-xl border border-stone-200 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#070E1E]"
                     >
-                      <option value="Kurtis">Kurtis</option>
-                      <option value="Kaftans">Kaftans</option>
-                      <option value="Co-Ords">Co-Ords</option>
-                      <option value="Jackets">Jackets</option>
-                      <option value="Pashmina">Pashmina</option>
-                      <option value="Packaging">Packaging &amp; Unboxing</option>
-                      <option value="Atelier Collection">Atelier Collection</option>
+                      {categories.map(c => (
+                        <option key={c.id} value={c.name}>{c.name}</option>
+                      ))}
+                      <option value="Packaging & Unboxing">Packaging &amp; Unboxing</option>
                     </select>
                   </div>
 
@@ -2294,7 +2450,7 @@ export default function AdminDashboardPage() {
                     <label className="block text-stone-800 font-bold mb-1">Craft / Subtitle Tag</label>
                     <input
                       type="text"
-                      placeholder="e.g. Gold Wire Tilla • Srinagar Atelier"
+                      placeholder="e.g. Authentic Sozni Needlework"
                       value={lookbookFormData.tag}
                       onChange={(e) => setLookbookFormData({ ...lookbookFormData, tag: e.target.value })}
                       className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#070E1E]"
@@ -2302,58 +2458,77 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
 
-                {/* Image Upload / URL Input */}
-                <div className="space-y-3 p-4 bg-stone-50 rounded-2xl border border-stone-200">
-                  <div>
-                    <label className="block text-stone-800 font-bold mb-1">Upload Photograph from Computer</label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          setLookbookFormData(prev => ({
-                            ...prev,
-                            imageFile: file,
-                            imageUrl: URL.createObjectURL(file)
-                          }));
-                        }
-                      }}
-                      className="w-full text-xs text-stone-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#070E1E] file:text-[#F7E7B6] hover:file:bg-[#102142] cursor-pointer"
-                    />
-                  </div>
+                {/* 🔗 LINK TO PRODUCT SELECTOR */}
+                <div className="p-3 bg-amber-50/60 rounded-2xl border border-amber-200 space-y-1">
+                  <label className="block font-bold text-amber-950 text-xs">
+                    🔗 Link to Existing Product (Optional)
+                  </label>
+                  <p className="text-[10px] text-amber-800">
+                    When linked, the product details &amp; buy button will appear directly inside the video player!
+                  </p>
+                  <select
+                    value={lookbookFormData.productId || ''}
+                    onChange={(e) => setLookbookFormData({ ...lookbookFormData, productId: e.target.value })}
+                    className="w-full py-2 px-3 rounded-xl border border-amber-300 text-xs font-semibold bg-white text-stone-900 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                  >
+                    <option value="">-- No Linked Product (General Showcase) --</option>
+                    {products.map(p => (
+                      <option key={p.id} value={p.id}>
+                        {p.title} (₹{p.price})
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-                  <div className="flex items-center gap-2 text-stone-400">
-                    <div className="h-px bg-stone-200 flex-1" />
-                    <span className="text-[10px] uppercase font-bold tracking-wider">OR Image URL</span>
-                    <div className="h-px bg-stone-200 flex-1" />
-                  </div>
+                {/* Video Upload / URL Input */}
+                <div className="space-y-2.5 p-3.5 bg-stone-50 rounded-2xl border border-stone-200">
+                  <label className="block text-stone-800 font-bold text-xs">
+                    🎥 Video Reel File or URL *
+                  </label>
+                  <input
+                    type="file"
+                    accept="video/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setLookbookFormData(prev => ({
+                          ...prev,
+                          videoFile: file,
+                          videoUrl: URL.createObjectURL(file)
+                        }));
+                      }
+                    }}
+                    className="w-full text-xs text-stone-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#070E1E] file:text-[#F7E7B6] hover:file:bg-[#102142] cursor-pointer"
+                  />
+                  <input
+                    type="url"
+                    placeholder="Or enter direct video link (MP4 / WebM / CDN)"
+                    value={lookbookFormData.videoUrl}
+                    onChange={(e) => setLookbookFormData({ ...lookbookFormData, videoUrl: e.target.value, videoFile: null })}
+                    className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#070E1E]"
+                  />
+                </div>
 
-                  <div>
-                    <input
-                      type="url"
-                      placeholder="https://images.unsplash.com/photo-... or hosted link"
-                      value={lookbookFormData.imageUrl}
-                      onChange={(e) => setLookbookFormData({ ...lookbookFormData, imageUrl: e.target.value, imageFile: null })}
-                      className="w-full py-2 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#070E1E]"
-                    />
-                  </div>
-
-                  {lookbookFormData.imageUrl && (
-                    <div className="mt-2 flex items-center gap-3 p-2 bg-white rounded-xl border border-stone-200">
-                      <div className="w-14 h-18 rounded-lg overflow-hidden relative border border-stone-200 shrink-0">
-                        <img
-                          src={lookbookFormData.imageUrl}
-                          alt="Preview"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="text-[11px] text-stone-600 truncate">
-                        <span className="font-bold text-stone-900 block">Image Preview</span>
-                        <span className="text-[10px] text-stone-400 truncate block">Ready to publish to lookbook</span>
-                      </div>
-                    </div>
-                  )}
+                {/* Thumbnail Image */}
+                <div className="space-y-2.5 p-3.5 bg-stone-50 rounded-2xl border border-stone-200">
+                  <label className="block text-stone-800 font-bold text-xs">
+                    🖼️ Video Cover Thumbnail (Optional)
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setLookbookFormData(prev => ({
+                          ...prev,
+                          imageFile: file,
+                          imageUrl: URL.createObjectURL(file)
+                        }));
+                      }
+                    }}
+                    className="w-full text-xs text-stone-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-stone-200 file:text-stone-800 hover:file:bg-stone-300 cursor-pointer"
+                  />
                 </div>
 
                 <div className="pt-3 flex justify-end gap-2 border-t border-stone-100">

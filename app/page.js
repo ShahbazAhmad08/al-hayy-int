@@ -143,25 +143,47 @@ export default function HomePage() {
     }
   };
 
-  const filteredProducts = activeCategoryFilter === 'All'
-    ? products
-    : products.filter(p => p.category?.toLowerCase() === activeCategoryFilter.toLowerCase());
+  // Dynamic Season & Subcategory Filtering Logic
+  const getSubcategoriesForSeason = (season) => {
+    if (season === 'Summer Collection') {
+      return categories.filter(cat => {
+        const name = cat.name.toLowerCase();
+        return name.includes('kurti') || name.includes('kaftaan') || name.includes('co-ord') || name.includes('top') || name.includes('cotton') || name.includes('summer');
+      });
+    }
+    if (season === 'Winter Collection') {
+      return categories.filter(cat => {
+        const name = cat.name.toLowerCase();
+        return name.includes('jacket') || name.includes('pashmina') || name.includes('shawl') || name.includes('silk') || name.includes('wool') || name.includes('velvet') || name.includes('winter');
+      });
+    }
+    return categories;
+  };
+
+  const seasonSubcategories = getSubcategoriesForSeason(selectedSeason);
+
+  const filteredProducts = products.filter(p => {
+    // 1. Season filter
+    if (selectedSeason === 'Summer Collection') {
+      const isSummer = p.season === 'summer' || ['tops-kurtis', 'kaftaans', 'co-ord-sets'].includes(p.category?.toLowerCase().replace(/[^a-z0-9]+/g, '-')) || p.title.toLowerCase().includes('kurti') || p.title.toLowerCase().includes('kaftan');
+      if (!isSummer) return false;
+    } else if (selectedSeason === 'Winter Collection') {
+      const isWinter = p.season === 'winter' || ['silk-jackets', 'pashmina-shawls'].includes(p.category?.toLowerCase().replace(/[^a-z0-9]+/g, '-')) || p.title.toLowerCase().includes('jacket') || p.title.toLowerCase().includes('shawl') || p.title.toLowerCase().includes('pashmina');
+      if (!isWinter) return false;
+    }
+
+    // 2. Specific Subcategory filter
+    if (activeCategoryFilter !== 'All') {
+      if (p.category?.toLowerCase() !== activeCategoryFilter.toLowerCase()) {
+        return false;
+      }
+    }
+
+    return true;
+  });
 
   // Show exactly 6 cards (3 in a row on desktop)
   const displayedProducts = filteredProducts.slice(0, 6);
-
-  // Filter categories by Season (All, Summer, Winter)
-  const seasonCategories = categories.filter(cat => {
-    if (selectedSeason === 'All') return true;
-    const name = cat.name.toLowerCase();
-    if (selectedSeason === 'Summer Collection') {
-      return name.includes('kurti') || name.includes('kaftaan') || name.includes('co-ord') || name.includes('top') || name.includes('cotton') || name.includes('summer');
-    }
-    if (selectedSeason === 'Winter Collection') {
-      return name.includes('jacket') || name.includes('pashmina') || name.includes('shawl') || name.includes('silk') || name.includes('wool') || name.includes('velvet') || name.includes('winter');
-    }
-    return true;
-  });
 
   return (
     <div className="space-y-16 sm:space-y-24 pb-20 overflow-x-hidden bg-[#FAF7F2]">
@@ -170,25 +192,6 @@ export default function HomePage() {
 
       {/* 2. Curated Categories / Silhouettes */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Season Toggle Pills above Royal Collections */}
-        <ScrollReveal animation="fade-down" className="mb-4">
-          <div className="inline-flex items-center gap-2 p-1.5 rounded-full bg-[#070E1E]/5 border border-[#E5D9C8] backdrop-blur-xs">
-            {['All', 'Summer Collection', 'Winter Collection'].map((season) => (
-              <button
-                key={season}
-                onClick={() => setSelectedSeason(season)}
-                className={`px-4 sm:px-5 py-2 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 cursor-pointer whitespace-nowrap ${
-                  selectedSeason === season
-                    ? 'bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/50 shadow-md transform scale-[1.02]'
-                    : 'text-stone-600 hover:text-[#070E1E] hover:bg-white/70'
-                }`}
-              >
-                {season}
-              </button>
-            ))}
-          </div>
-        </ScrollReveal>
-
         <ScrollReveal animation="fade-down" className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-2">
           <div>
             <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#AA7E18]">
@@ -205,7 +208,7 @@ export default function HomePage() {
         </ScrollReveal>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {seasonCategories.slice(0, 4).map((cat, idx) => {
+          {categories.slice(0, 4).map((cat, idx) => {
             const liveCount = products.filter(p => p.category?.toLowerCase() === cat.name.toLowerCase()).length;
             return (
               <ScrollReveal
@@ -245,28 +248,72 @@ export default function HomePage() {
         <ScrollReveal animation="fade-up" className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
             <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#AA7E18]">
-              Signature Line
+              {selectedSeason !== 'All' ? selectedSeason : 'Signature Line'}
             </span>
             <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#070E1E] mt-1">
-              Featured Creations
+              {selectedSeason !== 'All' ? `${selectedSeason} Edit` : 'Featured Creations'}
             </h2>
           </div>
 
-          {/* Category Filter Tabs */}
+          {/* DYNAMIC SEASON / SUBCATEGORY PILLS IN PLACE */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-            {['All', ...categories.map(c => c.name)].map((filter) => (
-              <button
-                key={filter}
-                onClick={() => setActiveCategoryFilter(filter)}
-                className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
-                  activeCategoryFilter === filter
-                    ? 'bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/40 shadow-sm'
-                    : 'bg-white border border-[#E5D9C8] text-stone-700 hover:bg-[#F4EFE6]'
-                }`}
-              >
-                {filter}
-              </button>
-            ))}
+            {selectedSeason === 'All' ? (
+              /* Top Level: [All] [Summer Collection] [Winter Collection] */
+              ['All', 'Summer Collection', 'Winter Collection'].map((season) => (
+                <button
+                  key={season}
+                  onClick={() => {
+                    setSelectedSeason(season);
+                    setActiveCategoryFilter('All');
+                  }}
+                  className={`px-4 sm:px-5 py-2 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 cursor-pointer whitespace-nowrap ${
+                    selectedSeason === season
+                      ? 'bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/50 shadow-md transform scale-[1.02]'
+                      : 'bg-white border border-[#E5D9C8] text-stone-700 hover:bg-[#F4EFE6]'
+                  }`}
+                >
+                  {season === 'All' ? '✨ All' : season === 'Summer Collection' ? '🌸 Summer Collection' : '❄️ Winter Collection'}
+                </button>
+              ))
+            ) : (
+              /* In-Place Subcategories View for Summer or Winter */
+              <>
+                <button
+                  onClick={() => {
+                    setSelectedSeason('All');
+                    setActiveCategoryFilter('All');
+                  }}
+                  className="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-stone-900 text-white hover:bg-black border border-stone-700 flex items-center gap-1.5 transition-all shadow-sm cursor-pointer whitespace-nowrap"
+                >
+                  <span>↩ Back to Collections</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveCategoryFilter('All')}
+                  className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                    activeCategoryFilter === 'All'
+                      ? 'bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/40 shadow-sm'
+                      : 'bg-white border border-[#E5D9C8] text-stone-700 hover:bg-[#F4EFE6]'
+                  }`}
+                >
+                  All {selectedSeason.replace(' Collection', '')}
+                </button>
+
+                {seasonSubcategories.map((subcat) => (
+                  <button
+                    key={subcat.id}
+                    onClick={() => setActiveCategoryFilter(subcat.name)}
+                    className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                      activeCategoryFilter === subcat.name
+                        ? 'bg-[#070E1E] text-[#F7E7B6] border border-[#D4AF37]/40 shadow-sm'
+                        : 'bg-white border border-[#E5D9C8] text-stone-700 hover:bg-[#F4EFE6]'
+                    }`}
+                  >
+                    {subcat.name}
+                  </button>
+                ))}
+              </>
+            )}
           </div>
         </ScrollReveal>
 
