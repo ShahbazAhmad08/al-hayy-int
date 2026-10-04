@@ -56,6 +56,8 @@ import {
   getRegisteredUsers,
   deleteUser,
   getCategories,
+  getLiveCategoriesArchive,
+  saveLiveCategoriesArchive,
   CATEGORIES as INITIAL_CATEGORIES,
   getLiveLookbookArchive,
   addLookbookEntry,
@@ -116,6 +118,9 @@ export default function AdminDashboardPage() {
     category_id: '1',
     is_featured: false,
     imageFile: null,
+    additionalImageFiles: [],
+    imageUrls: [],
+    video_url: '',
     variants: [
       { size: 'S', stock: 10 },
       { size: 'M', stock: 15 },
@@ -133,12 +138,10 @@ export default function AdminDashboardPage() {
 
   // Load custom categories, payment settings, and lookbook items
   useEffect(() => {
-    try {
-      const savedCats = localStorage.getItem('alhayy_custom_categories');
-      if (savedCats) {
-        setCategories(JSON.parse(savedCats));
-      }
-    } catch (e) {}
+    const liveCats = getLiveCategoriesArchive();
+    if (liveCats && liveCats.length > 0) {
+      setCategories(liveCats);
+    }
 
     const pConfig = getPaymentConfig();
     setPaymentConfig(pConfig);
@@ -149,9 +152,7 @@ export default function AdminDashboardPage() {
 
   const saveCategories = (newCats) => {
     setCategories(newCats);
-    try {
-      localStorage.setItem('alhayy_custom_categories', JSON.stringify(newCats));
-    } catch (e) {}
+    saveLiveCategoriesArchive(newCats);
   };
 
   const loadData = async () => {
@@ -166,8 +167,21 @@ export default function AdminDashboardPage() {
       ]);
       setProducts(prods || []);
       setUsers(usrs || []);
-      if (cats && Array.isArray(cats) && cats.length > 0) {
-        setCategories(cats);
+      
+      // Prioritize saved custom categories from localStorage so updates/refresh persist
+      let activeCats = cats;
+      try {
+        const savedCats = localStorage.getItem('alhayy_custom_categories');
+        if (savedCats) {
+          const parsed = JSON.parse(savedCats);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            activeCats = parsed;
+          }
+        }
+      } catch (e) {}
+
+      if (activeCats && Array.isArray(activeCats) && activeCats.length > 0) {
+        setCategories(activeCats);
       }
       
       const isCleared = typeof window !== 'undefined' && localStorage.getItem('alhayy_orders_cleared') === 'true';
@@ -384,11 +398,47 @@ export default function AdminDashboardPage() {
       const data = new FormData();
       data.append('title', productFormData.title);
       
-      let finalDescription = productFormData.description || '';
-      if (productFormData.video_url && !finalDescription.includes('[VIDEO:')) {
-        finalDescription = `${finalDescription.trim()}\n\n[VIDEO: ${productFormData.video_url.trim()}]`;
+      // Upload any new additional image files to server first
+      let newlyUploadedUrls = [];
+      if (productFormData.additionalImageFiles && productFormData.additionalImageFiles.length > 0) {
+        for (const file of productFormData.additionalImageFiles) {
+          try {
+            const uploadFd = new FormData();
+            uploadFd.append('image', file);
+            const uploadRes = await uploadImage(uploadFd);
+            if (uploadRes && (uploadRes.url || (uploadRes.success && uploadRes.data?.url))) {
+              const u = uploadRes.url || uploadRes.data?.url;
+              newlyUploadedUrls.push(u);
+            }
+          } catch (uploadErr) {
+            console.warn('Failed to upload additional image file:', file.name, uploadErr);
+          }
+        }
       }
-      data.append('description', finalDescription);
+
+      // Combine existing URLs and newly uploaded additional URLs
+      const allGalleryUrls = [
+        ...(productFormData.imageUrls || []),
+        ...newlyUploadedUrls
+      ].filter(Boolean);
+
+      let finalDescription = productFormData.description || '';
+      // Strip any old embedded tags before appending clean new ones
+      finalDescription = finalDescription
+        .replace(/\[VIDEO:\s*[\s\S]+?\]/g, '')
+        .replace(/\[IMAGES:\s*[\s\S]+?\]/g, '')
+        .replace(/\[GALLERY:\s*[\s\S]+?\]/g, '')
+        .trim();
+
+      if (productFormData.video_url) {
+        finalDescription = `${finalDescription}\n\n[VIDEO: ${productFormData.video_url.trim()}]`;
+      }
+
+      if (allGalleryUrls.length > 0) {
+        finalDescription = `${finalDescription}\n\n[IMAGES: ${allGalleryUrls.join(',')}]`;
+      }
+
+      data.append('description', finalDescription.trim());
       data.append('price', productFormData.price);
       data.append('discount_price', productFormData.discount_price || productFormData.price);
       const validCatId = resolveValidDbCategoryId(productFormData.category, productFormData.category_id);
@@ -402,14 +452,8 @@ export default function AdminDashboardPage() {
         data.append('image', productFormData.imageFile);
       }
       
-      if (productFormData.additionalImageFiles && productFormData.additionalImageFiles.length > 0) {
-        productFormData.additionalImageFiles.forEach((file, idx) => {
-          data.append(`images[${idx}]`, file);
-        });
-      }
-
-      if (productFormData.imageUrls && productFormData.imageUrls.length > 0) {
-        data.append('images', JSON.stringify(productFormData.imageUrls));
+      if (allGalleryUrls.length > 0) {
+        data.append('images', JSON.stringify(allGalleryUrls));
       }
 
       let res;
@@ -492,9 +536,11 @@ export default function AdminDashboardPage() {
         finalImageUrl = 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=900&auto=format&fit=crop';
       }
 
+      const slug = categoryFormData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
       if (editingCategory) {
         const updated = categories.map(c => 
-          c.id === editingCategory.id ? { ...c, name: categoryFormData.name, image: finalImageUrl } : c
+          c.id === editingCategory.id ? { ...c, name: categoryFormData.name, slug, image: finalImageUrl } : c
         );
         saveCategories(updated);
         setFeedback({ text: 'Category updated successfully.', isError: false });
@@ -502,9 +548,10 @@ export default function AdminDashboardPage() {
         const newCat = {
           id: Date.now(),
           name: categoryFormData.name,
-          slug: categoryFormData.name.toLowerCase().replace(/\s+/g, '-'),
+          slug,
           image: finalImageUrl,
-          itemCount: 0
+          count: 0,
+          icon: 'Sparkles'
         };
         saveCategories([...categories, newCat]);
         setFeedback({ text: 'New category created with uploaded image.', isError: false });
@@ -1829,14 +1876,38 @@ export default function AdminDashboardPage() {
                   <div className="p-3.5 bg-stone-50 rounded-2xl border border-stone-200 space-y-3">
                     <div>
                       <label className="block text-stone-700 font-bold mb-1">
-                        Primary Cover Image *
+                        Primary Cover Image {editingProduct ? '(Leave empty to keep current)' : '*'}
                       </label>
                       <input
                         type="file"
                         accept="image/*"
-                        onChange={(e) => setProductFormData({ ...productFormData, imageFile: e.target.files[0] })}
+                        onChange={(e) => {
+                          if (e.target.files?.[0]) {
+                            setProductFormData({ ...productFormData, imageFile: e.target.files[0] });
+                          }
+                        }}
                         className="w-full text-xs text-stone-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-stone-200 file:text-stone-800 hover:file:bg-stone-300 cursor-pointer"
                       />
+                      {productFormData.imageFile && (
+                        <div className="mt-2 flex items-center gap-2">
+                          <div className="relative w-14 h-18 rounded-xl overflow-hidden border border-stone-300 shadow-xs">
+                            <img
+                              src={URL.createObjectURL(productFormData.imageFile)}
+                              alt="Cover Preview"
+                              className="w-full h-full object-cover"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setProductFormData(prev => ({ ...prev, imageFile: null }))}
+                              className="absolute top-1 right-1 w-4 h-4 bg-red-600 text-white rounded-full flex items-center justify-center text-[9px] shadow-sm hover:bg-red-700 cursor-pointer"
+                              title="Remove file"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                          <span className="text-[11px] text-stone-600 font-medium">Selected new cover image</span>
+                        </div>
+                      )}
                     </div>
 
                     <div>
@@ -1864,7 +1935,7 @@ export default function AdminDashboardPage() {
                         <span className="text-[11px] font-bold text-stone-600 block mb-1.5">Image Gallery Previews:</span>
                         <div className="flex flex-wrap gap-2">
                           {productFormData.imageUrls?.map((url, i) => (
-                            <div key={`existing-${i}`} className="relative w-14 h-18 rounded-xl overflow-hidden border border-stone-300 group">
+                            <div key={`existing-${i}`} className="relative w-14 h-18 rounded-xl overflow-hidden border border-stone-300 group shadow-xs">
                               <img src={url} alt="" className="w-full h-full object-cover" />
                               <button
                                 type="button"
@@ -1877,8 +1948,12 @@ export default function AdminDashboardPage() {
                             </div>
                           ))}
                           {productFormData.additionalImageFiles?.map((f, i) => (
-                            <div key={`file-${i}`} className="relative w-14 h-18 rounded-xl overflow-hidden border border-amber-400 bg-amber-50 group flex items-center justify-center">
-                              <span className="text-[9px] text-amber-800 text-center px-1 font-mono truncate">{f.name}</span>
+                            <div key={`file-${i}`} className="relative w-14 h-18 rounded-xl overflow-hidden border border-amber-400 bg-amber-50 group shadow-xs">
+                              <img
+                                src={URL.createObjectURL(f)}
+                                alt={f.name}
+                                className="w-full h-full object-cover"
+                              />
                               <button
                                 type="button"
                                 onClick={() => handleRemoveAdditionalFile(i)}

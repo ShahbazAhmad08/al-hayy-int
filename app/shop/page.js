@@ -21,7 +21,7 @@ import ProductCard from '@/components/ProductCard';
 import QuickViewModal from '@/components/QuickViewModal';
 import SEOStructuredData from '@/components/SEOStructuredData';
 import ScrollReveal from '@/components/ScrollReveal';
-import { getProducts, CATEGORIES } from '@/lib/api';
+import { getProducts, getCategories, getLiveCategoriesArchive, CATEGORIES as INITIAL_CATEGORIES } from '@/lib/api';
 
 function ShopContent() {
   const searchParams = useSearchParams();
@@ -29,6 +29,7 @@ function ShopContent() {
   const initialSearch = searchParams.get('search') || '';
 
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState(INITIAL_CATEGORIES);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedSeason, setSelectedSeason] = useState('All'); // 'All' | 'Summer Collection' | 'Winter Collection'
@@ -39,11 +40,23 @@ function ShopContent() {
   const [quickViewProduct, setQuickViewProduct] = useState(null);
 
   useEffect(() => {
+    // Initial sync with live archive
+    const liveCats = getLiveCategoriesArchive();
+    if (liveCats && liveCats.length > 0) {
+      setCategories(liveCats);
+    }
+
     async function load() {
       setLoading(true);
       try {
-        const data = await getProducts();
-        setProducts(data);
+        const [data, cats] = await Promise.all([
+          getProducts(),
+          getCategories()
+        ]);
+        setProducts(data || []);
+        if (cats && cats.length > 0) {
+          setCategories(cats);
+        }
       } catch (e) {
         console.error('Failed to load shop products', e);
       } finally {
@@ -51,6 +64,13 @@ function ShopContent() {
       }
     }
     load();
+
+    const handleCatsUpdated = (e) => {
+      if (e?.detail) setCategories(e.detail);
+      else setCategories(getLiveCategoriesArchive());
+    };
+    window.addEventListener('alhayy_categories_updated', handleCatsUpdated);
+    return () => window.removeEventListener('alhayy_categories_updated', handleCatsUpdated);
   }, []);
 
   useEffect(() => {
@@ -191,7 +211,7 @@ function ShopContent() {
                   <span className="text-[10px] opacity-70">{products.length}</span>
                 </button>
 
-                {CATEGORIES.map((cat) => (
+                {categories.map((cat) => (
                   <button
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.name)}
@@ -447,7 +467,7 @@ function ShopContent() {
                     <span className="text-[10px]">{products.length}</span>
                   </button>
 
-                  {CATEGORIES.map((cat) => (
+                  {categories.map((cat) => (
                     <button
                       key={cat.id}
                       onClick={() => { setSelectedCategory(cat.name); setMobileFilterOpen(false); }}

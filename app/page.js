@@ -35,7 +35,7 @@ import ProductCard from '@/components/ProductCard';
 import QuickViewModal from '@/components/QuickViewModal';
 import ScrollReveal from '@/components/ScrollReveal';
 import SEOStructuredData from '@/components/SEOStructuredData';
-import { getProducts, CATEGORIES, getLiveLookbookArchive, submitContact } from '@/lib/api';
+import { getProducts, getCategories, getLiveCategoriesArchive, CATEGORIES as INITIAL_CATEGORIES, getLiveLookbookArchive, submitContact } from '@/lib/api';
 import { WhatsAppIcon } from '@/components/BrandIcons';
 
 const HOME_FAQS = [
@@ -67,6 +67,7 @@ const HOME_FAQS = [
 
 export default function HomePage() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState(INITIAL_CATEGORIES);
   const [loading, setLoading] = useState(true);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState('All');
   const [selectedSeason, setSelectedSeason] = useState('All'); // 'All' | 'Summer Collection' | 'Winter Collection'
@@ -90,10 +91,21 @@ export default function HomePage() {
   const [openFaqIndex, setOpenFaqIndex] = useState(0);
 
   useEffect(() => {
+    const liveCats = getLiveCategoriesArchive();
+    if (liveCats && liveCats.length > 0) {
+      setCategories(liveCats);
+    }
+
     async function loadData() {
       try {
-        const data = await getProducts();
-        setProducts(data);
+        const [data, cats] = await Promise.all([
+          getProducts(),
+          getCategories()
+        ]);
+        setProducts(data || []);
+        if (cats && cats.length > 0) {
+          setCategories(cats);
+        }
       } catch (err) {
         console.error('Error loading products on home:', err);
       } finally {
@@ -101,6 +113,13 @@ export default function HomePage() {
       }
     }
     loadData();
+
+    const handleCatsUpdated = (e) => {
+      if (e?.detail) setCategories(e.detail);
+      else setCategories(getLiveCategoriesArchive());
+    };
+    window.addEventListener('alhayy_categories_updated', handleCatsUpdated);
+    return () => window.removeEventListener('alhayy_categories_updated', handleCatsUpdated);
   }, []);
 
   const handleContactSubmit = async (e) => {
@@ -132,7 +151,7 @@ export default function HomePage() {
   const displayedProducts = filteredProducts.slice(0, 6);
 
   // Filter categories by Season (All, Summer, Winter)
-  const seasonCategories = CATEGORIES.filter(cat => {
+  const seasonCategories = categories.filter(cat => {
     if (selectedSeason === 'All') return true;
     const name = cat.name.toLowerCase();
     if (selectedSeason === 'Summer Collection') {
