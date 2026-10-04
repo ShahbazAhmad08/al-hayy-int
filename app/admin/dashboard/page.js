@@ -131,6 +131,10 @@ export default function AdminDashboardPage() {
     category: 'Tops & Kurtis',
     category_id: '1',
     subcategory: '',
+    fabric: '',
+    craft_details: '',
+    care: '',
+    size_chart: 'none',
     season: 'all',
     is_featured: false,
     imageFile: null,
@@ -361,6 +365,10 @@ export default function AdminDashboardPage() {
       category: defaultCat,
       category_id: defaultCatId,
       subcategory: '',
+      fabric: '',
+      craft_details: '',
+      care: '',
+      size_chart: 'none',
       season: 'all',
       is_featured: false,
       imageFile: null,
@@ -391,6 +399,10 @@ export default function AdminDashboardPage() {
       category: p.category || 'Tops & Kurtis',
       category_id: safeCatId,
       subcategory: p.subcategory || '',
+      fabric: p.fabric || '',
+      craft_details: p.craft_details || '',
+      care: p.care || '',
+      size_chart: p.size_chart || 'none',
       season: p.season || 'all',
       is_featured: Boolean(p.is_featured),
       imageFile: null,
@@ -504,6 +516,10 @@ export default function AdminDashboardPage() {
       // Strip any old embedded tags before appending clean new ones
       finalDescription = finalDescription
         .replace(/\[SUBCATEGORY:\s*[\s\S]+?\]/gi, '')
+        .replace(/\[FABRIC:\s*[\s\S]+?\]/gi, '')
+        .replace(/\[CRAFT:\s*[\s\S]+?\]/gi, '')
+        .replace(/\[CARE:\s*[\s\S]+?\]/gi, '')
+        .replace(/\[SIZECHART:\s*[\s\S]+?\]/gi, '')
         .replace(/\[VIDEO:\s*[\s\S]+?\]/g, '')
         .replace(/\[SEASON:\s*[\s\S]+?\]/g, '')
         .replace(/\[IMAGES:\s*[\s\S]+?\]/g, '')
@@ -513,6 +529,22 @@ export default function AdminDashboardPage() {
 
       if (productFormData.subcategory) {
         finalDescription = `${finalDescription}\n\n[SUBCATEGORY: ${productFormData.subcategory.trim()}]`;
+      }
+
+      if (productFormData.fabric) {
+        finalDescription = `${finalDescription}\n\n[FABRIC: ${productFormData.fabric.trim()}]`;
+      }
+
+      if (productFormData.craft_details) {
+        finalDescription = `${finalDescription}\n\n[CRAFT: ${productFormData.craft_details.trim()}]`;
+      }
+
+      if (productFormData.care) {
+        finalDescription = `${finalDescription}\n\n[CARE: ${productFormData.care.trim()}]`;
+      }
+
+      if (productFormData.size_chart && productFormData.size_chart !== 'none') {
+        finalDescription = `${finalDescription}\n\n[SIZECHART: ${productFormData.size_chart.trim()}]`;
       }
 
       if (productFormData.video_url) {
@@ -538,6 +570,10 @@ export default function AdminDashboardPage() {
       data.append('category_id', validCatId);
       data.append('category_name', productFormData.category || 'Tops & Kurtis');
       data.append('subcategory', productFormData.subcategory || '');
+      data.append('fabric', productFormData.fabric || '');
+      data.append('craft_details', productFormData.craft_details || '');
+      data.append('care', productFormData.care || '');
+      data.append('size_chart', productFormData.size_chart || 'none');
       data.append('is_featured', productFormData.is_featured ? '1' : '0');
       data.append('video_url', productFormData.video_url || '');
       
@@ -2189,6 +2225,77 @@ export default function AdminDashboardPage() {
                       onChange={(e) => setProductFormData({ ...productFormData, description: e.target.value })}
                       className="w-full py-2.5 px-3.5 rounded-xl border border-stone-200 text-xs"
                     />
+                  </div>
+
+                  {/* Fabric, Craft, Care & Size Guide Settings */}
+                  <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200/90 space-y-3">
+                    <div className="flex items-center justify-between pb-1 border-b border-stone-200">
+                      <span className="font-bold text-stone-900 text-xs flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-[#AA7E18]" />
+                        Fabric, Craft, Care &amp; Size Guide
+                      </span>
+                      <span className="text-[10px] text-stone-500 font-medium">Customizable Storefront Details</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-stone-700 font-bold mb-1">
+                          Fabric &amp; Material
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. 100% Pure Mulberry Silk / Handloom Cotton"
+                          value={productFormData.fabric || ''}
+                          onChange={(e) => setProductFormData({ ...productFormData, fabric: e.target.value })}
+                          className="w-full py-2.5 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-stone-700 font-bold mb-1">
+                          Craft &amp; Artisan Work
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Authentic Kashmiri Aari Needle Embroidery"
+                          value={productFormData.craft_details || ''}
+                          onChange={(e) => setProductFormData({ ...productFormData, craft_details: e.target.value })}
+                          className="w-full py-2.5 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-stone-700 font-bold mb-1">
+                          Care Instructions
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Dry clean only / Gentle hand wash in cold water"
+                          value={productFormData.care || ''}
+                          onChange={(e) => setProductFormData({ ...productFormData, care: e.target.value })}
+                          className="w-full py-2.5 px-3 rounded-xl border border-stone-200 text-xs bg-white text-stone-900"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-stone-700 font-bold mb-1">
+                          📏 Size Chart Guide (Display for this product)
+                        </label>
+                        <select
+                          value={productFormData.size_chart || 'none'}
+                          onChange={(e) => setProductFormData({ ...productFormData, size_chart: e.target.value })}
+                          className="w-full py-2.5 px-3 rounded-xl border border-amber-300 text-xs font-semibold bg-amber-50/70 text-amber-950"
+                        >
+                          <option value="none">🚫 No Size Chart (For Shawls, Bags, Scarfs, Free Size)</option>
+                          <option value="kurtis">📏 Kurtis &amp; Tops Size Chart (XS - 3XL)</option>
+                          <option value="kaftan">📏 Kaftans &amp; Kaftan Sets Size Chart (Length 50" - 58")</option>
+                          <option value="coats">📏 Woolen Coats &amp; Jackets Size Chart (Bust 36" - 48")</option>
+                          <option value="standard">📏 Standard Luxury Apparel Chart (S, M, L, XL, XXL)</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Primary & Multiple Image Uploads */}

@@ -22,7 +22,8 @@ import {
   VolumeX,
   Maximize2,
   X,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Ruler
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { getProductById, getProducts, getLookbookReels } from '@/lib/api';
@@ -48,6 +49,10 @@ export default function ProductDetailPage() {
   const [added, setAdded] = useState(false);
   const [activeTab, setActiveTab] = useState('details'); // 'details' | 'care' | 'shipping'
   const [copiedLink, setCopiedLink] = useState(false);
+
+  // Size Chart Guide Modal State
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
+  const [sizeChartUnit, setSizeChartUnit] = useState('in'); // 'in' | 'cm'
 
   // Mini Floating Video Screen & Fullscreen Reel Viewer
   const [showFullscreenReel, setShowFullscreenReel] = useState(false);
@@ -456,12 +461,21 @@ export default function ProductDetailPage() {
             </div>
           )}
 
-          {/* Variant: Size Selector (Without Size Chart) */}
+          {/* Variant: Size Selector & Size Chart Guide Button */}
           {product.variants && product.variants.length > 0 && (
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-bold text-stone-800">Choose Size:</span>
-                <span className="text-[10px] text-stone-400">Regular Fit</span>
+                {product.size_chart && product.size_chart !== 'none' && (
+                  <button
+                    type="button"
+                    onClick={() => setShowSizeGuide(true)}
+                    className="text-[11px] font-bold text-[#AA7E18] hover:text-[#886412] flex items-center gap-1.5 underline underline-offset-4 cursor-pointer"
+                  >
+                    <Ruler className="w-3.5 h-3.5 text-[#AA7E18]" />
+                    <span>Size Guide &amp; Chart</span>
+                  </button>
+                )}
               </div>
 
               <div className="flex flex-wrap gap-2.5">
@@ -554,7 +568,7 @@ export default function ProductDetailPage() {
                     : 'border-transparent text-stone-400 hover:text-stone-700'
                 }`}
               >
-                Fabric & Craft
+                Fabric &amp; Craft
               </button>
               <button
                 onClick={() => setActiveTab('care')}
@@ -574,23 +588,35 @@ export default function ProductDetailPage() {
                     : 'border-transparent text-stone-400 hover:text-stone-700'
                 }`}
               >
-                Shipping & Returns
+                Shipping &amp; Returns
               </button>
             </div>
 
             <div className="text-xs text-stone-600 leading-relaxed">
               {activeTab === 'details' && (
-                <div className="space-y-2">
-                  <p><strong>Fabric:</strong> {product.fabric || '100% Pure Combed Cotton / Handloom'}</p>
-                  <p><strong>Artisan Work:</strong> Authentic Aari needle embroidery & Sozni motifs</p>
-                  <p><strong>Origin:</strong> Srinagar, Jammu & Kashmir</p>
+                <div className="space-y-2.5">
+                  <div className="p-3 rounded-xl bg-stone-50 border border-stone-200/70 space-y-0.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">Fabric Composition</span>
+                    <p className="text-xs font-semibold text-stone-900">{product.fabric || '100% Pure Kashmiri Handloom / Cotton / Silk'}</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-stone-50 border border-stone-200/70 space-y-0.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">Artisan &amp; Needlework</span>
+                    <p className="text-xs font-semibold text-stone-900">{product.craft_details || 'Authentic Kashmiri Aari Needlework & Handcraft'}</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-stone-50 border border-stone-200/70 space-y-0.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">Provenance &amp; Heritage</span>
+                    <p className="text-xs font-semibold text-stone-900">Crafted by Master Artisans in Srinagar, Jammu &amp; Kashmir</p>
+                  </div>
                 </div>
               )}
               {activeTab === 'care' && (
-                <div className="space-y-2">
-                  <p>• {product.care || 'Gentle hand wash in cold water or mild dry clean.'}</p>
-                  <p>• Do not bleach or wring dry.</p>
-                  <p>• Warm iron on the reverse side of embroidery.</p>
+                <div className="p-4 rounded-xl bg-stone-50 border border-stone-200/70 space-y-2 text-xs text-stone-700">
+                  <p className="font-semibold text-stone-900">{product.care || 'Gentle hand wash in cold water or mild dry clean.'}</p>
+                  <div className="pt-2 border-t border-stone-200/70 space-y-1 text-stone-600 text-[11px]">
+                    <p>• Do not bleach, squeeze or wring the handcrafted fabric.</p>
+                    <p>• Warm iron on the reverse side of delicate needlework.</p>
+                    <p>• Store in a breathable cotton garment pouch for long-lasting preservation.</p>
+                  </div>
                 </div>
               )}
               {activeTab === 'shipping' && (
@@ -877,6 +903,167 @@ export default function ProductDetailPage() {
           </div>
         </div>
       )}
+
+      {/* SIZE GUIDE MODAL */}
+      {showSizeGuide && (
+        <div 
+          className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200"
+          onClick={() => setShowSizeGuide(false)}
+        >
+          <div 
+            className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-stone-200 overflow-hidden my-auto animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100 bg-[#070E1E] text-white">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center text-[#F7E7B6]">
+                  <Ruler className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-serif-luxury text-base sm:text-lg font-bold text-[#F7E7B6]">
+                    Garment Size &amp; Measurement Guide
+                  </h3>
+                  <span className="text-[10px] text-stone-300 font-mono">
+                    Tailored for {product?.title}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowSizeGuide(false)}
+                className="p-1.5 rounded-full text-stone-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 overflow-y-auto space-y-5 text-xs">
+              {/* Unit Switcher */}
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-stone-800">
+                  Measurement Standard:
+                </span>
+                <div className="flex items-center p-0.5 bg-stone-100 rounded-xl border border-stone-200">
+                  <button
+                    onClick={() => setSizeChartUnit('in')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      sizeChartUnit === 'in' ? 'bg-[#070E1E] text-[#F7E7B6] shadow-xs' : 'text-stone-600 hover:text-stone-900'
+                    }`}
+                  >
+                    Inches (IN)
+                  </button>
+                  <button
+                    onClick={() => setSizeChartUnit('cm')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      sizeChartUnit === 'cm' ? 'bg-[#070E1E] text-[#F7E7B6] shadow-xs' : 'text-stone-600 hover:text-stone-900'
+                    }`}
+                  >
+                    Centimeters (CM)
+                  </button>
+                </div>
+              </div>
+
+              {/* Dynamic Chart Tables based on product.size_chart */}
+              <div className="overflow-x-auto rounded-2xl border border-stone-200 shadow-2xs">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-stone-100/80 border-b border-stone-200 text-stone-900">
+                      <th className="p-3 font-bold">Size Label</th>
+                      {product?.size_chart === 'kaftan' ? (
+                        <>
+                          <th className="p-3 font-bold">Bust / Chest</th>
+                          <th className="p-3 font-bold">Garment Length</th>
+                          <th className="p-3 font-bold">Fit Type</th>
+                        </>
+                      ) : product?.size_chart === 'coats' ? (
+                        <>
+                          <th className="p-3 font-bold">Bust</th>
+                          <th className="p-3 font-bold">Shoulder</th>
+                          <th className="p-3 font-bold">Sleeve</th>
+                          <th className="p-3 font-bold">Coat Length</th>
+                        </>
+                      ) : (
+                        <>
+                          <th className="p-3 font-bold">Bust / Chest</th>
+                          <th className="p-3 font-bold">Waist</th>
+                          <th className="p-3 font-bold">Hip</th>
+                          <th className="p-3 font-bold">Kurti Length</th>
+                        </>
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-stone-100 text-stone-700">
+                    {product?.size_chart === 'kaftan' ? (
+                      [
+                        { size: 'Standard (Length 50)', bust: '36 - 48', len: '50', fit: 'Free Flowing Drop' },
+                        { size: 'Standard (Length 52)', bust: '36 - 50', len: '52', fit: 'Free Flowing Drop' },
+                        { size: 'Standard (Length 54)', bust: '36 - 52', len: '54', fit: 'Free Flowing Drop' },
+                        { size: 'Standard (Length 56)', bust: '38 - 54', len: '56', fit: 'Floor Length Fit' },
+                        { size: 'Standard (Length 58)', bust: '38 - 56', len: '58', fit: 'Royal Floor Length' }
+                      ].map((row, i) => (
+                        <tr key={i} className="hover:bg-amber-50/40">
+                          <td className="p-3 font-bold text-stone-900">{row.size}</td>
+                          <td className="p-3">{sizeChartUnit === 'in' ? `${row.bust}"` : `${Math.round(parseInt(row.bust)*2.54)} - ${Math.round(parseInt(row.bust.split('-')[1])*2.54)} cm`}</td>
+                          <td className="p-3 font-mono font-bold text-[#AA7E18]">{sizeChartUnit === 'in' ? `${row.len}"` : `${Math.round(parseInt(row.len)*2.54)} cm`}</td>
+                          <td className="p-3 text-[11px] text-stone-500">{row.fit}</td>
+                        </tr>
+                      ))
+                    ) : product?.size_chart === 'coats' ? (
+                      [
+                        { size: 'S (Small)', bust: 36, shoulder: 15, sleeve: 22, length: 42 },
+                        { size: 'M (Medium)', bust: 38, shoulder: 15.5, sleeve: 22.5, length: 42 },
+                        { size: 'L (Large)', bust: 40, shoulder: 16, sleeve: 23, length: 44 },
+                        { size: 'XL (Extra Large)', bust: 42, shoulder: 16.5, sleeve: 23.5, length: 44 },
+                        { size: 'XXL (2X Large)', bust: 44, shoulder: 17, sleeve: 24, length: 46 }
+                      ].map((row, i) => (
+                        <tr key={i} className="hover:bg-amber-50/40">
+                          <td className="p-3 font-bold text-stone-900">{row.size}</td>
+                          <td className="p-3">{sizeChartUnit === 'in' ? `${row.bust}"` : `${Math.round(row.bust*2.54)} cm`}</td>
+                          <td className="p-3">{sizeChartUnit === 'in' ? `${row.shoulder}"` : `${Math.round(row.shoulder*2.54)} cm`}</td>
+                          <td className="p-3">{sizeChartUnit === 'in' ? `${row.sleeve}"` : `${Math.round(row.sleeve*2.54)} cm`}</td>
+                          <td className="p-3 font-mono font-bold text-[#AA7E18]">{sizeChartUnit === 'in' ? `${row.length}"` : `${Math.round(row.length*2.54)} cm`}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      [
+                        { size: 'XS', bust: 34, waist: 30, hip: 38, length: 44 },
+                        { size: 'S', bust: 36, waist: 32, hip: 40, length: 44 },
+                        { size: 'M', bust: 38, waist: 34, hip: 42, length: 45 },
+                        { size: 'L', bust: 40, waist: 36, hip: 44, length: 45 },
+                        { size: 'XL', bust: 42, waist: 38, hip: 46, length: 46 },
+                        { size: 'XXL', bust: 44, waist: 40, hip: 48, length: 46 },
+                        { size: '3XL', bust: 46, waist: 42, hip: 50, length: 46 }
+                      ].map((row, i) => (
+                        <tr key={i} className="hover:bg-amber-50/40">
+                          <td className="p-3 font-bold text-stone-900">{row.size}</td>
+                          <td className="p-3 font-semibold">{sizeChartUnit === 'in' ? `${row.bust}"` : `${Math.round(row.bust*2.54)} cm`}</td>
+                          <td className="p-3">{sizeChartUnit === 'in' ? `${row.waist}"` : `${Math.round(row.waist*2.54)} cm`}</td>
+                          <td className="p-3">{sizeChartUnit === 'in' ? `${row.hip}"` : `${Math.round(row.hip*2.54)} cm`}</td>
+                          <td className="p-3 font-mono font-bold text-[#AA7E18]">{sizeChartUnit === 'in' ? `${row.length}"` : `${Math.round(row.length*2.54)} cm`}</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Measurement Tip */}
+              <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/80 space-y-1.5 text-stone-700">
+                <span className="font-bold text-amber-950 text-xs flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-700" />
+                  Custom Fitting Assistance:
+                </span>
+                <p className="text-[11px] leading-relaxed">
+                  Need custom length or bust alterations? Our master artisans in Srinagar will gladly tailor your creation. Simply contact our concierge after placing your order or mention in order notes.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
