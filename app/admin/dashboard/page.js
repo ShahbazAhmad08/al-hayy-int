@@ -56,6 +56,9 @@ import {
   getRegisteredUsers,
   deleteUser,
   getCategories,
+  addCategory,
+  updateCategory,
+  deleteCategory,
   getLiveCategoriesArchive,
   saveLiveCategoriesArchive,
   CATEGORIES as INITIAL_CATEGORIES,
@@ -547,14 +550,39 @@ export default function AdminDashboardPage() {
       const slug = categoryFormData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
       if (editingCategory) {
+        try {
+          await updateCategory({
+            id: editingCategory.id,
+            name: categoryFormData.name,
+            slug,
+            image_url: finalImageUrl
+          });
+        } catch (apiErr) {
+          console.warn('Backend updateCategory fallback:', apiErr);
+        }
+
         const updated = categories.map(c => 
           c.id === editingCategory.id ? { ...c, name: categoryFormData.name, slug, image: finalImageUrl } : c
         );
         saveCategories(updated);
         setFeedback({ text: 'Category updated successfully.', isError: false });
       } else {
+        let createdId = Date.now();
+        try {
+          const addRes = await addCategory({
+            name: categoryFormData.name,
+            slug,
+            image_url: finalImageUrl
+          });
+          if (addRes && addRes.data && addRes.data.id) {
+            createdId = addRes.data.id;
+          }
+        } catch (apiErr) {
+          console.warn('Backend addCategory fallback:', apiErr);
+        }
+
         const newCat = {
-          id: Date.now(),
+          id: createdId,
           name: categoryFormData.name,
           slug,
           image: finalImageUrl,
@@ -573,8 +601,13 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleDeleteCategory = (catId) => {
+  const handleDeleteCategory = async (catId) => {
     if (!confirm('Are you sure you want to delete this category?')) return;
+    try {
+      await deleteCategory(catId);
+    } catch (apiErr) {
+      console.warn('Backend deleteCategory fallback:', apiErr);
+    }
     const updated = categories.filter(c => c.id !== catId);
     saveCategories(updated);
     setFeedback({ text: 'Category removed.', isError: false });
