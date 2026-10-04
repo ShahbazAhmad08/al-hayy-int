@@ -25,34 +25,59 @@ import { getProducts, getCategories, getLiveCategoriesArchive, CATEGORIES as INI
 
 const SUBCATEGORIES_MAP = {
   'Tops & Kurtis': [
-    { label: 'All Kurtis & Suits', query: 'all' },
-    { label: 'Cotton Kurtis', query: 'cotton' },
-    { label: 'Georgette Suits', query: 'georgette' },
-    { label: 'Silk Suits', query: 'silk' },
-    { label: 'Velvet Kurtis', query: 'velvet' },
-    { label: 'Aari Needlework', query: 'aari' }
+    { label: 'All Tops & Kurtis', query: 'all' },
+    { label: 'Long Tops', query: 'long' },
+    { label: 'Short Tops', query: 'short' },
+    { label: 'Georgette Tops', query: 'georgette' },
+    { label: 'Solid Tops', query: 'solid' }
+  ],
+  'Kaftaan & Kaftaan Sets': [
+    { label: 'All Kaftans', query: 'all' },
+    { label: 'Kaftaan', query: 'kaftaan' },
+    { label: 'Kaftaan Sets', query: 'set' }
+  ],
+  'Kaftaans': [
+    { label: 'All Kaftans', query: 'all' },
+    { label: 'Kaftaan', query: 'kaftaan' },
+    { label: 'Kaftaan Sets', query: 'set' }
+  ],
+  'Co-ord Sets': [],
+  'co-ord sets': [],
+  'Woolen Coats': [
+    { label: 'All Woolen Coats', query: 'all' },
+    { label: 'Short Coats', query: 'short' },
+    { label: 'Long Coats', query: 'long' }
+  ],
+  'Pashmina Shawls & Scarfs': [
+    { label: 'All Pashmina & Scarfs', query: 'all' },
+    { label: 'Solid Pashmina', query: 'solid' },
+    { label: 'Solid Pashmina Stole', query: 'stole' },
+    { label: 'Pashmina Needle Work', query: 'needle' },
+    { label: 'Kani Pashmina', query: 'kani' }
   ],
   'Pashmina & Shawls': [
-    { label: 'All Shawls & Stoles', query: 'all' },
-    { label: 'Pure Pashmina', query: 'pashmina' },
-    { label: 'Kani Weave', query: 'kani' },
-    { label: 'Sozni Needlecraft', query: 'sozni' },
-    { label: 'Cashmere Stoles', query: 'cashmere' }
+    { label: 'All Pashmina & Scarfs', query: 'all' },
+    { label: 'Solid Pashmina', query: 'solid' },
+    { label: 'Solid Pashmina Stole', query: 'stole' },
+    { label: 'Pashmina Needle Work', query: 'needle' },
+    { label: 'Kani Pashmina', query: 'kani' }
   ],
-  'Silk jackets': [
-    { label: 'All Jackets & Coats', query: 'all' },
-    { label: 'Mulberry Silk', query: 'silk' },
-    { label: 'Velvet Shrugs', query: 'velvet' },
-    { label: 'Nehru Cut', query: 'nehru' },
-    { label: 'Long Stole Coats', query: 'long' }
+  'Handcrafted Bags': [
+    { label: 'All Bags', query: 'all' },
+    { label: 'Tote Bags', query: 'tote' },
+    { label: 'Sling Bags', query: 'sling' },
+    { label: 'Hand Pouches', query: 'pouch' }
   ],
-  'co-ord sets': [
-    { label: 'All Co-ords', query: 'all' },
-    { label: 'Linen Sets', query: 'linen' },
-    { label: 'Silk Co-ords', query: 'silk' },
-    { label: 'Embroidered Trousers', query: 'trouser' }
+  'Dresses': [
+    { label: 'All Dresses', query: 'all' },
+    { label: 'Casual Dresses', query: 'casual' },
+    { label: 'Wedding Dress', query: 'wedding' },
+    { label: 'Long Dresses', query: 'long' }
   ],
-  'Kaftaans': [] // Kaftaans has no subcategories
+  'Silk Boho Jackets': [],
+  'Silk jackets': [],
+  'Woolen Capes': [],
+  'Pherans': []
 };
 
 function ShopContent() {
@@ -113,7 +138,8 @@ function ShopContent() {
   }, [searchParams]);
 
   // Find subcategories for active category
-  const currentSubcategories = SUBCATEGORIES_MAP[selectedCategory] || [];
+  const activeKey = Object.keys(SUBCATEGORIES_MAP).find(k => k.toLowerCase() === selectedCategory.toLowerCase());
+  const currentSubcategories = activeKey ? SUBCATEGORIES_MAP[activeKey] : (SUBCATEGORIES_MAP[selectedCategory] || []);
 
   // Filtering & Sorting Logic
   const filteredProducts = products.filter((p) => {

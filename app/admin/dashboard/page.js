@@ -292,18 +292,16 @@ export default function AdminDashboardPage() {
     );
   });
 
-  // Database-Safe Category ID Resolver (Ensures MySQL Foreign Key constraints 1..5 never fail)
+  // Database-Safe Category ID Resolver (Matches live category ID from database)
   const resolveValidDbCategoryId = (catName, existingId) => {
-    const numId = parseInt(existingId, 10);
-    if (!isNaN(numId) && numId >= 1 && numId <= 5) return String(numId);
+    if (existingId !== undefined && existingId !== null && existingId !== '') {
+      const matchById = categories.find(c => String(c.id) === String(existingId));
+      if (matchById) return String(matchById.id);
+    }
+    const matchByName = categories.find(c => String(c.name).toLowerCase() === String(catName || '').toLowerCase());
+    if (matchByName) return String(matchByName.id);
 
-    const name = String(catName || '').toLowerCase();
-    if (name.includes('kurti') || name.includes('top')) return '1';
-    if (name.includes('kaftaan') || name.includes('kaftan')) return '2';
-    if (name.includes('co-ord') || name.includes('set')) return '3';
-    if (name.includes('jacket') || name.includes('silk')) return '4';
-    if (name.includes('pashmina') || name.includes('shawl')) return '5';
-    return '1';
+    return existingId ? String(existingId) : '1';
   };
 
   // Product Handlers
@@ -1916,11 +1914,12 @@ export default function AdminDashboardPage() {
                       <select
                         value={productFormData.category}
                         onChange={(e) => {
-                          const newCat = e.target.value;
-                          const validId = resolveValidDbCategoryId(newCat);
+                          const newCatName = e.target.value;
+                          const foundCat = categories.find(c => c.name === newCatName);
+                          const validId = foundCat ? String(foundCat.id) : resolveValidDbCategoryId(newCatName);
                           setProductFormData(prev => ({
                             ...prev,
-                            category: newCat,
+                            category: newCatName,
                             category_id: validId
                           }));
                         }}

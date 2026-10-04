@@ -28,14 +28,15 @@ import {
   HelpCircle,
   BookOpen,
   Feather,
-  Award
+  Award,
+  Play
 } from 'lucide-react';
 import HeroBanner from '@/components/HeroBanner';
 import ProductCard from '@/components/ProductCard';
 import QuickViewModal from '@/components/QuickViewModal';
 import ScrollReveal from '@/components/ScrollReveal';
 import SEOStructuredData from '@/components/SEOStructuredData';
-import { getProducts, getCategories, getLiveCategoriesArchive, CATEGORIES as INITIAL_CATEGORIES, getLiveLookbookArchive, submitContact } from '@/lib/api';
+import { getProducts, getCategories, getLiveCategoriesArchive, CATEGORIES as INITIAL_CATEGORIES, getLookbookReels, submitContact } from '@/lib/api';
 import { WhatsAppIcon } from '@/components/BrandIcons';
 
 const HOME_FAQS = [
@@ -90,6 +91,8 @@ export default function HomePage() {
   const [contactSuccess, setContactSuccess] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState(0);
 
+  const [lookbookReels, setLookbookReels] = useState([]);
+
   useEffect(() => {
     const liveCats = getLiveCategoriesArchive();
     if (liveCats && liveCats.length > 0) {
@@ -98,13 +101,18 @@ export default function HomePage() {
 
     async function loadData() {
       try {
-        const [data, cats] = await Promise.all([
+        const [data, cats, reels] = await Promise.all([
           getProducts(),
-          getCategories()
+          getCategories(),
+          getLookbookReels()
         ]);
         setProducts(data || []);
         if (cats && cats.length > 0) {
           setCategories(cats);
+        }
+        if (Array.isArray(reels)) {
+          const validReels = reels.filter(r => r.video_url && typeof r.video_url === 'string' && r.video_url.trim() !== '');
+          setLookbookReels(validReels);
         }
       } catch (err) {
         console.error('Error loading products on home:', err);
@@ -148,13 +156,13 @@ export default function HomePage() {
     if (season === 'Summer Collection') {
       return categories.filter(cat => {
         const name = cat.name.toLowerCase();
-        return name.includes('kurti') || name.includes('kaftaan') || name.includes('co-ord') || name.includes('top') || name.includes('cotton') || name.includes('summer');
+        return name.includes('kurti') || name.includes('kaftaan') || name.includes('co-ord') || name.includes('top') || name.includes('bag') || name.includes('dress') || name.includes('cotton');
       });
     }
     if (season === 'Winter Collection') {
       return categories.filter(cat => {
         const name = cat.name.toLowerCase();
-        return name.includes('jacket') || name.includes('pashmina') || name.includes('shawl') || name.includes('silk') || name.includes('wool') || name.includes('velvet') || name.includes('winter');
+        return name.includes('coat') || name.includes('pashmina') || name.includes('shawl') || name.includes('jacket') || name.includes('cape') || name.includes('pheran') || name.includes('wool') || name.includes('silk');
       });
     }
     return categories;
@@ -165,10 +173,10 @@ export default function HomePage() {
   const filteredProducts = products.filter(p => {
     // 1. Season filter
     if (selectedSeason === 'Summer Collection') {
-      const isSummer = p.season === 'summer' || ['tops-kurtis', 'kaftaans', 'co-ord-sets'].includes(p.category?.toLowerCase().replace(/[^a-z0-9]+/g, '-')) || p.title.toLowerCase().includes('kurti') || p.title.toLowerCase().includes('kaftan');
+      const isSummer = p.season === 'summer' || ['tops-kurtis', 'kaftaan-kaftaan-sets', 'kaftaans', 'co-ord-sets', 'handcrafted-bags', 'dresses'].includes(p.category?.toLowerCase().replace(/[^a-z0-9]+/g, '-')) || p.title.toLowerCase().includes('kurti') || p.title.toLowerCase().includes('kaftan') || p.title.toLowerCase().includes('bag') || p.title.toLowerCase().includes('dress');
       if (!isSummer) return false;
     } else if (selectedSeason === 'Winter Collection') {
-      const isWinter = p.season === 'winter' || ['silk-jackets', 'pashmina-shawls'].includes(p.category?.toLowerCase().replace(/[^a-z0-9]+/g, '-')) || p.title.toLowerCase().includes('jacket') || p.title.toLowerCase().includes('shawl') || p.title.toLowerCase().includes('pashmina');
+      const isWinter = p.season === 'winter' || ['woolen-coats', 'pashmina-shawls-scarfs', 'pashmina-shawls', 'silk-boho-jackets', 'silk-jackets', 'woolen-capes', 'pherans'].includes(p.category?.toLowerCase().replace(/[^a-z0-9]+/g, '-')) || p.title.toLowerCase().includes('coat') || p.title.toLowerCase().includes('shawl') || p.title.toLowerCase().includes('pashmina') || p.title.toLowerCase().includes('jacket') || p.title.toLowerCase().includes('cape') || p.title.toLowerCase().includes('pheran');
       if (!isWinter) return false;
     }
 
@@ -505,47 +513,31 @@ export default function HomePage() {
           })}
         </div>
 
-        {/* Dynamic Lookbook Items Derived from Database & Admin Archive */}
+        {/* Dynamic Lookbook Items Derived ONLY from uploaded videos in MySQL DB */}
         {(() => {
-          // 1. Build live items from products
-          const dynamicItems = [];
-          (products || []).forEach(prod => {
-            const imgs = Array.isArray(prod.images) && prod.images.length > 0 ? prod.images : [prod.image];
-            imgs.forEach((src, idx) => {
-              if (src) {
-                dynamicItems.push({
-                  id: `prod-${prod.id}-${idx}`,
-                  src,
-                  title: prod.title,
-                  category: prod.category || 'Kurtis',
-                  tag: prod.category ? `${prod.category} • Handcrafted` : 'Atelier Pure',
-                  isProduct: true,
-                  productId: prod.id,
-                  slug: prod.slug
-                });
-              }
-            });
-          });
-
-          // 2. Add custom admin lookbook items
-          const liveAdminItems = getLiveLookbookArchive().map(item => ({
-            ...item,
-            isProduct: false
-          }));
-
-          const allGalleryCombined = [...dynamicItems, ...liveAdminItems];
-          const uniqueGallery = [];
-          const seen = new Set();
-          for (const it of allGalleryCombined) {
-            if (it.src && !seen.has(it.src)) {
-              seen.add(it.src);
-              uniqueGallery.push(it);
-            }
+          if (lookbookReels.length === 0) {
+            return (
+              <div className="py-16 text-center space-y-4 bg-white rounded-3xl border border-[#E5D9C8] p-8 max-w-md mx-auto shadow-xs">
+                <div className="w-12 h-12 rounded-full bg-[#FAF7F2] border border-[#D4AF37]/40 flex items-center justify-center mx-auto text-[#AA7E18]">
+                  <Play className="w-5 h-5 fill-current ml-0.5" />
+                </div>
+                <h3 className="font-serif-luxury text-lg font-bold text-stone-900">Lookbook Videos Archive</h3>
+                <p className="text-xs text-stone-500 leading-relaxed">
+                  Craft videos and fabric showcase reels uploaded via the Admin Dashboard will appear here.
+                </p>
+                <Link
+                  href="/shop"
+                  className="inline-block px-5 py-2 rounded-full bg-[#070E1E] text-[#F7E7B6] font-bold text-xs uppercase tracking-wider border border-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#070E1E] transition-all"
+                >
+                  Explore Catalog
+                </Link>
+              </div>
+            );
           }
 
           const filteredGallery = galleryFilter === 'All'
-            ? uniqueGallery
-            : uniqueGallery.filter(item => item.category?.toLowerCase() === galleryFilter.toLowerCase());
+            ? lookbookReels
+            : lookbookReels.filter(item => item.category?.toLowerCase() === galleryFilter.toLowerCase());
 
           const displayedGallery = filteredGallery.slice(0, 8);
 
@@ -554,56 +546,41 @@ export default function HomePage() {
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                 {displayedGallery.map((item, idx) => (
                   <ScrollReveal
-                    key={item.id}
+                    key={item.id || idx}
                     animation="fade-up"
                     delay={Math.min(idx * 40, 300)}
                     duration={500}
                   >
-                    <div 
-                      onClick={() => {
-                        if (item.isProduct && item.productId) {
-                          const p = products.find(prod => prod.id === item.productId);
-                          if (p) {
-                            setQuickViewProduct(p);
-                            return;
-                          }
-                        }
-                        setLightboxItem(item);
-                      }}
-                      className="group relative rounded-2xl overflow-hidden aspect-[3/4] bg-[#070E1E] border border-[#E5D9C8] shadow-xs hover:shadow-2xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer"
+                    <Link 
+                      href="/lookbook"
+                      className="group relative rounded-2xl overflow-hidden aspect-[9/16] sm:aspect-[3/4] bg-[#070E1E] border border-[#E5D9C8] shadow-xs hover:shadow-2xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer block"
                     >
-                      {/* Ambient Blurred Background */}
                       <img
-                        src={item.src}
-                        alt=""
-                        className="absolute inset-0 w-full h-full object-cover blur-md scale-110 opacity-35"
-                        aria-hidden="true"
-                      />
-                      <img
-                        src={item.src}
+                        src={item.image_url || '/images/hero-packaging.jpg'}
                         alt={item.title}
-                        className="relative z-10 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                        className="relative z-10 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                         loading="lazy"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#070E1E]/90 via-[#070E1E]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4 z-20" />
-                      
-                      {/* Top Action Badge */}
-                      <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
-                        <span className="p-2 rounded-full bg-[#070E1E]/80 backdrop-blur-md border border-[#D4AF37]/50 text-[#F7E7B6] flex items-center justify-center shadow-lg">
-                          <Maximize2 className="w-3.5 h-3.5" />
-                        </span>
-                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#070E1E]/95 via-[#070E1E]/20 to-transparent flex flex-col justify-between p-4 z-20">
+                        <div className="flex justify-between items-start">
+                          <span className="text-[10px] font-mono text-[#F7E7B6] bg-[#070E1E]/80 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-[#D4AF37]/40 uppercase tracking-wider font-bold">
+                            {item.category || 'Atelier'}
+                          </span>
+                          <span className="w-8 h-8 rounded-full bg-[#070E1E]/80 backdrop-blur-md border border-[#D4AF37]/50 text-[#F7E7B6] flex items-center justify-center shadow-lg group-hover:bg-[#D4AF37] group-hover:text-[#070E1E] transition-all">
+                            <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+                          </span>
+                        </div>
 
-                      {/* Bottom Details */}
-                      <div className="absolute inset-x-0 bottom-0 p-4 text-white transform translate-y-3 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300 z-30">
-                        <span className="text-[9px] uppercase tracking-widest text-[#F7E7B6] font-bold block mb-0.5">
-                          {item.tag}
-                        </span>
-                        <h4 className="font-serif-luxury text-xs sm:text-sm font-bold text-white line-clamp-1">
-                          {item.title}
-                        </h4>
+                        <div className="text-white">
+                          <span className="text-[9px] uppercase tracking-widest text-[#F7E7B6] font-bold block mb-0.5">
+                            {item.tag || 'Craft Reel'}
+                          </span>
+                          <h4 className="font-serif-luxury text-xs sm:text-sm font-bold text-white line-clamp-1">
+                            {item.title}
+                          </h4>
+                        </div>
                       </div>
-                    </div>
+                    </Link>
                   </ScrollReveal>
                 ))}
               </div>

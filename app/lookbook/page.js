@@ -47,37 +47,39 @@ export default function LookbookPage() {
 
         let combinedReels = [];
 
-        // 1. Live Database Lookbook Reels
+        // 1. Live Database Lookbook Reels (Only those with actual video_url)
         if (Array.isArray(liveReels) && liveReels.length > 0) {
           liveReels.forEach(r => {
-            let matchedProduct = r.product;
-            if (!matchedProduct && r.product_id) {
-              matchedProduct = (liveProducts || []).find(p => p.id === r.product_id);
+            if (r.video_url && typeof r.video_url === 'string' && r.video_url.trim() !== '') {
+              let matchedProduct = r.product;
+              if (!matchedProduct && r.product_id) {
+                matchedProduct = (liveProducts || []).find(p => String(p.id) === String(r.product_id));
+              }
+              combinedReels.push({
+                id: r.id,
+                title: r.title,
+                category: r.category || 'Kurtis',
+                tag: r.tag || 'Atelier Reel',
+                video_url: r.video_url.trim(),
+                image_url: r.image_url || matchedProduct?.image || '/images/hero-packaging.jpg',
+                product: matchedProduct || null,
+                product_id: r.product_id
+              });
             }
-            combinedReels.push({
-              id: r.id,
-              title: r.title,
-              category: r.category || 'Kurtis',
-              tag: r.tag || 'Atelier Reel',
-              video_url: r.video_url,
-              image_url: r.image_url || matchedProduct?.image || '/images/hero-packaging.jpg',
-              product: matchedProduct || null,
-              product_id: r.product_id
-            });
           });
         }
 
         // 2. Also include any products with direct video_url as interactive reels
         (liveProducts || []).forEach(p => {
-          if (p.video_url) {
-            const alreadyExists = combinedReels.some(r => r.video_url === p.video_url);
+          if (p.video_url && typeof p.video_url === 'string' && p.video_url.trim() !== '') {
+            const alreadyExists = combinedReels.some(r => r.video_url === p.video_url.trim());
             if (!alreadyExists) {
               combinedReels.push({
                 id: `prod-vid-${p.id}`,
                 title: p.title,
                 category: p.category || 'Atelier',
                 tag: 'Craft Video',
-                video_url: p.video_url,
+                video_url: p.video_url.trim(),
                 image_url: p.image,
                 product: p,
                 product_id: p.id
@@ -85,22 +87,6 @@ export default function LookbookPage() {
             }
           }
         });
-
-        // 3. Fallback demo curated reels if DB is fresh
-        if (combinedReels.length === 0) {
-          (liveProducts || []).slice(0, 8).forEach((p, idx) => {
-            combinedReels.push({
-              id: `demo-${p.id || idx}`,
-              title: p.title,
-              category: p.category || 'Tops & Kurtis',
-              tag: 'Master Guild Reel',
-              video_url: p.video_url || '',
-              image_url: p.image || '/images/gallery-1.jpg',
-              product: p,
-              product_id: p.id
-            });
-          });
-        }
 
         setReels(combinedReels);
       } catch (err) {
@@ -229,6 +215,22 @@ export default function LookbookPage() {
             <p className="text-xs uppercase tracking-widest text-stone-500 font-mono">
               Loading Live Atelier Video Reels...
             </p>
+          </div>
+        ) : reels.length === 0 ? (
+          <div className="py-20 text-center space-y-4 bg-white rounded-3xl border border-[#E5D9C8] p-8 max-w-md mx-auto shadow-sm">
+            <div className="w-14 h-14 rounded-full bg-[#FAF7F2] border border-[#D4AF37]/40 flex items-center justify-center mx-auto text-[#AA7E18]">
+              <Play className="w-6 h-6 fill-current ml-0.5" />
+            </div>
+            <h3 className="font-serif-luxury text-xl font-bold text-stone-900">No Lookbook Videos Yet</h3>
+            <p className="text-xs text-stone-500 leading-relaxed max-w-sm mx-auto">
+              Exclusive craft videos and fabric showcase reels uploaded via the Admin Dashboard will appear here.
+            </p>
+            <Link
+              href="/shop"
+              className="inline-block px-6 py-2.5 rounded-full bg-[#070E1E] text-[#F7E7B6] font-bold text-xs uppercase tracking-wider border border-[#D4AF37] cursor-pointer hover:bg-[#D4AF37] hover:text-[#070E1E] transition-all"
+            >
+              Explore Catalog
+            </Link>
           </div>
         ) : filteredReels.length === 0 ? (
           <div className="py-20 text-center space-y-4 bg-white rounded-3xl border border-[#E5D9C8] p-8 max-w-lg mx-auto">
