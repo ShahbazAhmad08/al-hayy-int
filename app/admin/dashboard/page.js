@@ -116,6 +116,7 @@ export default function AdminDashboardPage() {
     discount_price: '',
     category: 'Tops & Kurtis',
     category_id: '1',
+    season: 'all',
     is_featured: false,
     imageFile: null,
     additionalImageFiles: [],
@@ -315,6 +316,7 @@ export default function AdminDashboardPage() {
       discount_price: '',
       category: defaultCat,
       category_id: defaultCatId,
+      season: 'all',
       is_featured: false,
       imageFile: null,
       additionalImageFiles: [],
@@ -341,6 +343,7 @@ export default function AdminDashboardPage() {
       discount_price: p.discount_price || '',
       category: p.category || 'Tops & Kurtis',
       category_id: safeCatId,
+      season: p.season || 'all',
       is_featured: Boolean(p.is_featured),
       imageFile: null,
       additionalImageFiles: [],
@@ -426,12 +429,17 @@ export default function AdminDashboardPage() {
       // Strip any old embedded tags before appending clean new ones
       finalDescription = finalDescription
         .replace(/\[VIDEO:\s*[\s\S]+?\]/g, '')
+        .replace(/\[SEASON:\s*[\s\S]+?\]/g, '')
         .replace(/\[IMAGES:\s*[\s\S]+?\]/g, '')
         .replace(/\[GALLERY:\s*[\s\S]+?\]/g, '')
         .trim();
 
       if (productFormData.video_url) {
         finalDescription = `${finalDescription}\n\n[VIDEO: ${productFormData.video_url.trim()}]`;
+      }
+
+      if (productFormData.season && productFormData.season !== 'all') {
+        finalDescription = `${finalDescription}\n\n[SEASON: ${productFormData.season}]`;
       }
 
       if (allGalleryUrls.length > 0) {
@@ -1815,7 +1823,7 @@ export default function AdminDashboardPage() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="block text-stone-700 font-bold mb-1">Category</label>
                       <select
@@ -1829,7 +1837,7 @@ export default function AdminDashboardPage() {
                             category_id: validId
                           }));
                         }}
-                        className="w-full py-2.5 px-3 rounded-xl border border-stone-200 text-xs font-medium"
+                        className="w-full py-2.5 px-3 rounded-xl border border-stone-200 text-xs font-medium bg-white"
                       >
                         {categories.map(c => (
                           <option key={c.id} value={c.name}>{c.name}</option>
@@ -1837,6 +1845,21 @@ export default function AdminDashboardPage() {
                       </select>
                     </div>
 
+                    <div>
+                      <label className="block text-stone-700 font-bold mb-1">Season Filter / Collection</label>
+                      <select
+                        value={productFormData.season || 'all'}
+                        onChange={(e) => setProductFormData(prev => ({ ...prev, season: e.target.value }))}
+                        className="w-full py-2.5 px-3 rounded-xl border border-amber-200 text-xs font-semibold bg-amber-50/70 text-amber-950"
+                      >
+                        <option value="all">✨ All Season / Festive (Both)</option>
+                        <option value="summer">🌸 Summer Collection</option>
+                        <option value="winter">❄️ Winter Collection</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="block text-stone-700 font-bold mb-1">Regular Price (₹) *</label>
                       <input

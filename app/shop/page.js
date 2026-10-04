@@ -90,13 +90,13 @@ function ShopContent() {
       p.category?.toLowerCase() === selectedCategory.toLowerCase();
 
     // Season match
-    const isSummer = (p.category?.toLowerCase().includes('kurti') || p.category?.toLowerCase().includes('kaftaan') || p.category?.toLowerCase().includes('co-ord') || p.title?.toLowerCase().includes('kurti') || p.title?.toLowerCase().includes('kaftan') || p.title?.toLowerCase().includes('co-ord') || p.title?.toLowerCase().includes('cotton') || p.title?.toLowerCase().includes('summer'));
-    const isWinter = (p.category?.toLowerCase().includes('jacket') || p.category?.toLowerCase().includes('pashmina') || p.category?.toLowerCase().includes('shawl') || p.title?.toLowerCase().includes('jacket') || p.title?.toLowerCase().includes('pashmina') || p.title?.toLowerCase().includes('shawl') || p.title?.toLowerCase().includes('velvet') || p.title?.toLowerCase().includes('silk') || p.title?.toLowerCase().includes('shrug') || p.title?.toLowerCase().includes('winter'));
+    const isSummer = (p.season === 'summer' || (!p.season && (p.category?.toLowerCase().includes('kurti') || p.category?.toLowerCase().includes('kaftaan') || p.category?.toLowerCase().includes('co-ord') || p.title?.toLowerCase().includes('kurti') || p.title?.toLowerCase().includes('kaftan') || p.title?.toLowerCase().includes('co-ord') || p.title?.toLowerCase().includes('cotton') || p.title?.toLowerCase().includes('summer'))));
+    const isWinter = (p.season === 'winter' || (!p.season && (p.category?.toLowerCase().includes('jacket') || p.category?.toLowerCase().includes('pashmina') || p.category?.toLowerCase().includes('shawl') || p.title?.toLowerCase().includes('jacket') || p.title?.toLowerCase().includes('pashmina') || p.title?.toLowerCase().includes('shawl') || p.title?.toLowerCase().includes('velvet') || p.title?.toLowerCase().includes('silk') || p.title?.toLowerCase().includes('shrug') || p.title?.toLowerCase().includes('winter'))));
 
     const matchesSeason =
       selectedSeason === 'All' ||
-      (selectedSeason === 'Summer Collection' && isSummer) ||
-      (selectedSeason === 'Winter Collection' && isWinter);
+      (selectedSeason === 'Summer Collection' && (p.season === 'summer' || isSummer || p.season === 'all')) ||
+      (selectedSeason === 'Winter Collection' && (p.season === 'winter' || isWinter || p.season === 'all'));
 
     // Search query match
     const q = searchQuery.toLowerCase().trim();
@@ -201,30 +201,48 @@ function ShopContent() {
               <div className="space-y-1">
                 <button
                   onClick={() => setSelectedCategory('All')}
-                  className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors ${
+                  className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors ${
                     selectedCategory === 'All'
                       ? 'bg-stone-950 text-white shadow-xs'
-                      : 'text-stone-600 hover:bg-stone-100'
+                      : 'text-stone-700 hover:bg-stone-100'
                   }`}
                 >
-                  <span>All Pieces</span>
-                  <span className="text-[10px] opacity-70">{products.length}</span>
+                  <span className="font-medium">All Pieces</span>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[10px] opacity-70 font-mono">{products.length}</span>
+                    <div className="w-6 h-6 rounded-md bg-stone-200/60 flex items-center justify-center text-[10px]">
+                      ✨
+                    </div>
+                  </div>
                 </button>
 
                 {categories.map((cat) => (
                   <button
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.name)}
-                    className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors ${
+                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors ${
                       selectedCategory.toLowerCase() === cat.name.toLowerCase()
                         ? 'bg-stone-950 text-white shadow-xs'
-                        : 'text-stone-600 hover:bg-stone-100'
+                        : 'text-stone-700 hover:bg-stone-100'
                     }`}
                   >
-                    <span>{cat.name}</span>
-                    <span className="text-[10px] opacity-70">
-                      {products.filter(p => p.category?.toLowerCase() === cat.name.toLowerCase()).length}
-                    </span>
+                    <span className="truncate pr-1.5 font-medium">{cat.name}</span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[10px] opacity-70 font-mono">
+                        {products.filter(p => p.category?.toLowerCase() === cat.name.toLowerCase()).length}
+                      </span>
+                      {cat.image ? (
+                        <img
+                          src={cat.image}
+                          alt=""
+                          className="w-6 h-6 rounded-md object-cover border border-stone-200 shadow-2xs"
+                        />
+                      ) : (
+                        <div className="w-6 h-6 rounded-md bg-stone-200/60 flex items-center justify-center text-[9px] text-stone-600">
+                          {cat.name.slice(0, 1).toUpperCase()}
+                        </div>
+                      )}
+                    </div>
                   </button>
                 ))}
               </div>
@@ -457,30 +475,48 @@ function ShopContent() {
                 <div className="space-y-1.5">
                   <button
                     onClick={() => { setSelectedCategory('All'); setMobileFilterOpen(false); }}
-                    className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors ${
+                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors ${
                       selectedCategory === 'All'
                         ? 'bg-stone-950 text-white'
                         : 'bg-stone-50 text-stone-700'
                     }`}
                   >
                     <span>All Pieces</span>
-                    <span className="text-[10px]">{products.length}</span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[10px] font-mono">{products.length}</span>
+                      <div className="w-6 h-6 rounded-md bg-stone-200/60 flex items-center justify-center text-[10px]">
+                        ✨
+                      </div>
+                    </div>
                   </button>
 
                   {categories.map((cat) => (
                     <button
                       key={cat.id}
                       onClick={() => { setSelectedCategory(cat.name); setMobileFilterOpen(false); }}
-                      className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors ${
+                      className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors ${
                         selectedCategory.toLowerCase() === cat.name.toLowerCase()
                           ? 'bg-stone-950 text-white'
                           : 'bg-stone-50 text-stone-700'
                       }`}
                     >
-                      <span>{cat.name}</span>
-                      <span className="text-[10px]">
-                        {products.filter(p => p.category?.toLowerCase() === cat.name.toLowerCase()).length}
-                      </span>
+                      <span className="truncate pr-1.5">{cat.name}</span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-[10px] font-mono">
+                          {products.filter(p => p.category?.toLowerCase() === cat.name.toLowerCase()).length}
+                        </span>
+                        {cat.image ? (
+                          <img
+                            src={cat.image}
+                            alt=""
+                            className="w-6 h-6 rounded-md object-cover border border-stone-200 shadow-2xs"
+                          />
+                        ) : (
+                          <div className="w-6 h-6 rounded-md bg-stone-200/60 flex items-center justify-center text-[9px]">
+                            {cat.name.slice(0, 1).toUpperCase()}
+                          </div>
+                        )}
+                      </div>
                     </button>
                   ))}
                 </div>

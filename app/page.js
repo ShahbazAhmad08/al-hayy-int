@@ -254,7 +254,7 @@ export default function HomePage() {
 
           {/* Category Filter Tabs */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-            {['All', 'Tops & Kurtis', 'Kaftaans', 'co-ord sets', 'Silk jackets', 'Pashmina & Shawls'].map((filter) => (
+            {['All', ...categories.map(c => c.name)].map((filter) => (
               <button
                 key={filter}
                 onClick={() => setActiveCategoryFilter(filter)}
