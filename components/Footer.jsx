@@ -9,15 +9,22 @@ import {
   ShieldCheck,
   Truck,
   RotateCcw,
-  Sparkles
+  Sparkles,
+  Globe2,
+  MapPin,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { CATEGORIES, getCategories, getLiveCategoriesArchive } from '@/lib/api';
+import { COUNTRIES_DATA } from '@/lib/internationalCountriesData';
+import { CITIES_DATA } from '@/lib/citiesData';
 
 export default function Footer() {
   const pathname = usePathname();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [categories, setCategories] = useState(CATEGORIES);
+  const [showAllCities, setShowAllCities] = useState(false);
 
   React.useEffect(() => {
     const liveCats = getLiveCategoriesArchive();
@@ -49,9 +56,11 @@ export default function Footer() {
     }
   };
 
+  const visibleCities = showAllCities ? CITIES_DATA : CITIES_DATA.slice(0, 24);
+
   return (
     <footer className="bg-[#070E1E] text-[#FAF7F2] pt-16 pb-10 border-t border-[#D4AF37]/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Top 4 Value Propositions */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pb-12 border-b border-[#D4AF37]/20 text-xs">
           <div className="space-y-1">
@@ -139,6 +148,12 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-xs text-stone-300">
               <li>
+                <Link href="/market-areas" className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5 font-semibold text-[#F7E7B6]">
+                  <Globe2 className="w-3 h-3 text-[#D4AF37]" />
+                  <span>Market Areas &amp; Supply</span>
+                </Link>
+              </li>
+              <li>
                 <Link href="/shipping-policy" className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5">
                   <Truck className="w-3 h-3 text-[#D4AF37]" />
                   <span>Shipping &amp; Delivery Policy</span>
@@ -207,6 +222,72 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* MARKET AREAS & GLOBAL SUPPLY DIRECTORY (CITIES & COUNTRIES) */}
+        <div className="pt-8 border-t border-[#D4AF37]/20 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Globe2 className="w-4 h-4 text-[#D4AF37]" />
+              <h4 className="text-xs font-bold uppercase tracking-widest text-[#F7E7B6]">
+                Market Areas &amp; Global Supply Network
+              </h4>
+            </div>
+            <Link 
+              href="/market-areas" 
+              className="text-[11px] text-[#D4AF37] hover:text-[#F7E7B6] font-semibold flex items-center gap-1 transition-colors"
+            >
+              <span>View All 20+ Countries &amp; 60+ Cities Hubs</span>
+              <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+
+          {/* International Countries */}
+          <div className="space-y-2">
+            <span className="text-[10px] font-mono uppercase text-stone-400 tracking-wider">
+              International Export Destinations:
+            </span>
+            <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-[11px] text-stone-300">
+              {COUNTRIES_DATA.map((country) => (
+                <Link
+                  key={country.slug}
+                  href={`/export/${country.slug}`}
+                  className="hover:text-[#D4AF37] transition-colors flex items-center gap-1"
+                >
+                  <span>{country.flag}</span>
+                  <span>{country.shortName || country.name}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Domestic Cities */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono uppercase text-stone-400 tracking-wider">
+                Pan-India Wholesale &amp; Manufacturing Hubs:
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowAllCities(!showAllCities)}
+                className="text-[10px] text-[#D4AF37] hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <span>{showAllCities ? 'Show Less' : `+${CITIES_DATA.length - 24} More Cities`}</span>
+                {showAllCities ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-[11px] text-stone-400">
+              {visibleCities.map((city) => (
+                <Link
+                  key={city.slug}
+                  href={`/wholesale/${city.slug}`}
+                  className="hover:text-[#D4AF37] transition-colors"
+                >
+                  {city.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {/* Bottom bar */}
         <div className="pt-6 border-t border-[#D4AF37]/20 flex flex-col md:flex-row items-center justify-between text-[11px] text-stone-400 gap-4">
           <div>
@@ -214,6 +295,8 @@ export default function Footer() {
           </div>
 
           <div className="flex items-center flex-wrap justify-center gap-x-4 gap-y-1 text-stone-300">
+            <Link href="/market-areas" className="hover:text-[#D4AF37] transition-colors">Market Areas</Link>
+            <span>•</span>
             <Link href="/shipping-policy" className="hover:text-[#D4AF37] transition-colors">Shipping Policy</Link>
             <span>•</span>
             <Link href="/privacy-policy" className="hover:text-[#D4AF37] transition-colors">Privacy Policy</Link>
@@ -230,7 +313,9 @@ export default function Footer() {
             <span>•</span>
             <span>Cards</span>
             <span>•</span>
-            <span>COD Available</span>
+            <span>Net Banking</span>
+            <span>•</span>
+            <span>International</span>
           </div>
         </div>
       </div>

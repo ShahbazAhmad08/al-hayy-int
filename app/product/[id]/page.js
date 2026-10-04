@@ -53,6 +53,7 @@ export default function ProductDetailPage() {
   // Size Chart Guide Modal State
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [sizeChartUnit, setSizeChartUnit] = useState('in'); // 'in' | 'cm'
+  const [sizeModalTab, setSizeModalTab] = useState('chart'); // 'chart' | 'measure'
 
   // Mini Floating Video Screen & Fullscreen Reel Viewer
   const [showFullscreenReel, setShowFullscreenReel] = useState(false);
@@ -466,14 +467,14 @@ export default function ProductDetailPage() {
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-bold text-stone-800">Choose Size:</span>
-                {product.size_chart && product.size_chart !== 'none' && (
+                {product.size_chart !== 'none' && (
                   <button
                     type="button"
                     onClick={() => setShowSizeGuide(true)}
                     className="text-[11px] font-bold text-[#AA7E18] hover:text-[#886412] flex items-center gap-1.5 underline underline-offset-4 cursor-pointer"
                   >
                     <Ruler className="w-3.5 h-3.5 text-[#AA7E18]" />
-                    <span>Size Guide &amp; Chart</span>
+                    <span>Size Guide &amp; Fit</span>
                   </button>
                 )}
               </div>
@@ -623,7 +624,7 @@ export default function ProductDetailPage() {
                 <div className="space-y-2">
                   <p>• <strong>Free Express Shipping:</strong> Compliments on all prepaid orders.</p>
                   <p>• <strong>Dispatch:</strong> 24-48 hours from Srinagar atelier.</p>
-                  <p>• <strong>Returns:</strong> 7-day hassle-free replacement guarantee.</p>
+                  <p>• <strong>Worldwide Insured Delivery:</strong> Express tracking available on all dispatches.</p>
                 </div>
               )}
             </div>
@@ -904,160 +905,248 @@ export default function ProductDetailPage() {
         </div>
       )}
 
-      {/* SIZE GUIDE MODAL */}
+      {/* SIZE & FIT MODAL (Pixel-perfect matching screenshot) */}
       {showSizeGuide && (
         <div 
-          className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200"
+          className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200"
           onClick={() => setShowSizeGuide(false)}
         >
           <div 
-            className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-stone-200 overflow-hidden my-auto animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col"
+            className="relative w-full max-w-lg bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-stone-200 overflow-hidden my-auto animate-in zoom-in-95 duration-200 max-h-[92vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100 bg-[#070E1E] text-white">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center text-[#F7E7B6]">
-                  <Ruler className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="font-serif-luxury text-base sm:text-lg font-bold text-[#F7E7B6]">
-                    Garment Size &amp; Measurement Guide
-                  </h3>
-                  <span className="text-[10px] text-stone-300 font-mono">
-                    Tailored for {product?.title}
-                  </span>
-                </div>
-              </div>
-
+            <div className="flex items-center justify-between px-6 pt-5 pb-3">
+              <h2 className="text-sm font-bold text-stone-900 tracking-wider uppercase">
+                SIZE &amp; FIT
+              </h2>
               <button
+                type="button"
                 onClick={() => setShowSizeGuide(false)}
-                className="p-1.5 rounded-full text-stone-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                className="text-stone-700 hover:text-stone-950 p-1 rounded-full hover:bg-stone-100 transition-colors cursor-pointer"
+                title="Close"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Modal Content */}
-            <div className="p-6 overflow-y-auto space-y-5 text-xs">
-              {/* Unit Switcher */}
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-stone-800">
-                  Measurement Standard:
-                </span>
-                <div className="flex items-center p-0.5 bg-stone-100 rounded-xl border border-stone-200">
-                  <button
-                    onClick={() => setSizeChartUnit('in')}
-                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                      sizeChartUnit === 'in' ? 'bg-[#070E1E] text-[#F7E7B6] shadow-xs' : 'text-stone-600 hover:text-stone-900'
-                    }`}
-                  >
-                    Inches (IN)
-                  </button>
-                  <button
-                    onClick={() => setSizeChartUnit('cm')}
-                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                      sizeChartUnit === 'cm' ? 'bg-[#070E1E] text-[#F7E7B6] shadow-xs' : 'text-stone-600 hover:text-stone-900'
-                    }`}
-                  >
-                    Centimeters (CM)
-                  </button>
+            {/* Top Nav Tabs */}
+            <div className="flex items-center gap-8 px-6 border-b border-stone-200 text-xs font-bold tracking-wider uppercase">
+              <button
+                type="button"
+                onClick={() => setSizeModalTab('chart')}
+                className={`pb-3 transition-colors relative cursor-pointer ${
+                  sizeModalTab === 'chart'
+                    ? 'text-stone-950 border-b-2 border-stone-950 -mb-[1px]'
+                    : 'text-stone-400 hover:text-stone-700'
+                }`}
+              >
+                SIZE CHART
+              </button>
+              <button
+                type="button"
+                onClick={() => setSizeModalTab('measure')}
+                className={`pb-3 transition-colors relative cursor-pointer ${
+                  sizeModalTab === 'measure'
+                    ? 'text-stone-950 border-b-2 border-stone-950 -mb-[1px]'
+                    : 'text-stone-400 hover:text-stone-700'
+                }`}
+              >
+                HOW TO MEASURE
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto space-y-5">
+              {sizeModalTab === 'chart' ? (
+                <>
+                  {/* Unit Switcher Pill */}
+                  <div className="flex justify-end">
+                    <div className="inline-flex items-center bg-[#D8E1E8] p-0.5 rounded-full text-[10px] font-bold">
+                      <button
+                        type="button"
+                        onClick={() => setSizeChartUnit('in')}
+                        className={`px-3 py-1 rounded-full transition-all cursor-pointer ${
+                          sizeChartUnit === 'in'
+                            ? 'bg-[#101D30] text-white shadow-xs'
+                            : 'text-stone-700 hover:text-stone-950'
+                        }`}
+                      >
+                        INCHES
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSizeChartUnit('cm')}
+                        className={`px-3 py-1 rounded-full transition-all cursor-pointer ${
+                          sizeChartUnit === 'cm'
+                            ? 'bg-[#101D30] text-white shadow-xs'
+                            : 'text-stone-700 hover:text-stone-950'
+                        }`}
+                      >
+                        CM
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Size Matrix Table with Vertical Column Highlight */}
+                  {(() => {
+                    const isCoat = product?.size_chart === 'coats';
+                    const isKaftan = product?.size_chart === 'kaftan';
+
+                    const sizes = isKaftan
+                      ? ['Length 50', 'Length 52', 'Length 54', 'Length 56', 'Length 58']
+                      : ['S', 'M', 'L', 'XL', 'XXL'];
+
+                    const rows = isKaftan
+                      ? [
+                          { label: 'Bust (Range)', in: ['36-48', '36-50', '36-52', '38-54', '38-56'], cm: ['91-122', '91-127', '91-132', '96-137', '96-142'] },
+                          { label: 'Length', in: ['50', '52', '54', '56', '58'], cm: ['127', '132', '137', '142', '147'] },
+                          { label: 'Fit Type', in: ['Free Drop', 'Free Drop', 'Free Drop', 'Floor Fit', 'Royal Floor'], cm: ['Free Drop', 'Free Drop', 'Free Drop', 'Floor Fit', 'Royal Floor'] }
+                        ]
+                      : isCoat
+                      ? [
+                          { label: 'Bust', in: [36, 38, 40, 42, 44], cm: [91, 97, 102, 107, 112] },
+                          { label: 'Shoulder', in: [15, 15.5, 16, 16.5, 17], cm: [38, 39, 41, 42, 43] },
+                          { label: 'Sleeve', in: [22, 22.5, 23, 23.5, 24], cm: [56, 57, 58, 60, 61] },
+                          { label: 'Length', in: [42, 42, 44, 44, 46], cm: [107, 107, 112, 112, 117] }
+                        ]
+                      : [
+                          { label: 'Bust', in: [36, 38, 40, 42, 44], cm: [91, 97, 102, 107, 112] },
+                          { label: 'Waist', in: [32, 34, 36, 38, 40], cm: [81, 86, 91, 97, 102] },
+                          { label: 'Hip', in: [38, 40, 42, 44, 46], cm: [97, 102, 107, 112, 117] },
+                          { label: 'Length', in: [42, 42, 43, 43, 44], cm: [107, 107, 109, 109, 112] }
+                        ];
+
+                    const activeSizeIndex = sizes.findIndex((s) => 
+                      s.toLowerCase().trim() === selectedSize.toLowerCase().trim() ||
+                      (selectedSize.startsWith('Length') && s.includes(selectedSize))
+                    );
+                    const safeIndex = activeSizeIndex >= 0 ? activeSizeIndex : (sizes.includes('M') ? sizes.indexOf('M') : 0);
+
+                    return (
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-center text-xs border-collapse">
+                          <thead>
+                            <tr className="border-b border-stone-200 text-stone-900 font-bold">
+                              <th className="text-left py-2.5 px-2 font-medium text-stone-500 w-24"></th>
+                              {sizes.map((s, idx) => {
+                                const isSelected = idx === safeIndex;
+                                return (
+                                  <th
+                                    key={s}
+                                    onClick={() => setSelectedSize(s)}
+                                    className={`py-2.5 px-3 transition-colors cursor-pointer font-bold ${
+                                      isSelected
+                                        ? 'bg-[#CBD5E1]/40 text-stone-950'
+                                        : 'text-stone-700 hover:text-stone-950'
+                                    }`}
+                                  >
+                                    {s}
+                                  </th>
+                                );
+                              })}
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-stone-100 text-stone-800">
+                            {rows.map((row, rIdx) => (
+                              <tr key={rIdx} className="hover:bg-stone-50/50">
+                                <td className="text-left py-3 px-2 font-bold text-stone-900">
+                                  {row.label}
+                                </td>
+                                {sizes.map((s, cIdx) => {
+                                  const isSelected = cIdx === safeIndex;
+                                  const val = sizeChartUnit === 'in' ? row.in[cIdx] : row.cm[cIdx];
+                                  return (
+                                    <td
+                                      key={cIdx}
+                                      onClick={() => setSelectedSize(s)}
+                                      className={`py-3 px-3 transition-colors cursor-pointer ${
+                                        isSelected
+                                          ? 'bg-[#CBD5E1]/40 font-bold text-stone-950'
+                                          : 'text-stone-700 hover:text-stone-900'
+                                      }`}
+                                    >
+                                      {val}
+                                    </td>
+                                  );
+                                })}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    );
+                  })()}
+
+                  {/* Footnote matching screenshot */}
+                  <p className="text-[11px] text-stone-500 font-normal leading-relaxed pt-1">
+                    Measurements are &apos;to fit&apos; body sizes. Between sizes? Size up for a relaxed fit.
+                  </p>
+                </>
+              ) : (
+                /* HOW TO MEASURE TAB */
+                <div className="space-y-4 text-stone-700 text-xs">
+                  <div className="space-y-3">
+                    <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200/80 space-y-1">
+                      <span className="font-bold text-stone-900 text-xs flex items-center gap-1.5">
+                        <span className="w-5 h-5 rounded-full bg-[#101D30] text-white flex items-center justify-center text-[10px] font-bold">1</span>
+                        Bust / Chest
+                      </span>
+                      <p className="text-stone-600 text-[11px] pl-6 leading-relaxed">
+                        Measure around the fullest part of your bust, keeping the measuring tape comfortably horizontal and relaxed.
+                      </p>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200/80 space-y-1">
+                      <span className="font-bold text-stone-900 text-xs flex items-center gap-1.5">
+                        <span className="w-5 h-5 rounded-full bg-[#101D30] text-white flex items-center justify-center text-[10px] font-bold">2</span>
+                        Waist
+                      </span>
+                      <p className="text-stone-600 text-[11px] pl-6 leading-relaxed">
+                        Measure around the narrowest point of your natural waistline, usually right above your belly button.
+                      </p>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200/80 space-y-1">
+                      <span className="font-bold text-stone-900 text-xs flex items-center gap-1.5">
+                        <span className="w-5 h-5 rounded-full bg-[#101D30] text-white flex items-center justify-center text-[10px] font-bold">3</span>
+                        Hip
+                      </span>
+                      <p className="text-stone-600 text-[11px] pl-6 leading-relaxed">
+                        Stand with feet together and measure around the fullest part of your hips and bottom.
+                      </p>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200/80 space-y-1">
+                      <span className="font-bold text-stone-900 text-xs flex items-center gap-1.5">
+                        <span className="w-5 h-5 rounded-full bg-[#101D30] text-white flex items-center justify-center text-[10px] font-bold">4</span>
+                        Length
+                      </span>
+                      <p className="text-stone-600 text-[11px] pl-6 leading-relaxed">
+                        Measure vertically from the highest point of the shoulder seam straight down to the bottom hem of the garment.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200/80 text-[11px] text-stone-700">
+                    <strong className="text-amber-950 font-bold">Custom Alterations: </strong>
+                    Need special sleeve, bust, or length adjustments? Contact our master atelier team via WhatsApp after placing your order.
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {/* Dynamic Chart Tables based on product.size_chart */}
-              <div className="overflow-x-auto rounded-2xl border border-stone-200 shadow-2xs">
-                <table className="w-full text-left text-xs border-collapse">
-                  <thead>
-                    <tr className="bg-stone-100/80 border-b border-stone-200 text-stone-900">
-                      <th className="p-3 font-bold">Size Label</th>
-                      {product?.size_chart === 'kaftan' ? (
-                        <>
-                          <th className="p-3 font-bold">Bust / Chest</th>
-                          <th className="p-3 font-bold">Garment Length</th>
-                          <th className="p-3 font-bold">Fit Type</th>
-                        </>
-                      ) : product?.size_chart === 'coats' ? (
-                        <>
-                          <th className="p-3 font-bold">Bust</th>
-                          <th className="p-3 font-bold">Shoulder</th>
-                          <th className="p-3 font-bold">Sleeve</th>
-                          <th className="p-3 font-bold">Coat Length</th>
-                        </>
-                      ) : (
-                        <>
-                          <th className="p-3 font-bold">Bust / Chest</th>
-                          <th className="p-3 font-bold">Waist</th>
-                          <th className="p-3 font-bold">Hip</th>
-                          <th className="p-3 font-bold">Kurti Length</th>
-                        </>
-                      )}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-stone-100 text-stone-700">
-                    {product?.size_chart === 'kaftan' ? (
-                      [
-                        { size: 'Standard (Length 50)', bust: '36 - 48', len: '50', fit: 'Free Flowing Drop' },
-                        { size: 'Standard (Length 52)', bust: '36 - 50', len: '52', fit: 'Free Flowing Drop' },
-                        { size: 'Standard (Length 54)', bust: '36 - 52', len: '54', fit: 'Free Flowing Drop' },
-                        { size: 'Standard (Length 56)', bust: '38 - 54', len: '56', fit: 'Floor Length Fit' },
-                        { size: 'Standard (Length 58)', bust: '38 - 56', len: '58', fit: 'Royal Floor Length' }
-                      ].map((row, i) => (
-                        <tr key={i} className="hover:bg-amber-50/40">
-                          <td className="p-3 font-bold text-stone-900">{row.size}</td>
-                          <td className="p-3">{sizeChartUnit === 'in' ? `${row.bust}"` : `${Math.round(parseInt(row.bust)*2.54)} - ${Math.round(parseInt(row.bust.split('-')[1])*2.54)} cm`}</td>
-                          <td className="p-3 font-mono font-bold text-[#AA7E18]">{sizeChartUnit === 'in' ? `${row.len}"` : `${Math.round(parseInt(row.len)*2.54)} cm`}</td>
-                          <td className="p-3 text-[11px] text-stone-500">{row.fit}</td>
-                        </tr>
-                      ))
-                    ) : product?.size_chart === 'coats' ? (
-                      [
-                        { size: 'S (Small)', bust: 36, shoulder: 15, sleeve: 22, length: 42 },
-                        { size: 'M (Medium)', bust: 38, shoulder: 15.5, sleeve: 22.5, length: 42 },
-                        { size: 'L (Large)', bust: 40, shoulder: 16, sleeve: 23, length: 44 },
-                        { size: 'XL (Extra Large)', bust: 42, shoulder: 16.5, sleeve: 23.5, length: 44 },
-                        { size: 'XXL (2X Large)', bust: 44, shoulder: 17, sleeve: 24, length: 46 }
-                      ].map((row, i) => (
-                        <tr key={i} className="hover:bg-amber-50/40">
-                          <td className="p-3 font-bold text-stone-900">{row.size}</td>
-                          <td className="p-3">{sizeChartUnit === 'in' ? `${row.bust}"` : `${Math.round(row.bust*2.54)} cm`}</td>
-                          <td className="p-3">{sizeChartUnit === 'in' ? `${row.shoulder}"` : `${Math.round(row.shoulder*2.54)} cm`}</td>
-                          <td className="p-3">{sizeChartUnit === 'in' ? `${row.sleeve}"` : `${Math.round(row.sleeve*2.54)} cm`}</td>
-                          <td className="p-3 font-mono font-bold text-[#AA7E18]">{sizeChartUnit === 'in' ? `${row.length}"` : `${Math.round(row.length*2.54)} cm`}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      [
-                        { size: 'XS', bust: 34, waist: 30, hip: 38, length: 44 },
-                        { size: 'S', bust: 36, waist: 32, hip: 40, length: 44 },
-                        { size: 'M', bust: 38, waist: 34, hip: 42, length: 45 },
-                        { size: 'L', bust: 40, waist: 36, hip: 44, length: 45 },
-                        { size: 'XL', bust: 42, waist: 38, hip: 46, length: 46 },
-                        { size: 'XXL', bust: 44, waist: 40, hip: 48, length: 46 },
-                        { size: '3XL', bust: 46, waist: 42, hip: 50, length: 46 }
-                      ].map((row, i) => (
-                        <tr key={i} className="hover:bg-amber-50/40">
-                          <td className="p-3 font-bold text-stone-900">{row.size}</td>
-                          <td className="p-3 font-semibold">{sizeChartUnit === 'in' ? `${row.bust}"` : `${Math.round(row.bust*2.54)} cm`}</td>
-                          <td className="p-3">{sizeChartUnit === 'in' ? `${row.waist}"` : `${Math.round(row.waist*2.54)} cm`}</td>
-                          <td className="p-3">{sizeChartUnit === 'in' ? `${row.hip}"` : `${Math.round(row.hip*2.54)} cm`}</td>
-                          <td className="p-3 font-mono font-bold text-[#AA7E18]">{sizeChartUnit === 'in' ? `${row.length}"` : `${Math.round(row.length*2.54)} cm`}</td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Measurement Tip */}
-              <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/80 space-y-1.5 text-stone-700">
-                <span className="font-bold text-amber-950 text-xs flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-700" />
-                  Custom Fitting Assistance:
-                </span>
-                <p className="text-[11px] leading-relaxed">
-                  Need custom length or bust alterations? Our master artisans in Srinagar will gladly tailor your creation. Simply contact our concierge after placing your order or mention in order notes.
-                </p>
+              {/* Bottom Action Button (Exact match from screenshot) */}
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleAddToCart();
+                    setShowSizeGuide(false);
+                  }}
+                  className="w-full py-3.5 bg-[#101D30] hover:bg-[#1A2E4C] text-white text-xs font-bold uppercase tracking-wider rounded-lg shadow-md transition-all active:scale-[0.99] cursor-pointer"
+                >
+                  ADD TO CART — ₹{discountPrice.toLocaleString('en-IN')}
+                </button>
               </div>
             </div>
           </div>
