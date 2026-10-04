@@ -11,12 +11,30 @@ import {
   RotateCcw,
   Sparkles
 } from 'lucide-react';
-import { CATEGORIES } from '@/lib/api';
+import { CATEGORIES, getCategories, getLiveCategoriesArchive } from '@/lib/api';
 
 export default function Footer() {
   const pathname = usePathname();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [categories, setCategories] = useState(CATEGORIES);
+
+  React.useEffect(() => {
+    const liveCats = getLiveCategoriesArchive();
+    if (liveCats && liveCats.length > 0) {
+      setCategories(liveCats);
+    }
+    getCategories().then((cats) => {
+      if (cats && cats.length > 0) setCategories(cats);
+    }).catch(() => {});
+
+    const handleCatsUpdated = (e) => {
+      if (e?.detail) setCategories(e.detail);
+      else setCategories(getLiveCategoriesArchive());
+    };
+    window.addEventListener('alhayy_categories_updated', handleCatsUpdated);
+    return () => window.removeEventListener('alhayy_categories_updated', handleCatsUpdated);
+  }, []);
 
   // Auto-hide Footer on admin pages
   if (pathname?.startsWith('/admin')) {
@@ -99,7 +117,7 @@ export default function Footer() {
               Collections
             </h4>
             <ul className="space-y-2.5 text-xs text-stone-300">
-              {CATEGORIES.map((cat) => (
+              {categories.map((cat) => (
                 <li key={cat.id}>
                   <Link href={`/shop?category=${encodeURIComponent(cat.name)}`} className="hover:text-[#D4AF37] transition-colors">
                     {cat.name}

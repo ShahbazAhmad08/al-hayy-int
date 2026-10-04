@@ -63,6 +63,7 @@ import {
   saveLiveCategoriesArchive,
   CATEGORIES as INITIAL_CATEGORIES,
   getLookbookReels,
+  getLiveLookbookArchive,
   addLookbookReel,
   deleteLookbookReel,
   uploadImage
@@ -181,20 +182,9 @@ export default function AdminDashboardPage() {
         setLookbookItems(lReels);
       }
       
-      // Prioritize saved custom categories from localStorage so updates/refresh persist
-      let activeCats = cats;
-      try {
-        const savedCats = localStorage.getItem('alhayy_custom_categories');
-        if (savedCats) {
-          const parsed = JSON.parse(savedCats);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            activeCats = parsed;
-          }
-        }
-      } catch (e) {}
-
-      if (activeCats && Array.isArray(activeCats) && activeCats.length > 0) {
-        setCategories(activeCats);
+      if (Array.isArray(cats) && cats.length > 0) {
+        setCategories(cats);
+        saveLiveCategoriesArchive(cats);
       }
       
       const isCleared = typeof window !== 'undefined' && localStorage.getItem('alhayy_orders_cleared') === 'true';
