@@ -143,7 +143,7 @@ export default function ContactPage() {
                   <input
                     type="email"
                     required
-                    placeholder="patron@example.com"
+                    placeholder="Enter your email address"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full py-2.5 px-3.5 rounded-xl border border-[#E5D9C8] text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"

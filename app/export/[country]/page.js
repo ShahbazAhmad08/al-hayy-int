@@ -48,24 +48,56 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  const title = `Indian Cotton Kurti & Co-ord Set Manufacturer Export to ${country.name} | Direct Wholesale Exporter`;
-  const description = `Leading Indian manufacturer and direct factory exporter of pure cotton embroidered kurtis, designer women co-ord sets, and luxury handcrafted kaftans to ${country.name}. Doorstep express air cargo to ${country.keyCities}, complete customs documentation (HS 6204/6206), low MOQ & factory rates.`;
+  let title = `Indian Cotton Kurti & Co-ord Set Manufacturer Export to ${country.name} | Direct Wholesale Exporter`;
+  let description = `Leading Indian manufacturer and direct factory exporter of pure cotton embroidered kurtis, designer women co-ord sets, and luxury handcrafted kaftans to ${country.name}. Doorstep express air cargo to ${country.keyCities}, complete customs documentation (HS 6204/6206), low MOQ & factory rates.`;
+
+  if (country.slug === 'uae') {
+    title = `Dubai & UAE Kurti, Kaftan & Co-ord Set Wholesale Exporter | Direct Factory Supplier`;
+    description = `Direct Indian manufacturer and wholesale exporter to Dubai, Abu Dhabi, Sharjah & Ajman. Pure cotton embroidered kurtis, luxury handcrafted resort kaftans & designer co-ord sets. 3-Day air cargo to UAE, zero customs hassle & factory rates.`;
+  } else if (country.slug === 'usa') {
+    title = `Indian Cotton Kurti & Co-ord Set Manufacturer Export to USA | Direct Factory Exporter`;
+    description = `Direct Indian manufacturer and wholesale exporter of pure cotton kurtis, handcrafted kaftans & designer women co-ord sets to USA (California, Texas, New York, New Jersey, Chicago). 4-6 days DHL/FedEx door delivery, low MOQ.`;
+  } else if (country.slug === 'uk') {
+    title = `Indian Cotton Kurti & Kaftan Wholesale Supplier UK (London, Manchester) | Al Hayy`;
+    description = `Premium Indian apparel exporter supplying boutiques across the United Kingdom (London, Birmingham, Manchester, Leicester). Kashmiri Aari embroidery, pure combed cotton kurtis, luxury kaftans. 4-5 days express dispatch.`;
+  } else if (country.region === 'Europe') {
+    title = `Artisanal Kashmiri Kurti, Kaftan & Silk Couture Exporter to ${country.name} | Al Hayy`;
+    description = `Exporting luxury handcrafted Kashmiri Aari apparel, breathable pure cotton kurtis and designer kaftans to boutiques in ${country.name} (${country.keyCities}). EU REACH compliant azo-free textiles, door-to-door insured air cargo.`;
+  }
+
+  const keywords = country.slug === 'uae' ? [
+    'Dubai kurti wholesale',
+    'Cotton kaftan supplier Dubai',
+    'Indian kurti exporter UAE',
+    'Kaftan wholesale Meena Bazaar Dubai',
+    'Deira Dubai apparel wholesale supplier',
+    'Luxury co-ord set manufacturer Dubai',
+    'Kashmiri Aari embroidery Dubai UAE',
+    'Modest fashion wholesale Dubai',
+    'B2B ethnic wear exporter UAE'
+  ] : country.slug === 'usa' ? [
+    'Indian kurti wholesale USA',
+    'Cotton kurti manufacturer export to USA',
+    'Indian ethnic wear supplier California Texas New York',
+    'Women co-ord sets wholesale USA',
+    'Handcrafted kaftans wholesale USA',
+    'Kashmiri clothing exporter USA',
+    'Direct factory kurtis USA boutique'
+  ] : [
+    `Indian kurti manufacturer export to ${country.name}`,
+    `Cotton Kurti wholesale supplier in ${country.name}`,
+    `Women Co-ord Set manufacturer export ${country.name}`,
+    `Handcrafted Kaftans exporter to ${country.name}`,
+    `Kashmiri Aari embroidery kurtis wholesale ${country.name}`,
+    `Indian ethnic wear supplier in ${country.keyCities}`,
+    `Pure cotton apparel exporter India to ${country.shortName}`,
+    `Private label kurti manufacturer ${country.name}`
+  ];
 
   return {
     title,
     description,
-    keywords: [
-      `Indian kurti manufacturer export to ${country.name}`,
-      `Cotton Kurti wholesale supplier in ${country.name}`,
-      `Women Co-ord Set manufacturer export ${country.name}`,
-      `Handcrafted Kaftans exporter to ${country.name}`,
-      `Kashmiri Aari embroidery kurtis wholesale ${country.name}`,
-      `Indian ethnic wear supplier in ${country.keyCities}`,
-      `Pure cotton apparel exporter India to ${country.shortName}`,
-      `Private label kurti manufacturer ${country.name}`,
-      `B2B apparel exporter India to ${country.shortName}`,
-      `Handmade ethnic fashion distributor ${country.name}`
-    ],
+    keywords,
     openGraph: {
       title: `${title} | Al Hayy International`,
       description,
@@ -575,7 +607,7 @@ export default async function CountryExportPage({ params }) {
               </thead>
               <tbody className="divide-y divide-stone-100">
                 <tr className="hover:bg-[#FAF7F2]/50 transition-colors">
-                  <td className="py-3.5 px-4 font-bold text-[#070E1E]">Sample Pack / Boutique Test Run</td>
+                  <td className="py-3.5 px-4 font-bold text-[#070E1E]">Sample Consignment / Boutique Trial Pack</td>
                   <td className="py-3.5 px-4">25 – 50 pieces</td>
                   <td className="py-3.5 px-4">Assorted Kurtis, Kaftans &amp; Sets</td>
                   <td className="py-3.5 px-4">Standard Atelier Tags</td>

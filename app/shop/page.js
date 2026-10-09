@@ -518,6 +518,136 @@ function ShopContent() {
         </ScrollReveal>
       </section>
 
+      {/* DISCREET LUXURY SEO & INTERLINKING DIRECTORY (Subtle, clean, 1-line default for users, 100% crawlable for Google) */}
+      <section className="pt-6">
+        <details className="group p-5 sm:p-6 rounded-2xl bg-white border border-[#E5D9C8] shadow-2xs">
+          <summary className="list-none flex items-center justify-between cursor-pointer select-none">
+            <div className="flex items-center gap-2.5">
+              <Sparkles className="w-4 h-4 text-[#AA7E18]" />
+              <span className="font-serif-luxury text-sm font-bold text-stone-900">
+                Atelier Buying Guide &amp; Regional Supply Directory
+              </span>
+              <span className="hidden sm:inline-block text-[10px] uppercase font-mono font-bold text-[#AA7E18] bg-[#FAF7F2] px-2.5 py-0.5 rounded-full border border-[#D4AF37]/30">
+                Pan-India &amp; Global
+              </span>
+            </div>
+            <span className="text-xs font-semibold text-[#AA7E18] group-open:rotate-180 transition-transform">
+              ▼
+            </span>
+          </summary>
+
+          <div className="mt-5 pt-5 border-t border-stone-100 space-y-5 text-xs text-stone-600 leading-relaxed font-light">
+            <div className="space-y-1.5">
+              <h4 className="font-bold text-stone-900 uppercase tracking-wider text-[11px]">
+                Handcrafted Kashmiri Couture &amp; Pure Combed Cotton Craft
+              </h4>
+              <p>
+                Al Hayy International is a master manufacturer and supplier of authentic Kashmiri Aari embroidered kurtis, designer women co-ord sets, breathable cotton kaftans, and luxury winter pherans and coats. Every silhouette is crafted from high thread-count combed 60s cotton or authentic handloom silk, finished with intricate needlework hand-crafted by master generational artisans in Srinagar, Jammu &amp; Kashmir.
+              </p>
+            </div>
+
+            {/* Category Interlinking */}
+            <div className="space-y-2">
+              <span className="text-[10px] font-mono uppercase text-stone-400 tracking-wider block">
+                Explore Signature Collections:
+              </span>
+              <div className="flex flex-wrap gap-2">
+                <Link href="/shop?category=Tops%20%26%20Kurtis" className="px-3 py-1.5 rounded-full bg-stone-50 border border-stone-200 hover:border-[#AA7E18] hover:text-[#AA7E18] transition-colors text-[11px]">
+                  Pure Cotton Kurtis (Long &amp; Short)
+                </Link>
+                <Link href="/shop?category=Co-ord%20Sets" className="px-3 py-1.5 rounded-full bg-stone-50 border border-stone-200 hover:border-[#AA7E18] hover:text-[#AA7E18] transition-colors text-[11px]">
+                  Designer Women Co-ord Sets
+                </Link>
+                <Link href="/shop?category=Kaftaan%20%26%20Kaftaan%20Sets" className="px-3 py-1.5 rounded-full bg-stone-50 border border-stone-200 hover:border-[#AA7E18] hover:text-[#AA7E18] transition-colors text-[11px]">
+                  Luxury Resort Kaftans
+                </Link>
+                <Link href="/shop?category=Woolen%20Coats" className="px-3 py-1.5 rounded-full bg-stone-50 border border-stone-200 hover:border-[#AA7E18] hover:text-[#AA7E18] transition-colors text-[11px]">
+                  Handcrafted Woolen Coats
+                </Link>
+                <Link href="/shop?category=Pashmina%20Shawls%20%26%20Scarfs" className="px-3 py-1.5 rounded-full bg-stone-50 border border-stone-200 hover:border-[#AA7E18] hover:text-[#AA7E18] transition-colors text-[11px]">
+                  Pure Pashmina Shawls
+                </Link>
+                <Link href="/lookbook" className="px-3 py-1.5 rounded-full bg-stone-50 border border-stone-200 hover:border-[#AA7E18] hover:text-[#AA7E18] transition-colors text-[11px]">
+                  Atelier Video Reels
+                </Link>
+              </div>
+            </div>
+
+            {/* Primary International Export Hubs: Dubai (Main Hub), USA & Europe */}
+            <div className="space-y-2 pt-2 border-t border-stone-100">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono uppercase text-[#AA7E18] tracking-wider font-bold">
+                  International Export Hubs (Dubai, USA, Europe &amp; Canada):
+                </span>
+                <Link href="/export" className="text-[11px] text-[#AA7E18] font-bold hover:underline">
+                  View All 20+ Global Markets →
+                </Link>
+              </div>
+              <div className="flex flex-wrap gap-x-3 gap-y-2 text-xs">
+                <Link href="/export/uae" className="px-3 py-1.5 rounded-xl bg-[#070E1E] text-[#F7E7B6] font-bold text-[11px] border border-[#D4AF37]/50 hover:bg-[#102142] transition-colors flex items-center gap-1.5 shadow-2xs">
+                  <span>🇦🇪</span>
+                  <span>Dubai &amp; UAE (Main Hub)</span>
+                </Link>
+                <Link href="/export/usa" className="px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-stone-900 hover:border-[#AA7E18] font-semibold text-[11px] transition-colors flex items-center gap-1.5">
+                  <span>🇺🇸</span>
+                  <span>USA (CA, NY, TX, Chicago)</span>
+                </Link>
+                <Link href="/export/uk" className="px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-stone-900 hover:border-[#AA7E18] font-semibold text-[11px] transition-colors flex items-center gap-1.5">
+                  <span>🇬🇧</span>
+                  <span>United Kingdom (London)</span>
+                </Link>
+                <Link href="/export/canada" className="px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-stone-900 hover:border-[#AA7E18] font-semibold text-[11px] transition-colors flex items-center gap-1.5">
+                  <span>🇨🇦</span>
+                  <span>Canada (Toronto)</span>
+                </Link>
+                <Link href="/export/germany" className="px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-stone-900 hover:border-[#AA7E18] font-semibold text-[11px] transition-colors flex items-center gap-1.5">
+                  <span>🇩🇪</span>
+                  <span>Germany</span>
+                </Link>
+                <Link href="/export/france" className="px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-stone-900 hover:border-[#AA7E18] font-semibold text-[11px] transition-colors flex items-center gap-1.5">
+                  <span>🇫🇷</span>
+                  <span>France (Paris)</span>
+                </Link>
+                <Link href="/export/switzerland" className="px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-stone-900 hover:border-[#AA7E18] font-semibold text-[11px] transition-colors flex items-center gap-1.5">
+                  <span>🇨🇭</span>
+                  <span>Switzerland</span>
+                </Link>
+                <Link href="/export/saudi-arabia" className="px-3 py-1.5 rounded-xl bg-white border border-stone-200 text-stone-900 hover:border-[#AA7E18] font-semibold text-[11px] transition-colors flex items-center gap-1.5">
+                  <span>🇸🇦</span>
+                  <span>Saudi Arabia (Riyadh)</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Subtle Domestic Indian Hubs (Secondary background for crawlability) */}
+            <div className="space-y-1.5 pt-2 border-t border-stone-100">
+              <span className="text-[10px] font-mono uppercase text-stone-400 tracking-wider block">
+                Pan-India Wholesale Supply Network (Secondary Hubs):
+              </span>
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-stone-400">
+                <Link href="/wholesale/delhi" className="hover:text-stone-700 transition-colors">Delhi NCR</Link>
+                <span>•</span>
+                <Link href="/wholesale/mumbai" className="hover:text-stone-700 transition-colors">Mumbai</Link>
+                <span>•</span>
+                <Link href="/wholesale/bengaluru" className="hover:text-stone-700 transition-colors">Bengaluru</Link>
+                <span>•</span>
+                <Link href="/wholesale/hyderabad" className="hover:text-stone-700 transition-colors">Hyderabad</Link>
+                <span>•</span>
+                <Link href="/wholesale/kolkata" className="hover:text-stone-700 transition-colors">Kolkata</Link>
+                <span>•</span>
+                <Link href="/wholesale/surat" className="hover:text-stone-700 transition-colors">Surat</Link>
+                <span>•</span>
+                <Link href="/wholesale/jaipur" className="hover:text-stone-700 transition-colors">Jaipur</Link>
+                <span>•</span>
+                <Link href="/wholesale" className="text-[#AA7E18] hover:underline">
+                  + All 60+ Indian Cities →
+                </Link>
+              </div>
+            </div>
+          </div>
+        </details>
+      </section>
+
       {/* MOBILE FILTER SLIDE-OUT DRAWER */}
       {mobileFilterOpen && (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs lg:hidden animate-in fade-in duration-200">

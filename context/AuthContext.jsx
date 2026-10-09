@@ -55,7 +55,7 @@ export function AuthProvider({ children }) {
       // Demo customer fallback login
       const customerData = {
         username: usernameOrEmail.includes('@') ? usernameOrEmail.split('@')[0] : usernameOrEmail,
-        email: usernameOrEmail.includes('@') ? usernameOrEmail : `${usernameOrEmail}@example.com`,
+        email: usernameOrEmail.includes('@') ? usernameOrEmail : `${usernameOrEmail}@alhayyinternational.com`,
         role: 'customer'
       };
       setUser(customerData);

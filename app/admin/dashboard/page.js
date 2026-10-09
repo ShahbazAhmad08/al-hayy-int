@@ -222,8 +222,8 @@ export default function AdminDashboardPage() {
         setInquiries(inqs);
       } else {
         setInquiries([
-          { id: 1, name: 'Dr. Aisha Mir', email: 'aisha.m@example.com', phone: '+91 98765 43210', message: 'Inquiring about custom size alterations for the Mulberry Silk Valley Jacket.', date: 'Today, 11:30 AM' },
-          { id: 2, name: 'Zoya Fatima', email: 'zoya.f@example.com', phone: '+91 98123 45678', message: 'Looking for bulk festive gift packaging for 5 Pashmina stoles.', date: 'Yesterday, 4:20 PM' }
+          { id: 1, name: 'Dr. Aisha Mir', email: 'aisha.m@gmail.com', phone: '+91 98765 43210', message: 'Inquiring about custom size alterations for the Mulberry Silk Valley Jacket.', date: 'Today, 11:30 AM' },
+          { id: 2, name: 'Zoya Fatima', email: 'zoya.f@gmail.com', phone: '+91 98123 45678', message: 'Looking for bulk festive gift packaging for 5 Pashmina stoles.', date: 'Yesterday, 4:20 PM' }
         ]);
       }
     } catch (e) {

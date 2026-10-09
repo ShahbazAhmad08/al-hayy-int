@@ -581,7 +581,7 @@ function LoginContent() {
                       <input
                         type="email"
                         required
-                        placeholder="name@example.com"
+                        placeholder="Enter your email address"
                         value={signInEmail}
                         onChange={(e) => setSignInEmail(e.target.value)}
                         className="w-full pl-10 pr-3.5 py-3 rounded-xl border border-stone-300 text-xs font-semibold text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#070E1E] transition-all bg-stone-50/50 focus:bg-white"
@@ -681,7 +681,7 @@ function LoginContent() {
                     <input
                       type="text"
                       required
-                      placeholder="name@example.com"
+                      placeholder="Enter your email address"
                       value={signInEmail}
                       onChange={(e) => setSignInEmail(e.target.value)}
                       className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950 transition-all bg-stone-50/50 focus:bg-white"
@@ -776,7 +776,7 @@ function LoginContent() {
                     <input
                       type="email"
                       required
-                      placeholder="fatima@example.com"
+                      placeholder="Enter your email address"
                       value={signUpEmail}
                       onChange={(e) => setSignUpEmail(e.target.value)}
                       className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-200 text-xs text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-950 transition-all bg-stone-50/50 focus:bg-white"
@@ -895,7 +895,7 @@ function LoginContent() {
                   <input
                     type="email"
                     required
-                    placeholder="name@example.com"
+                    placeholder="Enter your email address"
                     value={forgotEmail}
                     onChange={(e) => setForgotEmail(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs"

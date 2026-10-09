@@ -240,13 +240,21 @@ export default function Footer() {
             </Link>
           </div>
 
-          {/* International Countries */}
+          {/* International Countries - Highlight Dubai (Main Hub), USA & Europe */}
           <div className="space-y-2">
-            <span className="text-[10px] font-mono uppercase text-stone-400 tracking-wider">
-              International Export Destinations:
+            <span className="text-[10px] font-mono uppercase text-[#F7E7B6] tracking-wider font-bold">
+              Primary Global Export Gateways (Dubai, USA &amp; Europe):
             </span>
             <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-[11px] text-stone-300">
-              {COUNTRIES_DATA.map((country) => (
+              {/* Featured Dubai Hub Badge */}
+              <Link
+                href="/export/uae"
+                className="px-2.5 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37] text-[#F7E7B6] font-bold hover:bg-[#D4AF37] hover:text-[#070E1E] transition-all flex items-center gap-1 shadow-xs"
+              >
+                <span>🇦🇪</span>
+                <span>Dubai &amp; UAE (Main Global Hub)</span>
+              </Link>
+              {COUNTRIES_DATA.filter(c => c.slug !== 'uae').map((country) => (
                 <Link
                   key={country.slug}
                   href={`/export/${country.slug}`}
@@ -259,32 +267,41 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Domestic Cities */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase text-stone-400 tracking-wider">
-                Pan-India Wholesale &amp; Manufacturing Hubs:
-              </span>
-              <button
-                type="button"
-                onClick={() => setShowAllCities(!showAllCities)}
-                className="text-[10px] text-[#D4AF37] hover:underline flex items-center gap-1 cursor-pointer"
+          {/* Domestic Cities - 100% Crawlable in DOM for Search Console, Kept Subtle for Buyers */}
+          <div className="space-y-2 pt-2 border-t border-stone-800">
+            <details className="group" open={false}>
+              <summary 
+                className="list-none flex items-center justify-between cursor-pointer select-none py-1"
               >
-                <span>{showAllCities ? 'Show Less' : `+${CITIES_DATA.length - 24} More Cities`}</span>
-                {showAllCities ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-[11px] text-stone-400">
-              {visibleCities.map((city) => (
-                <Link
-                  key={city.slug}
-                  href={`/wholesale/${city.slug}`}
-                  className="hover:text-[#D4AF37] transition-colors"
-                >
-                  {city.name}
-                </Link>
-              ))}
-            </div>
+                <span className="text-[10px] font-mono uppercase text-stone-500 hover:text-stone-300 tracking-wider">
+                  Pan-India Wholesale &amp; Manufacturing Hubs ({CITIES_DATA.length} Cities)
+                </span>
+                <span className="text-[10px] text-stone-500 hover:text-[#D4AF37] underline">
+                  View Indian Cities
+                </span>
+              </summary>
+              
+              <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-[11px] text-stone-400 mt-2.5">
+                {(showAllCities ? CITIES_DATA : CITIES_DATA.slice(0, 24)).map((city) => (
+                  <Link
+                    key={city.slug}
+                    href={`/wholesale/${city.slug}`}
+                    className="hover:text-[#D4AF37] transition-colors"
+                  >
+                    {city.name}
+                  </Link>
+                ))}
+                {!showAllCities && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAllCities(true)}
+                    className="text-[#D4AF37] hover:underline font-semibold text-[11px] cursor-pointer"
+                  >
+                    + View All {CITIES_DATA.length} Wholesale Hubs →
+                  </button>
+                )}
+              </div>
+            </details>
           </div>
         </div>
 

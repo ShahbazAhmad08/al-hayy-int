@@ -91,6 +91,45 @@ export default function ExportDirectoryPage() {
 
       {/* Directory Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-12">
+        {/* DUBAI & UAE FLAGSHIP HUB SPOTLIGHT */}
+        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#070E1E] via-[#0B162C] to-[#070E1E] border-2 border-[#D4AF37] text-white shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-8 opacity-10 font-serif-luxury text-9xl font-bold select-none pointer-events-none">
+            DUBAI
+          </div>
+          <div className="relative z-10 space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D4AF37] text-[#070E1E] text-xs font-bold uppercase tracking-wider">
+              <span>🇦🇪</span>
+              <span>Primary Global Export Hub • Dubai &amp; GCC</span>
+            </div>
+            <div className="space-y-1 max-w-2xl">
+              <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#FAF7F2]">
+                Direct Loom Exporter to Dubai, Abu Dhabi &amp; Sharjah
+              </h2>
+              <p className="text-stone-300 text-xs sm:text-sm leading-relaxed font-light">
+                Supplying premier boutique networks across Dubai Mall, Deira, Meena Bazaar, Jumeirah, and Abu Dhabi. 100% authentic Kashmiri Aari embroidered kurtis, pure cotton flowy kaftans, and luxury co-ord sets with 3-day express air cargo clearance and zero-duty customs documentation.
+              </p>
+            </div>
+
+            <div className="pt-2 flex flex-wrap items-center gap-3">
+              <Link
+                href="/export/uae"
+                className="px-5 py-2.5 rounded-full bg-[#D4AF37] hover:bg-[#F7E7B6] text-[#070E1E] font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-md"
+              >
+                <span>View Dubai &amp; UAE Catalog</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+              <a
+                href="https://wa.me/919622480276?text=Salam%20Al%20Hayy,%20I%20am%20a%20Dubai%20/%20UAE%20boutique%20buyer%20looking%20for%20wholesale%20supply"
+                target="_blank"
+                rel="noreferrer"
+                className="px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-[#D4AF37]/50 text-[#F7E7B6] font-semibold text-xs uppercase tracking-wider transition-all"
+              >
+                Direct WhatsApp UAE Desk
+              </a>
+            </div>
+          </div>
+        </div>
+
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EADBCC] pb-6">
           <div>
             <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#AA7E18]">
@@ -101,7 +140,7 @@ export default function ExportDirectoryPage() {
             </h2>
           </div>
           <div className="text-xs text-stone-500 font-mono">
-            {COUNTRIES_DATA.length} Countries with Direct Air Cargo Clearance
+            Focus: Dubai &amp; GCC • North America • Western Europe
           </div>
         </div>
 
